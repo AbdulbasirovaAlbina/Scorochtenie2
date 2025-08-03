@@ -1,15 +1,15 @@
 package com.example.scorochtenie2
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
-class TechniqueAdapter(private val techniques: List<Technique>) : 
-    RecyclerView.Adapter<TechniqueAdapter.TechniqueViewHolder>() {
+class LearningTechniqueAdapter(private val techniques: List<Technique>) : 
+    RecyclerView.Adapter<LearningTechniqueAdapter.TechniqueViewHolder>() {
 
     class TechniqueViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val icon: ImageView = itemView.findViewById(R.id.technique_icon)
@@ -28,10 +28,10 @@ class TechniqueAdapter(private val techniques: List<Technique>) :
         holder.icon.setImageResource(technique.iconResId)
         
         holder.itemView.setOnClickListener {
-            val context = holder.itemView.context
-            val intent = Intent(context, TechniqueSettingsActivity::class.java)
-            intent.putExtra("technique_name", technique.title)
-            context.startActivity(intent)
+            // Для обучения просто показываем toast (позже здесь будет другая логика)
+            Toast.makeText(holder.itemView.context, 
+                "Обучение: ${technique.title}", 
+                Toast.LENGTH_SHORT).show()
         }
     }
 

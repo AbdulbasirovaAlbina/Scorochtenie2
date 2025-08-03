@@ -14,4 +14,9 @@
     <color name="surface_dark">#1E1E1E</color>
     <color name="text_primary_dark">#FFFFFF</color>
     <color name="text_secondary_dark">#CCCCCC</color>
+    
+    <!-- Button colors -->
+    <color name="blue_primary">#2196F3</color>
+    <color name="button_unselected">#E0E0E0</color>
+    <color name="text_secondary">#666666</color>
 </resources>

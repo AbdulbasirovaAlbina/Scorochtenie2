@@ -29,7 +29,7 @@ class LearningFragment : Fragment() {
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.techniques_grid)
         recyclerView.layoutManager = GridLayoutManager(context, 2)
-        recyclerView.adapter = TechniqueAdapter(techniques)
+        recyclerView.adapter = LearningTechniqueAdapter(techniques)
 
         return view
     }

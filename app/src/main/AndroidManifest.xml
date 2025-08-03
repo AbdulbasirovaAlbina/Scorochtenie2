@@ -27,6 +27,9 @@
         <activity
             android:name=".LearningActivity"
             android:exported="false" />
+        <activity
+            android:name=".TechniqueSettingsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

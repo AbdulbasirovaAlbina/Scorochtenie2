@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/backgroundColor"
+    tools:context=".TechniqueSettingsActivity">
+
+    <!-- Toolbar -->
+    <LinearLayout
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="?attr/surfaceColor"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_back"
+            android:contentDescription="Назад"
+            app:tint="?attr/iconTint" />
+        
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Настройки техники"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="?attr/textColorPrimary"
+            android:gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="40dp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="24dp">
+
+            <!-- Название техники -->
+            <TextView
+                android:id="@+id/technique_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Техника"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?attr/textColorPrimary"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Описание -->
+            <TextView
+                android:id="@+id/technique_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Эта техника позволяет увеличить скорость чтения за счет уменьшения количества фиксаций взгляда и расширения поля зрения."
+                android:textSize="14sp"
+                android:textColor="?attr/textColorSecondary"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="32dp" />
+
+            <!-- Скорость чтения -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Скорость чтения"
+                android:textSize="16sp"
+                android:textColor="?attr/textColorPrimary"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <SeekBar
+                    android:id="@+id/speed_slider"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:progressTint="@color/blue_primary"
+                    android:thumbTint="@color/blue_primary" />
+
+                <TextView
+                    android:id="@+id/speed_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Быстро"
+                    android:textSize="14sp"
+                    android:textColor="@color/blue_primary"
+                    android:layout_marginStart="16dp"
+                    android:minWidth="60dp" />
+            </LinearLayout>
+
+            <!-- Размер шрифта -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Размер шрифта"
+                android:textSize="16sp"
+                android:textColor="?attr/textColorPrimary"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <SeekBar
+                    android:id="@+id/font_size_slider"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:progressTint="@color/blue_primary"
+                    android:thumbTint="@color/blue_primary" />
+
+                <TextView
+                    android:id="@+id/font_size_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Большой"
+                    android:textSize="14sp"
+                    android:textColor="@color/blue_primary"
+                    android:layout_marginStart="16dp"
+                    android:minWidth="60dp" />
+            </LinearLayout>
+
+            <!-- Размер текста -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Размер текста"
+                android:textSize="16sp"
+                android:textColor="?attr/textColorPrimary"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Кнопки выбора длины текста -->
+            <LinearLayout
+                android:id="@+id/text_length_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="32dp">
+
+                <Button
+                    android:id="@+id/btn_short_text"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:text="Короткий"
+                    android:textSize="11sp"
+                    android:layout_marginEnd="4dp"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:background="@drawable/button_selector"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/textColorSecondary" />
+
+                <Button
+                    android:id="@+id/btn_medium_text"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:text="Средний"
+                    android:textSize="11sp"
+                    android:layout_marginHorizontal="2dp"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:background="@drawable/button_selector"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/textColorSecondary" />
+
+                <Button
+                    android:id="@+id/btn_long_text"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:text="Длинный"
+                    android:textSize="11sp"
+                    android:layout_marginStart="4dp"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:background="@drawable/button_selector"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/textColorSecondary" />
+            </LinearLayout>
+
+            <!-- Кнопка "Старт" -->
+            <Button
+                android:id="@+id/btn_start"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Старт"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:background="@drawable/start_button_background"
+                android:layout_marginTop="24dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
