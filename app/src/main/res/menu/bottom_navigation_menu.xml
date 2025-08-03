@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home"
+        android:title="Главная" />
+    <item
+        android:id="@+id/navigation_learning"
+        android:icon="@drawable/ic_learning"
+        android:title="Обучение" />
+    <item
+        android:id="@+id/navigation_practice"
+        android:icon="@drawable/ic_practice"
+        android:title="Практика" />
+    <item
+        android:id="@+id/navigation_progress"
+        android:icon="@drawable/ic_progress"
+        android:title="Прогресс" />
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="Настройки" />
+</menu>
