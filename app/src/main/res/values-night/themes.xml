@@ -1,7 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Scorochtenie2" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Custom attributes for dark theme -->
+        <item name="backgroundColor">@color/background_dark</item>
+        <item name="surfaceColor">@color/surface_dark</item>
+        <item name="textColorPrimary">@color/text_primary_dark</item>
+        <item name="textColorSecondary">@color/text_secondary_dark</item>
+        <item name="iconTint">@color/text_primary_dark</item>
     </style>
 </resources>
