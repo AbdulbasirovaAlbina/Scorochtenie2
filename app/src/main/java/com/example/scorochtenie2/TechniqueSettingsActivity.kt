@@ -1,5 +1,6 @@
 package com.example.scorochtenie2
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -18,13 +19,10 @@ class TechniqueSettingsActivity : AppCompatActivity() {
     private lateinit var longTextBtn: Button
     private lateinit var startBtn: Button
 
-    private val speedLabels = arrayOf("Медленно", "Средне", "Быстро")
-    private val fontSizeLabels = arrayOf("Маленький", "Средний", "Большой")
-    
     // Описания для каждой техники
     private val techniqueDescriptions = mapOf(
         "Чтение блоками" to "Увеличивает скорость чтения путем группировки слов в смысловые блоки",
-        "Чтение по диагонали" to "Помогает быстро найти ключевую информацию в тексте", 
+        "Чтение по диагонали" to "Помогает быстро найти ключевую информацию в тексте",
         "Метод указки" to "Концентрирует внимание и повышает скорость чтения",
         "Предложения наоборот" to "Развивает гибкость мышления и понимание контекста",
         "Слова наоборот" to "Тренирует быстрое распознавание слов и улучшает концентрацию",
@@ -48,7 +46,7 @@ class TechniqueSettingsActivity : AppCompatActivity() {
 
     private fun initViews() {
         findViewById<ImageButton>(R.id.btn_back).setOnClickListener { finish() }
-        
+
         techniqueTitle = findViewById(R.id.technique_title)
         techniqueDescription = findViewById(R.id.technique_description)
         speedSlider = findViewById(R.id.speed_slider)
@@ -71,11 +69,11 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         // Настройка слайдера скорости (3 позиции: 0, 1, 2)
         speedSlider.max = 2
         speedSlider.progress = 1 // По умолчанию средняя скорость
-        speedLabel.text = speedLabels[1]
-        
+        speedLabel.text = SpeedConfig.speedLabels[1]
+
         speedSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                speedLabel.text = speedLabels[progress]
+                speedLabel.text = SpeedConfig.speedLabels[progress]
                 updateDescriptionPreview()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -85,11 +83,11 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         // Настройка слайдера размера шрифта (3 позиции: 0, 1, 2)
         fontSizeSlider.max = 2
         fontSizeSlider.progress = 1 // По умолчанию средний размер
-        fontSizeLabel.text = fontSizeLabels[1]
-        
+        fontSizeLabel.text = FontConfig.fontSizeLabels[1]
+
         fontSizeSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                fontSizeLabel.text = fontSizeLabels[progress]
+                fontSizeLabel.text = FontConfig.fontSizeLabels[progress]
                 updateDescriptionPreview()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -100,10 +98,10 @@ class TechniqueSettingsActivity : AppCompatActivity() {
     private fun setupTextLengthButtons() {
         val buttons = listOf(shortTextBtn, mediumTextBtn, longTextBtn)
         val texts = listOf("Короткий", "Средний", "Длинный")
-        
+
         // По умолчанию выбран средний текст
         selectTextLengthButton(mediumTextBtn, "Средний")
-        
+
         buttons.forEachIndexed { index, button ->
             button.setOnClickListener {
                 selectTextLengthButton(button, texts[index])
@@ -114,14 +112,13 @@ class TechniqueSettingsActivity : AppCompatActivity() {
 
     private fun selectTextLengthButton(selectedButton: Button, text: String) {
         val buttons = listOf(shortTextBtn, mediumTextBtn, longTextBtn)
-        
+
         buttons.forEach { button ->
             if (button == selectedButton) {
                 button.isSelected = true
                 button.setTextColor(ContextCompat.getColor(this, android.R.color.white))
             } else {
                 button.isSelected = false
-                // Получение цвета из темы
                 val attrs = intArrayOf(android.R.attr.textColorSecondary)
                 val typedArray = obtainStyledAttributes(attrs)
                 val textColorSecondary = typedArray.getColor(0, ContextCompat.getColor(this, R.color.text_secondary))
@@ -132,30 +129,34 @@ class TechniqueSettingsActivity : AppCompatActivity() {
     }
 
     private fun updateDescriptionPreview() {
-        // Динамически изменяем размер текста описания как в настройках телефона
-        val fontSizeMultiplier = when (fontSizeSlider.progress) {
-            0 -> 0.8f
-            1 -> 1.0f
-            2 -> 1.2f
-            else -> 1.0f
-        }
-        
-        val baseTextSize = 14f
-        techniqueDescription.textSize = baseTextSize * fontSizeMultiplier
+        val fontSizeMultiplier = FontConfig.getFontSizeMultiplier(fontSizeSlider.progress)
+        techniqueDescription.textSize = FontConfig.BASE_TEXT_SIZE * fontSizeMultiplier
     }
 
     private fun setupStartButton() {
         startBtn.setOnClickListener {
-            // Здесь будет запуск упражнения с выбранными настройками
             val technique = intent.getStringExtra("technique_name") ?: "Чтение блоками"
-            val speed = speedLabels[speedSlider.progress]
-            val fontSize = fontSizeLabels[fontSizeSlider.progress]
-            
-            Toast.makeText(this, 
-                "Запуск: $technique\nСкорость: $speed\nШрифт: $fontSize\nТекст: $selectedTextLength", 
-                Toast.LENGTH_LONG).show()
-            
-            // TODO: Запустить соответствующую активность упражнения
+            val speed = speedSlider.progress
+            val fontSize = fontSizeSlider.progress
+
+            val intent = when (technique) {
+                "Метод указки" -> Intent(this, PointerMethodActivity::class.java)
+                else -> null
+            }
+
+            intent?.apply {
+                putExtra("technique_name", technique)
+                putExtra("speed", speed)
+                putExtra("font_size", fontSize)
+                putExtra("text_length", selectedTextLength)
+                startActivity(this)
+            } ?: run {
+                Toast.makeText(
+                    this,
+                    "Запуск: $technique\nСкорость: ${SpeedConfig.speedLabels[speed]}\nШрифт: ${FontConfig.fontSizeLabels[fontSize]}\nТекст: $selectedTextLength",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 }

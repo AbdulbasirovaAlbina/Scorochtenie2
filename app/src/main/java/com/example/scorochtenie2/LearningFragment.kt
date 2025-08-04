@@ -17,19 +17,19 @@ class LearningFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_learning, container, false)
 
         val techniques = listOf(
-            Technique("Чтение блоками", R.drawable.ic_practice),
-            Technique("Чтение по диагонали", R.drawable.ic_diagonal),
-            Technique("Метод указки", R.drawable.ic_settings),
-            Technique("Предложения наоборот", R.drawable.ic_progress),
-            Technique("Слова наоборот", R.drawable.ic_learning),
-            Technique("Текст за шторкой", R.drawable.ic_home),
-            Technique("Зашумленный текст", R.drawable.ic_practice),
-            Technique("Частично скрытые строки", R.drawable.ic_diagonal)
+            TechniqueItem("Чтение блоками", R.drawable.ic_practice),
+            TechniqueItem("Чтение по диагонали", R.drawable.ic_diagonal),
+            TechniqueItem("Метод указки", R.drawable.ic_settings),
+            TechniqueItem("Предложения наоборот", R.drawable.ic_progress),
+            TechniqueItem("Слова наоборот", R.drawable.ic_learning),
+            TechniqueItem("Текст за шторкой", R.drawable.ic_home),
+            TechniqueItem("Зашумленный текст", R.drawable.ic_practice),
+            TechniqueItem("Частично скрытые строки", R.drawable.ic_diagonal)
         )
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.techniques_grid)
         recyclerView.layoutManager = GridLayoutManager(context, 2)
-        recyclerView.adapter = LearningTechniqueAdapter(techniques)
+        recyclerView.adapter = TechniqueAdapter(techniques)
 
         return view
     }

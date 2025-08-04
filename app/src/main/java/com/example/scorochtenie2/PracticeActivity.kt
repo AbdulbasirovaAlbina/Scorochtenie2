@@ -18,14 +18,14 @@ class PracticeActivity : AppCompatActivity() {
         }
 
         val techniques = listOf(
-            Technique("Чтение блоками", R.drawable.ic_practice),
-            Technique("Чтение по диагонали", R.drawable.ic_diagonal),
-            Technique("Метод указки", R.drawable.ic_settings),
-            Technique("Предложения наоборот", R.drawable.ic_progress),
-            Technique("Слова наоборот", R.drawable.ic_learning),
-            Technique("Текст за шторкой", R.drawable.ic_home),
-            Technique("Зашумленный текст", R.drawable.ic_practice),
-            Technique("Частично скрытые строки", R.drawable.ic_diagonal)
+            TechniqueItem("Чтение блоками", R.drawable.ic_practice),
+            TechniqueItem("Чтение по диагонали", R.drawable.ic_diagonal),
+            TechniqueItem("Метод указки", R.drawable.ic_settings),
+            TechniqueItem("Предложения наоборот", R.drawable.ic_progress),
+            TechniqueItem("Слова наоборот", R.drawable.ic_learning),
+            TechniqueItem("Текст за шторкой", R.drawable.ic_home),
+            TechniqueItem("Зашумленный текст", R.drawable.ic_practice),
+            TechniqueItem("Частично скрытые строки", R.drawable.ic_diagonal)
         )
 
         val recyclerView = findViewById<RecyclerView>(R.id.techniques_grid)
@@ -34,5 +34,5 @@ class PracticeActivity : AppCompatActivity() {
     }
 }
 
-data class Technique(val title: String, val iconResId: Int)
+data class TechniqueItem(val title: String, val iconResId: Int)
 

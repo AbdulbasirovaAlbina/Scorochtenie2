@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class TechniqueAdapter(private val techniques: List<Technique>) : 
+class TechniqueAdapter(private val techniques: List<TechniqueItem>) :
     RecyclerView.Adapter<TechniqueAdapter.TechniqueViewHolder>() {
 
     class TechniqueViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -26,7 +26,7 @@ class TechniqueAdapter(private val techniques: List<Technique>) :
         val technique = techniques[position]
         holder.title.text = technique.title
         holder.icon.setImageResource(technique.iconResId)
-        
+
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, TechniqueSettingsActivity::class.java)
