@@ -19,7 +19,6 @@ class TechniqueSettingsActivity : AppCompatActivity() {
     private lateinit var longTextBtn: Button
     private lateinit var startBtn: Button
 
-    // Описания для каждой техники
     private val techniqueDescriptions = mapOf(
         "Чтение блоками" to "Увеличивает скорость чтения путем группировки слов в смысловые блоки",
         "Чтение по диагонали" to "Помогает быстро найти ключевую информацию в тексте",
@@ -66,9 +65,8 @@ class TechniqueSettingsActivity : AppCompatActivity() {
     }
 
     private fun setupSliders() {
-        // Настройка слайдера скорости (3 позиции: 0, 1, 2)
         speedSlider.max = 2
-        speedSlider.progress = 1 // По умолчанию средняя скорость
+        speedSlider.progress = 1
         speedLabel.text = SpeedConfig.speedLabels[1]
 
         speedSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -80,9 +78,8 @@ class TechniqueSettingsActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        // Настройка слайдера размера шрифта (3 позиции: 0, 1, 2)
         fontSizeSlider.max = 2
-        fontSizeSlider.progress = 1 // По умолчанию средний размер
+        fontSizeSlider.progress = 1
         fontSizeLabel.text = FontConfig.fontSizeLabels[1]
 
         fontSizeSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -99,7 +96,6 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         val buttons = listOf(shortTextBtn, mediumTextBtn, longTextBtn)
         val texts = listOf("Короткий", "Средний", "Длинный")
 
-        // По умолчанию выбран средний текст
         selectTextLengthButton(mediumTextBtn, "Средний")
 
         buttons.forEachIndexed { index, button ->
@@ -141,6 +137,9 @@ class TechniqueSettingsActivity : AppCompatActivity() {
 
             val intent = when (technique) {
                 "Метод указки" -> Intent(this, PointerMethodActivity::class.java)
+                "Чтение блоками" -> Intent(this, BlockReadingActivity::class.java)
+                "Предложения наоборот" -> Intent(this, SentenceReverseActivity::class.java)
+                "Слова наоборот" -> Intent(this, WordReverseActivity::class.java)
                 else -> null
             }
 
