@@ -16,6 +16,7 @@
         <activity android:name=".BlockReadingActivity" android:exported="false" />
         <activity android:name=".SentenceReverseActivity" android:exported="false" />
         <activity android:name=".WordReverseActivity" android:exported="false" />
+        <activity android:name=".DiagonalReadingActivity" android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

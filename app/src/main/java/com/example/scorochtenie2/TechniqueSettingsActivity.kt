@@ -140,6 +140,7 @@ class TechniqueSettingsActivity : AppCompatActivity() {
                 "Чтение блоками" -> Intent(this, BlockReadingActivity::class.java)
                 "Предложения наоборот" -> Intent(this, SentenceReverseActivity::class.java)
                 "Слова наоборот" -> Intent(this, WordReverseActivity::class.java)
+                "Чтение по диагонали" -> Intent(this, DiagonalReadingActivity::class.java)
                 else -> null
             }
 
