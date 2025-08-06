@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
@@ -62,6 +63,11 @@ class DiagonalReadingActivity : AppCompatActivity() {
         diagonalLineView?.visibility = View.VISIBLE
         diagonalLineView?.requestLayout()
         diagonalLineView?.invalidate()
+
+        // Логируем высоту TextView и контейнера
+        textView.post {
+            Log.d("DiagonalReadingActivity", "TextView height: ${textView.height}, Container height: ${findViewById<View>(R.id.diagonal_container).height}")
+        }
 
         findViewById<ImageButton>(R.id.btn_back).setOnClickListener {
             technique.cancelAnimation()

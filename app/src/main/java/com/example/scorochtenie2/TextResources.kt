@@ -11,10 +11,8 @@ data class TextData(
 
 data class DiagonalTextData(
     val text: String,
-    val breakWords: List<String>,
     val questionsAndAnswers: List<Pair<String, List<String>>>
 )
-
 
 object TextResources {
     private var diagonalTexts: List<DiagonalTextData> = emptyList()
@@ -28,8 +26,6 @@ object TextResources {
 
             var currentTechnique: String? = null
             var currentText: StringBuilder? = null
-            var currentBreakWords: MutableList<String>? = null
-            var currentKeyWords: MutableList<String>? = null
             var currentQuestions: MutableList<Pair<String, List<String>>>? = null
             var currentQuestionText: StringBuilder? = null
             var currentAnswers: MutableList<String>? = null
@@ -45,23 +41,10 @@ object TextResources {
                             }
                             "text" -> {
                                 currentText = StringBuilder()
-                                currentBreakWords = mutableListOf()
-                                currentKeyWords = mutableListOf()
                                 currentQuestions = mutableListOf()
                             }
                             "content" -> {
                                 currentText?.append(parser.nextText().trim())
-                            }
-                            "breakWords" -> {
-                                currentBreakWords = mutableListOf()
-                            }
-                            "keyWords" -> {
-                                currentKeyWords = mutableListOf()
-                            }
-                            "word" -> {
-                                val word = parser.nextText().trim()
-                                currentBreakWords?.add(word)
-                                currentKeyWords?.add(word)
                             }
                             "questions" -> {
                                 currentQuestions = mutableListOf()
@@ -85,7 +68,6 @@ object TextResources {
                                             diagonalList.add(
                                                 DiagonalTextData(
                                                     text = currentText.toString(),
-                                                    breakWords = currentBreakWords ?: emptyList(),
                                                     questionsAndAnswers = currentQuestions.toList()
                                                 )
                                             )
@@ -101,8 +83,6 @@ object TextResources {
                                     }
                                 }
                                 currentText = null
-                                currentBreakWords = null
-                                currentKeyWords = null
                                 currentQuestions = null
                             }
                             "question" -> {
