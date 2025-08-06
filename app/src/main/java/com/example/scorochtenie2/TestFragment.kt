@@ -2,21 +2,19 @@ package com.example.scorochtenie2
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-
-import org.json.JSONObject
+import android.util.Log
 
 class TestFragment : Fragment() {
-
+    
     companion object {
         private const val ARG_TEXT_INDEX = "textIndex"
         private const val ARG_TECHNIQUE_NAME = "techniqueName"
@@ -33,16 +31,17 @@ class TestFragment : Fragment() {
         }
     }
 
-
     private var score = 0
     private var currentTextIndex = 0
     private var techniqueName: String = ""
     private var durationPerWord: Long = 400L
+    private var currentQuestionIndex = 0
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return inflater.inflate(R.layout.fragment_test, container, false)
     }
 
@@ -53,59 +52,129 @@ class TestFragment : Fragment() {
         techniqueName = arguments?.getString(ARG_TECHNIQUE_NAME) ?: ""
         durationPerWord = arguments?.getLong(ARG_DURATION_PER_WORD) ?: 400L
 
+        // Инициализируем TextResources
+        TextResources.initialize(requireContext())
+        
         displayQuestion(0)
-
-        view.findViewById<View>(R.id.btnSubmit).setOnClickListener {
-            checkAnswer()
-        }
     }
 
     private fun displayQuestion(index: Int) {
-        val view = view ?: return
-        
-        val questions = when (techniqueName) {
-            "Чтение по диагонали" -> TextResources.getDiagonalTexts().getOrNull(currentTextIndex)?.questionsAndAnswers
-            else -> TextResources.getOtherTexts()[techniqueName]?.getOrNull(currentTextIndex)?.questionsAndAnswers
-        }
+        val questionHeader = view?.findViewById<TextView>(R.id.tv_question_header)
+        val questionText = view?.findViewById<TextView>(R.id.questionText)
+        val radioGroup = view?.findViewById<RadioGroup>(R.id.radioGroup)
+        val submitButton = view?.findViewById<Button>(R.id.btnSubmit)
+
+        Log.d("TestFragment", "Displaying question for technique: '$techniqueName', index: $index, textIndex: $currentTextIndex")
+
+        // Получаем вопросы для выбранной техники из XML
+        val questions = getQuestionsForTechnique(techniqueName, currentTextIndex)
+
+        Log.d("TestFragment", "Questions result: ${questions?.size ?: 0} questions")
 
         if (questions.isNullOrEmpty()) {
-            Log.e("TestFragment", "No questions found for technique='$techniqueName', textIndex=$currentTextIndex")
-            view.findViewById<View>(R.id.tv_question_header).visibility = View.GONE
-            view.findViewById<TextView>(R.id.questionText).text = "Ошибка: вопросы для этой техники недоступны."
-            view.findViewById<View>(R.id.radioGroup).visibility = View.GONE
-            view.findViewById<View>(R.id.btnSubmit).visibility = View.GONE
+            Log.e("TestFragment", "No questions found for technique: '$techniqueName'")
+            questionHeader?.visibility = View.GONE
+            questionText?.text = "Ошибка: вопросы для этой техники недоступны."
+            radioGroup?.visibility = View.GONE
+            submitButton?.visibility = View.GONE
             return
         }
 
         if (index < questions.size) {
             val questionPair = questions[index]
-            view.findViewById<TextView>(R.id.questionText).text = questionPair.first
-            view.findViewById<TextView>(R.id.questionText).tag = Pair(index, questionPair.second[0])
+            questionText?.text = questionPair.first
+            questionText?.tag = Pair(index, questionPair.second[0])
 
-            view.findViewById<TextView>(R.id.tv_question_header).text = "Вопрос ${index + 1}"
+            questionHeader?.text = "Вопрос ${index + 1}"
 
-            view.findViewById<RadioGroup>(R.id.radioGroup).removeAllViews()
+            radioGroup?.removeAllViews()
             val options = questionPair.second.shuffled()
             options.forEach { option ->
                 val radioButton = RadioButton(context).apply {
                     text = option
                     id = View.generateViewId()
                     textSize = 16f
-                    setTextColor(context?.let { 
-                        val typedValue = android.util.TypedValue()
-                        it.theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
-                        ContextCompat.getColor(it, typedValue.resourceId)
-                    } ?: android.graphics.Color.WHITE)
+                    setTextColor(context?.getColor(android.R.color.black) ?: android.graphics.Color.BLACK)
                 }
-                view.findViewById<RadioGroup>(R.id.radioGroup).addView(radioButton)
+                radioGroup?.addView(radioButton)
+            }
+
+            submitButton?.setOnClickListener {
+                checkAnswer()
             }
         } else {
             showResult()
         }
     }
 
+    private fun getQuestionsForTechnique(techniqueName: String, textIndex: Int): List<Pair<String, List<String>>>? {
+        Log.d("TestFragment", "Getting questions for technique: '$techniqueName', textIndex: $textIndex")
+        
+        val result = when (techniqueName) {
+            "Чтение по диагонали" -> {
+                val diagonalTexts = TextResources.getDiagonalTexts()
+                Log.d("TestFragment", "Diagonal texts size: ${diagonalTexts.size}")
+                diagonalTexts.getOrNull(textIndex)?.questionsAndAnswers
+            }
+            "Чтение блоками" -> {
+                val otherTexts = TextResources.getOtherTexts()
+                Log.d("TestFragment", "Other texts keys: ${otherTexts.keys}")
+                Log.d("TestFragment", "Looking for 'Чтение блоками' in otherTexts")
+                otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
+            }
+            "Метод указки" -> {
+                val otherTexts = TextResources.getOtherTexts()
+                Log.d("TestFragment", "Looking for 'Метод указки' in otherTexts")
+                otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
+            }
+            "Предложения наоборот" -> {
+                val otherTexts = TextResources.getOtherTexts()
+                Log.d("TestFragment", "Looking for 'Предложения наоборот' in otherTexts")
+                otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
+            }
+            "Слова наоборот" -> {
+                val otherTexts = TextResources.getOtherTexts()
+                Log.d("TestFragment", "Looking for 'Слова наоборот' in otherTexts")
+                otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
+            }
+            "Текст за шторкой" -> {
+                val otherTexts = TextResources.getOtherTexts()
+                Log.d("TestFragment", "Looking for 'Текст за шторкой' in otherTexts")
+                otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
+            }
+            "Зашумленный текст" -> {
+                val otherTexts = TextResources.getOtherTexts()
+                Log.d("TestFragment", "Looking for 'Зашумленный текст' in otherTexts")
+                otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
+            }
+            "Частично скрытые строки" -> {
+                val otherTexts = TextResources.getOtherTexts()
+                Log.d("TestFragment", "Looking for 'Частично скрытые строки' in otherTexts")
+                otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
+            }
+            else -> {
+                Log.d("TestFragment", "Technique '$techniqueName' not found, using default questions")
+                // Для техник, которых нет в XML, используем дефолтные вопросы
+                getDefaultQuestions(textIndex)
+            }
+        }
+        
+        Log.d("TestFragment", "Result questions size: ${result?.size ?: 0}")
+        return result
+    }
+
+    private fun getDefaultQuestions(textIndex: Int): List<Pair<String, List<String>>> {
+        return listOf(
+            "О чем был текст?" to listOf("О чтении", "О путешествии", "О работе", "О любви"),
+            "Сколько персонажей было?" to listOf("Один", "Два", "Три", "Четыре"),
+            "Какое было настроение?" to listOf("Хорошее", "Плохое", "Нейтральное", "Неизвестно")
+        )
+    }
+
     private fun checkAnswer() {
         val radioGroup = view?.findViewById<RadioGroup>(R.id.radioGroup)
+        val questionText = view?.findViewById<TextView>(R.id.questionText)
+
         val selectedRadioButtonId = radioGroup?.checkedRadioButtonId ?: -1
         if (selectedRadioButtonId == -1) {
             Toast.makeText(context, "Выберите ответ", Toast.LENGTH_SHORT).show()
@@ -114,54 +183,36 @@ class TestFragment : Fragment() {
 
         val selectedRadioButton = radioGroup?.findViewById<RadioButton>(selectedRadioButtonId)
         val userAnswer = selectedRadioButton?.text.toString().lowercase()
-        val correctAnswer = (view?.findViewById<TextView>(R.id.questionText)?.tag as? Pair<*, *>)?.second as? String ?: ""
+        val correctAnswer = (questionText?.tag as? Pair<*, *>)?.second as? String ?: ""
+        
         if (userAnswer == correctAnswer.lowercase()) {
             score++
         }
 
         radioGroup?.clearCheck()
-        displayQuestion(((view?.findViewById<TextView>(R.id.questionText)?.tag as? Pair<*, *>)?.first as? Int ?: 0) + 1)
+        currentQuestionIndex++
+        displayQuestion(currentQuestionIndex)
     }
 
     private fun showResult() {
-        val view = view ?: return
-        val totalQuestions = when (techniqueName) {
-            "Чтение по диагонали" -> TextResources.getDiagonalTexts().getOrNull(currentTextIndex)?.questionsAndAnswers?.size
-            else -> TextResources.getOtherTexts()[techniqueName]?.getOrNull(currentTextIndex)?.questionsAndAnswers?.size
-        } ?: 0
+        val questionHeader = view?.findViewById<TextView>(R.id.tv_question_header)
+        val questionText = view?.findViewById<TextView>(R.id.questionText)
+        val radioGroup = view?.findViewById<RadioGroup>(R.id.radioGroup)
+        val submitButton = view?.findViewById<Button>(R.id.btnSubmit)
 
-        view.findViewById<View>(R.id.tv_question_header).visibility = View.GONE
-        view.findViewById<TextView>(R.id.questionText).text = "Тест завершён! Ваш результат: $score из $totalQuestions"
-        view.findViewById<View>(R.id.radioGroup).visibility = View.GONE
-        view.findViewById<View>(R.id.btnSubmit).visibility = View.GONE
-
-        saveTestResult(techniqueName, totalQuestions)
-
-        // Добавляем кнопку "Назад" для возврата в главное меню
-        val backButton = view.findViewById<View>(R.id.btnBack)
-        backButton?.visibility = View.VISIBLE
-        backButton?.setOnClickListener {
-            activity?.finish()
+        val totalQuestions = getQuestionsForTechnique(techniqueName, currentTextIndex)?.size ?: 0
+        val comprehensionPercentage = if (totalQuestions > 0) {
+            (score * 100) / totalQuestions
+        } else {
+            0
         }
+
+        questionHeader?.visibility = View.GONE
+        questionText?.text = "Тест завершён! Ваш результат: $score из $totalQuestions (${comprehensionPercentage}%)"
+        radioGroup?.visibility = View.GONE
+        submitButton?.visibility = View.GONE
+
+        // Сохраняем результат с пониманием
+        TestResultManager.saveTestResult(requireContext(), techniqueName, comprehensionPercentage)
     }
-
-    private fun saveTestResult(techniqueName: String, totalQuestions: Int) {
-        val sharedPreferences = requireContext().getSharedPreferences("TestResults", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        val timestamp = System.currentTimeMillis()
-        val key = "result_${techniqueName}_$timestamp"
-        val resultJson = """
-            {
-                "techniqueName": "$techniqueName",
-                "durationPerWord": $durationPerWord,
-                "score": $score,
-                "totalQuestions": $totalQuestions,
-                "timestamp": $timestamp
-            }
-        """
-        editor.putString(key, resultJson)
-        editor.apply()
-    }
-
-
 } 

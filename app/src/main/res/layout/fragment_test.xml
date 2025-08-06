@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="?attr/android:colorBackground">
+    android:background="?attr/colorSurface">
 
     <TextView
         android:id="@+id/tv_question_header"
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:textColor="?attr/colorOnBackground"
+        android:textColor="?attr/colorOnSurface"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp" />
 
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="?attr/colorOnBackground"
+        android:textColor="?attr/colorOnSurface"
         android:layout_marginBottom="16dp" />
 
     <RadioGroup
@@ -40,14 +40,5 @@
         android:text="Отправить"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp" />
-
-    <Button
-        android:id="@+id/btnBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Назад"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:visibility="gone" />
 
 </LinearLayout> 
