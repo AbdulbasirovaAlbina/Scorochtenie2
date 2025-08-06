@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    
+    <!-- Фон -->
+    <path
+        android:fillColor="#1565C0"
+        android:pathData="M0,0h48v48h-48z" />
+    
+    <!-- Легкий градиент -->
+    <path
+        android:fillColor="#1976D2"
+        android:pathData="M0,0h48v24h-48z" />
+    
+    <!-- Книга -->
+    <path
+        android:fillColor="#1E88E5"
+        android:pathData="M8,12 L32,12 L32,36 L8,36 Z" />
+    
+    <!-- Корешок книги -->
+    <path
+        android:fillColor="#1565C0"
+        android:pathData="M8,12 L11,12 L11,36 L8,36 Z" />
+    
+    <!-- Страницы -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M11,15 L29,15 L29,33 L11,33 Z" />
+    
+    <!-- Разделитель страниц -->
+    <path
+        android:fillColor="#E0E0E0"
+        android:pathData="M20,15 L20,33 L20.5,33 L20.5,15 Z" />
+    
+    <!-- Текст левая страница -->
+    <path
+        android:fillColor="#616161"
+        android:pathData="M13,18 L18,18 L18,19 L13,19 Z" />
+    <path
+        android:fillColor="#616161"
+        android:pathData="M13,21 L18,21 L18,22 L13,22 Z" />
+    <path
+        android:fillColor="#616161"
+        android:pathData="M13,24 L17,24 L17,25 L13,25 Z" />
+    <path
+        android:fillColor="#616161"
+        android:pathData="M13,27 L18,27 L18,28 L13,28 Z" />
+    
+    <!-- Текст правая страница -->
+    <path
+        android:fillColor="#616161"
+        android:pathData="M22,18 L27,18 L27,19 L22,19 Z" />
+    <path
+        android:fillColor="#616161"
+        android:pathData="M22,21 L27,21 L27,22 L22,22 Z" />
+    <path
+        android:fillColor="#616161"
+        android:pathData="M22,24 L26,24 L26,25 L22,25 Z" />
+    
+    <!-- Тень секундомера -->
+    <path
+        android:fillColor="#E65100"
+        android:pathData="M27,25 A8,8 0 1,1 43,25 A8,8 0 1,1 27,25" />
+    
+    <!-- Секундомер -->
+    <path
+        android:fillColor="#FF9800"
+        android:pathData="M26,24 A8,8 0 1,1 42,24 A8,8 0 1,1 26,24" />
+    
+    <!-- Циферблат -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M28,24 A6,6 0 1,1 40,24 A6,6 0 1,1 28,24" />
+    
+    <!-- Центр -->
+    <path
+        android:fillColor="#424242"
+        android:pathData="M33,24 A1,1 0 1,1 35,24 A1,1 0 1,1 33,24" />
+    
+    <!-- Стрелки -->
+    <path
+        android:fillColor="#424242"
+        android:pathData="M34,24 L34,20 L33,20 L33,24 Z" />
+    <path
+        android:fillColor="#424242"
+        android:pathData="M34,24 L38,24 L38,23 L34,23 Z" />
+    
+    <!-- Кнопка -->
+    <path
+        android:fillColor="#FFB74D"
+        android:pathData="M40,22 L42,22 L42,26 L40,26 Z" />
+    
+</vector>

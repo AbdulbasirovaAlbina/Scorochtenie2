@@ -35,6 +35,9 @@
         <activity
             android:name=".TechniqueSettingsActivity"
             android:exported="false" />
+        <activity
+            android:name=".TechniqueDemoActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

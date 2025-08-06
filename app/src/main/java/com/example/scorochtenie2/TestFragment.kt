@@ -94,7 +94,13 @@ class TestFragment : Fragment() {
                     text = option
                     id = View.generateViewId()
                     textSize = 16f
-                    setTextColor(context?.getColor(android.R.color.black) ?: android.graphics.Color.BLACK)
+                    // Используем цвет из темы для поддержки темной темы
+                    val textColor = if (context?.resources?.configuration?.uiMode?.and(android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES) {
+                        android.graphics.Color.WHITE
+                    } else {
+                        android.graphics.Color.BLACK
+                    }
+                    setTextColor(textColor)
                 }
                 radioGroup?.addView(radioButton)
             }

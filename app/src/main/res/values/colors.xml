@@ -22,4 +22,10 @@
     
     <!-- Progress colors -->
     <color name="green_primary">#4CAF50</color>
+    
+    <!-- Technique selector colors -->
+    <color name="selector_selected_bg_light">#E3F2FD</color>
+    <color name="selector_selected_border_light">#2196F3</color>
+    <color name="selector_selected_bg_dark">#1A237E</color>
+    <color name="selector_selected_border_dark">#64B5F6</color>
 </resources>

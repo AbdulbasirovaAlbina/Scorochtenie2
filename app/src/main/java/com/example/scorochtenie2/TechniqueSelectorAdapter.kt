@@ -32,11 +32,10 @@ class TechniqueSelectorAdapter(
         holder.icon.setImageResource(technique.iconResId)
 
         // Обновляем внешний вид в зависимости от выбора
+        holder.card.isSelected = (position == selectedPosition)
         if (position == selectedPosition) {
-            holder.card.alpha = 1.0f
             holder.card.elevation = 8f
         } else {
-            holder.card.alpha = 0.7f
             holder.card.elevation = 4f
         }
 

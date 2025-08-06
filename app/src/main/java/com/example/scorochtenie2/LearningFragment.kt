@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class LearningFragment : Fragment() {
@@ -16,20 +16,57 @@ class LearningFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_learning, container, false)
 
-        val techniques = listOf(
-            TechniqueItem("Чтение блоками", R.drawable.ic_practice),
-            TechniqueItem("Чтение по диагонали", R.drawable.ic_diagonal),
-            TechniqueItem("Метод указки", R.drawable.ic_settings),
-            TechniqueItem("Предложения наоборот", R.drawable.ic_progress),
-            TechniqueItem("Слова наоборот", R.drawable.ic_learning),
-            TechniqueItem("Текст за шторкой", R.drawable.ic_home),
-            TechniqueItem("Зашумленный текст", R.drawable.ic_practice),
-            TechniqueItem("Частично скрытые строки", R.drawable.ic_diagonal)
+        val learningTechniques = listOf(
+            LearningTechniqueItem(
+                title = "Чтение блоками",
+                category = "Структурирование",
+                description = "Метод чтения, при котором текст воспринимается целыми смысловыми блоками, а не отдельными словами. Это позволяет значительно увеличить скорость чтения и улучшить понимание контекста.",
+                benefits = "• Увеличение скорости чтения в 2-3 раза\n• Лучшее понимание структуры текста\n• Снижение утомляемости глаз\n• Развитие периферического зрения",
+                difficulty = 3,
+                iconResId = R.drawable.ic_practice,
+                practiceClass = BlockReadingActivity::class.java
+            ),
+            LearningTechniqueItem(
+                title = "Чтение по диагонали",
+                category = "Сканирование",
+                description = "Техника быстрого просмотра текста по диагонали для выделения ключевых слов и фраз. Особенно эффективна для поиска конкретной информации в больших объемах текста.",
+                benefits = "• Быстрый поиск нужной информации\n• Эффективное ознакомление с новым материалом\n• Экономия времени при работе с документами\n• Развитие навыков селективного внимания",
+                difficulty = 2,
+                iconResId = R.drawable.ic_diagonal,
+                practiceClass = DiagonalReadingActivity::class.java
+            ),
+            LearningTechniqueItem(
+                title = "Метод указки",
+                category = "Концентрация",
+                description = "Использование пальца, ручки или указки для ведения взгляда по тексту. Этот простой метод помогает концентрировать внимание и контролировать скорость чтения.",
+                benefits = "• Улучшение концентрации внимания\n• Предотвращение регрессии взгляда\n• Контроль скорости чтения\n• Снижение отвлекаемости",
+                difficulty = 1,
+                iconResId = R.drawable.ic_settings,
+                practiceClass = PointerMethodActivity::class.java
+            ),
+            LearningTechniqueItem(
+                title = "Предложения наоборот",
+                category = "Гибкость мышления",
+                description = "Упражнение на чтение предложений в обратном порядке слов. Развивает гибкость мышления, улучшает понимание структуры языка и тренирует внимание к деталям.",
+                benefits = "• Развитие когнитивной гибкости\n• Улучшение внимания к деталям\n• Тренировка рабочей памяти\n• Понимание структуры предложений",
+                difficulty = 4,
+                iconResId = R.drawable.ic_progress,
+                practiceClass = SentenceReverseActivity::class.java
+            ),
+            LearningTechniqueItem(
+                title = "Слова наоборот",
+                category = "Распознавание",
+                description = "Чтение слов, написанных в обратном порядке букв. Тренирует быстрое распознавание слов, развивает навыки анализа и улучшает концентрацию внимания.",
+                benefits = "• Улучшение распознавания слов\n• Развитие аналитических способностей\n• Тренировка концентрации\n• Повышение скорости обработки информации",
+                difficulty = 3,
+                iconResId = R.drawable.ic_learning,
+                practiceClass = WordReverseActivity::class.java
+            )
         )
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.techniques_grid)
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
-        recyclerView.adapter = TechniqueAdapter(techniques)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.techniques_list)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = LearningTechniqueAdapter(learningTechniques)
 
         return view
     }

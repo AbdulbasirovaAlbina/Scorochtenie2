@@ -92,4 +92,15 @@ class MainActivity : AppCompatActivity() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
     }
+    
+    fun switchToTab(tabIndex: Int) {
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        when (tabIndex) {
+            0 -> bottomNavigation.selectedItemId = R.id.navigation_home
+            1 -> bottomNavigation.selectedItemId = R.id.navigation_learning
+            2 -> bottomNavigation.selectedItemId = R.id.navigation_practice
+            3 -> bottomNavigation.selectedItemId = R.id.navigation_progress
+            4 -> bottomNavigation.selectedItemId = R.id.navigation_settings
+        }
+    }
 }
