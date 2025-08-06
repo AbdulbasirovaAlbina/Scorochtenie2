@@ -55,6 +55,10 @@ class WordReverseActivity : AppCompatActivity() {
         timerView = findViewById(R.id.timer_view)
         textView.textSize = FontConfig.BASE_TEXT_SIZE * fontSizeMultiplier
 
+        // Переключаем видимость контейнеров
+        findViewById<View>(R.id.diagonal_container).visibility = View.GONE
+        findViewById<View>(R.id.scroll_container).visibility = View.VISIBLE
+
         findViewById<ImageButton>(R.id.btn_back).setOnClickListener {
             technique.cancelAnimation()
             stopTimer()
