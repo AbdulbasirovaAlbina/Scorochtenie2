@@ -104,5 +104,11 @@
             android:background="@color/blue_primary"
             android:visibility="invisible" />
 
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/test_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
     </FrameLayout>
 </LinearLayout>

@@ -17,6 +17,7 @@ class PointerMethodActivity : AppCompatActivity() {
     private val technique: Technique = PointerMethodTechnique()
     private var durationPerWord: Long = 400L
     private var selectedTextIndex: Int = 0
+    private var techniqueName: String = "Метод указки"
     private var startTime: Long = 0L
     private val handler = Handler(Looper.getMainLooper())
     private var isTimerRunning = false
@@ -41,7 +42,7 @@ class PointerMethodActivity : AppCompatActivity() {
         TextResources.initialize(this)
 
         // Получение параметров из Intent
-        val techniqueName = intent.getStringExtra("technique_name") ?: "Метод указки"
+        techniqueName = intent.getStringExtra("technique_name") ?: "Метод указки"
         durationPerWord = SpeedConfig.getDurationPerWord(intent.getIntExtra("speed", 1))
         selectedTextIndex = when (intent.getStringExtra("text_length")) {
             "Короткий" -> 0
@@ -79,8 +80,8 @@ class PointerMethodActivity : AppCompatActivity() {
             onAnimationEnd = {
                 stopTimer()
                 saveTime(techniqueName, System.currentTimeMillis() - startTime)
-                // Показать сообщение об окончании или перейти к вопросам
-                finish()
+                // Запускаем тест после завершения анимации
+                showTestFragment()
             }
         )
     }
@@ -108,5 +109,18 @@ class PointerMethodActivity : AppCompatActivity() {
         val editor = sharedPreferences.edit()
         editor.putLong(techniqueName, elapsedTime)
         editor.apply()
+    }
+
+    private fun showTestFragment() {
+        // Скрываем контейнеры с текстом и показываем контейнер для теста
+        findViewById<View>(R.id.scroll_container).visibility = View.GONE
+        findViewById<View>(R.id.diagonal_container).visibility = View.GONE
+        findViewById<View>(R.id.test_fragment_container).visibility = View.VISIBLE
+
+        // Запускаем тест
+        val testFragment = TestFragment.newInstance(selectedTextIndex, techniqueName, durationPerWord)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.test_fragment_container, testFragment)
+            .commit()
     }
 }

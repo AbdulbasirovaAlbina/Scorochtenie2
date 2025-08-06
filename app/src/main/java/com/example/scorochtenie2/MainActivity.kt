@@ -25,6 +25,9 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         
+        // Инициализируем TextResources
+        TextResources.initialize(this)
+        
         // Load default fragment (Home)
         if (savedInstanceState == null) {
             loadFragment(HomeFragment())

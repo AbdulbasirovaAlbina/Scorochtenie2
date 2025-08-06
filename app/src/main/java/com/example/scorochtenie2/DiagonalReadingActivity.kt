@@ -18,6 +18,7 @@ class DiagonalReadingActivity : AppCompatActivity() {
     private val technique: Technique = DiagonalReadingTechnique()
     private var durationPerWord: Long = 400L
     private var selectedTextIndex: Int = 0
+    private var techniqueName: String = "Чтение по диагонали"
     private var startTime: Long = 0L
     private val handler = Handler(Looper.getMainLooper())
     private var isTimerRunning = false
@@ -40,7 +41,7 @@ class DiagonalReadingActivity : AppCompatActivity() {
 
         TextResources.initialize(this)
 
-        val techniqueName = intent.getStringExtra("technique_name") ?: "Чтение по диагонали"
+        techniqueName = intent.getStringExtra("technique_name") ?: "Чтение по диагонали"
         durationPerWord = SpeedConfig.getDurationPerWord(intent.getIntExtra("speed", 1))
         selectedTextIndex = when (intent.getStringExtra("text_length")) {
             "Короткий" -> 0
@@ -85,7 +86,8 @@ class DiagonalReadingActivity : AppCompatActivity() {
             onAnimationEnd = {
                 stopTimer()
                 saveTime(techniqueName, System.currentTimeMillis() - startTime)
-                finish()
+                // Запускаем тест после завершения анимации
+                showTestFragment()
             }
         )
     }
@@ -113,5 +115,18 @@ class DiagonalReadingActivity : AppCompatActivity() {
         val editor = sharedPreferences.edit()
         editor.putLong(techniqueName, elapsedTime)
         editor.apply()
+    }
+
+    private fun showTestFragment() {
+        // Скрываем контейнеры с текстом и показываем контейнер для теста
+        findViewById<View>(R.id.scroll_container).visibility = View.GONE
+        findViewById<View>(R.id.diagonal_container).visibility = View.GONE
+        findViewById<View>(R.id.test_fragment_container).visibility = View.VISIBLE
+
+        // Запускаем тест
+        val testFragment = TestFragment.newInstance(selectedTextIndex, techniqueName, durationPerWord)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.test_fragment_container, testFragment)
+            .commit()
     }
 }
