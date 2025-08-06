@@ -19,4 +19,7 @@
     <color name="blue_primary">#2196F3</color>
     <color name="button_unselected">#E0E0E0</color>
     <color name="text_secondary">#666666</color>
+    
+    <!-- Progress colors -->
+    <color name="green_primary">#4CAF50</color>
 </resources>

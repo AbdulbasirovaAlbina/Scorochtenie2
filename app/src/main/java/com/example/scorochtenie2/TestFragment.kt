@@ -148,39 +148,19 @@ class TestFragment : Fragment() {
     private fun saveTestResult(techniqueName: String, totalQuestions: Int) {
         val sharedPreferences = requireContext().getSharedPreferences("TestResults", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        val key = "result_$techniqueName"
-
-        val existingResultJson = sharedPreferences.getString(key, null)
-        var shouldSave = true
-
-        if (existingResultJson != null) {
-            try {
-                val existingResult = JSONObject(existingResultJson)
-                val existingScore = existingResult.getInt("score")
-                val existingDuration = existingResult.getLong("durationPerWord")
-
-                if (score < existingScore || (score == existingScore && durationPerWord >= existingDuration)) {
-                    shouldSave = false
-                }
-            } catch (e: Exception) {
-                Log.e("TestFragment", "Failed to parse existing result JSON: $existingResultJson", e)
+        val timestamp = System.currentTimeMillis()
+        val key = "result_${techniqueName}_$timestamp"
+        val resultJson = """
+            {
+                "techniqueName": "$techniqueName",
+                "durationPerWord": $durationPerWord,
+                "score": $score,
+                "totalQuestions": $totalQuestions,
+                "timestamp": $timestamp
             }
-        }
-
-        if (shouldSave) {
-            val timestamp = System.currentTimeMillis()
-            val resultJson = """
-                {
-                    "techniqueName": "$techniqueName",
-                    "durationPerWord": $durationPerWord,
-                    "score": $score,
-                    "totalQuestions": $totalQuestions,
-                    "timestamp": $timestamp
-                }
-            """
-            editor.putString(key, resultJson)
-            editor.apply()
-        }
+        """
+        editor.putString(key, resultJson)
+        editor.apply()
     }
 
 

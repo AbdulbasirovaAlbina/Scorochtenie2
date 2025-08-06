@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_progress -> {
-                    loadFragment(HomeFragment()) // Placeholder
+                    loadFragment(ProgressFragment())
                     true
                 }
                 R.id.navigation_settings -> {
