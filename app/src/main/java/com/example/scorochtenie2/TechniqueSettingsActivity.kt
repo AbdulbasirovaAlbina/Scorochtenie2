@@ -141,6 +141,7 @@ class TechniqueSettingsActivity : AppCompatActivity() {
                 "Предложения наоборот" -> Intent(this, SentenceReverseActivity::class.java)
                 "Слова наоборот" -> Intent(this, WordReverseActivity::class.java)
                 "Чтение по диагонали" -> Intent(this, DiagonalReadingActivity::class.java)
+                "Частично скрытые строки" -> Intent(this, PartiallyHiddenLinesActivity::class.java)
                 else -> null
             }
 

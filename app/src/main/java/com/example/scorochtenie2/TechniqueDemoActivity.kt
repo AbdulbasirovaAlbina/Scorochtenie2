@@ -1,6 +1,7 @@
 package com.example.scorochtenie2
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
@@ -24,15 +25,19 @@ class TechniqueDemoActivity : AppCompatActivity() {
         TextResources.initialize(this)
 
         val techniqueName = intent.getStringExtra("technique_name") ?: "Неизвестная техника"
-        
+        Log.d("TechniqueDemo", "Starting demo for technique: $techniqueName")
+
         // Инициализация UI
         findViewById<TextView>(R.id.toolbar_title).text = "Демонстрация: $techniqueName"
         findViewById<TextView>(R.id.timer_view).visibility = View.GONE // скрываем таймер в демо режиме
-        
+
         textView = findViewById(R.id.text_view)
         guideView = findViewById(R.id.guide_view)
         diagonalTextView = findViewById(R.id.diagonal_text_view)
         diagonalLineView = findViewById(R.id.diagonal_line_view)
+
+        // Проверяем тип guideView
+        Log.d("TechniqueDemo", "guideView type: ${guideView.javaClass.simpleName}, visibility: ${guideView.visibility}")
 
         // Создаем технику на основе названия
         technique = createTechnique(techniqueName)
@@ -57,7 +62,11 @@ class TechniqueDemoActivity : AppCompatActivity() {
             "Метод указки" -> PointerMethodTechnique()
             "Предложения наоборот" -> SentenceReverseTechnique()
             "Слова наоборот" -> WordReverseTechnique()
-            else -> PointerMethodTechnique() // default technique
+            "Частично скрытые строки" -> PartiallyHiddenLinesTechnique()
+            else -> {
+                Log.w("TechniqueDemo", "Unknown technique: $techniqueName, falling back to PointerMethodTechnique")
+                PointerMethodTechnique() // default technique
+            }
         }
     }
 
@@ -67,25 +76,34 @@ class TechniqueDemoActivity : AppCompatActivity() {
                 findViewById<View>(R.id.scroll_container).visibility = View.GONE
                 findViewById<View>(R.id.diagonal_container).visibility = View.VISIBLE
                 findViewById<View>(R.id.test_fragment_container).visibility = View.GONE
+                guideView.visibility = View.GONE
+                Log.d("TechniqueDemo", "diagonal_container visible")
             }
             else -> {
                 findViewById<View>(R.id.scroll_container).visibility = View.VISIBLE
                 findViewById<View>(R.id.diagonal_container).visibility = View.GONE
                 findViewById<View>(R.id.test_fragment_container).visibility = View.GONE
+                guideView.visibility = View.VISIBLE
+                Log.d("TechniqueDemo", "scroll_container visible, guide_view visibility: ${guideView.visibility}, type: ${guideView.javaClass.simpleName}")
             }
         }
     }
 
     private fun startDemo() {
+        // Принудительно запрашиваем layout для textView
+        textView.requestLayout()
+        Log.d("TechniqueDemo", "Requesting layout for textView")
+
         if (technique is DiagonalReadingTechnique) {
             // Для диагонального чтения используем специальный textView
+            diagonalTextView.requestLayout()
             technique.startAnimation(
                 textView = diagonalTextView,
                 guideView = diagonalLineView,
                 durationPerWord = demoSpeed,
                 selectedTextIndex = selectedTextIndex,
                 onAnimationEnd = {
-                    // Закрываем демонстрацию после завершения
+                    Log.d("TechniqueDemo", "Demo finished for technique: ${technique.displayName}")
                     finish()
                 }
             )
@@ -97,15 +115,24 @@ class TechniqueDemoActivity : AppCompatActivity() {
                 durationPerWord = demoSpeed,
                 selectedTextIndex = selectedTextIndex,
                 onAnimationEnd = {
-                    // Закрываем демонстрацию после завершения
+                    Log.d("TechniqueDemo", "Demo finished for technique: ${technique.displayName}")
                     finish()
                 }
             )
+            // Принудительно обновляем guideView, если это PartiallyHiddenLinesView
+            if (guideView is PartiallyHiddenLinesView) {
+                Log.d("TechniqueDemo", "guideView is PartiallyHiddenLinesView, setting textView and invalidating")
+                (guideView as PartiallyHiddenLinesView).setTextView(textView)
+                guideView.invalidate()
+            } else {
+                Log.w("TechniqueDemo", "guideView is not PartiallyHiddenLinesView, type: ${guideView.javaClass.simpleName}")
+            }
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         technique.cancelAnimation()
+        Log.d("TechniqueDemo", "Demo activity destroyed")
     }
 }

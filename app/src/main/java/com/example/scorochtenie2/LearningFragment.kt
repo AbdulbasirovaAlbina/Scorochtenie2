@@ -61,6 +61,15 @@ class LearningFragment : Fragment() {
                 difficulty = 3,
                 iconResId = R.drawable.ic_learning,
                 practiceClass = WordReverseActivity::class.java
+            ),
+            LearningTechniqueItem(
+                title = "Частично скрытые строки",
+                category = "Периферическое зрение",
+                description = "Техника чтения с частично скрытой нижней частью строк. Развивает способность распознавать слова по их верхней части, тренирует периферическое зрение и ускоряет процесс чтения.",
+                benefits = "• Развитие периферического зрения\n• Ускорение распознавания слов\n• Тренировка концентрации внимания\n• Повышение скорости чтения",
+                difficulty = 3,
+                iconResId = R.drawable.ic_learning,
+                practiceClass = PartiallyHiddenLinesActivity::class.java
             )
         )
 
