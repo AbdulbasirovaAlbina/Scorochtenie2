@@ -63,6 +63,15 @@ class LearningFragment : Fragment() {
                 practiceClass = WordReverseActivity::class.java
             ),
             LearningTechniqueItem(
+                title = "Зашумленный текст",
+                category = "Контроль внимания",
+                description = "Поверх текста движутся полупрозрачные цветные шторки. Метод ограничивает возвраты взгляда и помогает удерживать ровный темп чтения.",
+                benefits = "• Удержание ритма чтения\n• Меньше регрессий взгляда\n• Повышение устойчивости внимания\n• Рост скорости без потери смысла",
+                difficulty = 2,
+                iconResId = R.drawable.ic_home,
+                practiceClass = CurtainTextCurtainActivity::class.java
+            ),
+            LearningTechniqueItem(
                 title = "Частично скрытые строки",
                 category = "Периферическое зрение",
                 description = "Техника чтения с частично скрытой нижней частью строк. Развивает способность распознавать слова по их верхней части, тренирует периферическое зрение и ускоряет процесс чтения.",

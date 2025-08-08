@@ -72,6 +72,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="visible" />
+
+            <com.example.scorochtenie2.CurtainOverlayView
+                android:id="@+id/curtain_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
         </FrameLayout>
 
         <FrameLayout

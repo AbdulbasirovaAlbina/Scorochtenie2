@@ -143,11 +143,6 @@ class TestFragment : Fragment() {
                 Log.d("TestFragment", "Looking for 'Слова наоборот' in otherTexts")
                 otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
             }
-            "Текст за шторкой" -> {
-                val otherTexts = TextResources.getOtherTexts()
-                Log.d("TestFragment", "Looking for 'Текст за шторкой' in otherTexts")
-                otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
-            }
             "Зашумленный текст" -> {
                 val otherTexts = TextResources.getOtherTexts()
                 Log.d("TestFragment", "Looking for 'Зашумленный текст' in otherTexts")

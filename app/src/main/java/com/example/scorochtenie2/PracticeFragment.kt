@@ -22,8 +22,8 @@ class PracticeFragment : Fragment() {
             TechniqueItem("Метод указки", R.drawable.ic_settings),
             TechniqueItem("Предложения наоборот", R.drawable.ic_progress),
             TechniqueItem("Слова наоборот", R.drawable.ic_learning),
-            TechniqueItem("Текст за шторкой", R.drawable.ic_home),
-            TechniqueItem("Зашумленный текст", R.drawable.ic_practice),
+            TechniqueItem("Зашумленный текст", R.drawable.ic_home),
+
             TechniqueItem("Частично скрытые строки", R.drawable.ic_diagonal)
         )
 

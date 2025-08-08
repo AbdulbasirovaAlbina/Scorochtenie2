@@ -25,8 +25,8 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         "Метод указки" to "Концентрирует внимание и повышает скорость чтения",
         "Предложения наоборот" to "Развивает гибкость мышления и понимание контекста",
         "Слова наоборот" to "Тренирует быстрое распознавание слов и улучшает концентрацию",
-        "Текст за шторкой" to "Заставляет читать быстрее, не возвращаясь к уже прочитанному",
-        "Зашумленный текст" to "Повышает концентрацию и способность выделять важную информацию",
+                    "Зашумленный текст" to "Заставляет читать быстрее, не возвращаясь к уже прочитанному",
+        
         "Частично скрытые строки" to "Развивает навык предугадывания и быстрого чтения"
     )
 
@@ -142,6 +142,7 @@ class TechniqueSettingsActivity : AppCompatActivity() {
                 "Слова наоборот" -> Intent(this, WordReverseActivity::class.java)
                 "Чтение по диагонали" -> Intent(this, DiagonalReadingActivity::class.java)
                 "Частично скрытые строки" -> Intent(this, PartiallyHiddenLinesActivity::class.java)
+                "Зашумленный текст" -> Intent(this, CurtainTextCurtainActivity::class.java)
                 else -> null
             }
 
