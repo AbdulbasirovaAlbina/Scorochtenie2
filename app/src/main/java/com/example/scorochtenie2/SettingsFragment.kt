@@ -59,12 +59,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupOtherSettings(view: View) {
-        val rateAppLayout = view.findViewById<LinearLayout>(R.id.rate_app_layout)
         val supportLayout = view.findViewById<LinearLayout>(R.id.support_layout)
-
-        rateAppLayout.setOnClickListener {
-            Toast.makeText(context, "Оценить приложение", Toast.LENGTH_SHORT).show()
-        }
 
         supportLayout.setOnClickListener {
             Toast.makeText(context, "Поддержка", Toast.LENGTH_SHORT).show()

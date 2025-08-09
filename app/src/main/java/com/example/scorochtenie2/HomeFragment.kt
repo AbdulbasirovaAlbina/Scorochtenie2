@@ -16,8 +16,6 @@ class HomeFragment : Fragment() {
 
     private lateinit var quoteText: TextView
     private lateinit var quoteAuthor: TextView
-    private lateinit var sessionsCount: TextView
-    private lateinit var totalTime: TextView
     private lateinit var tipText: TextView
     
     private val quotes = listOf(
@@ -50,7 +48,6 @@ class HomeFragment : Fragment() {
         
         initializeViews(view)
         setupQuoteAndTip()
-        setupStatistics()
         setupQuickActions(view)
         
         return view
@@ -59,8 +56,6 @@ class HomeFragment : Fragment() {
     private fun initializeViews(view: View) {
         quoteText = view.findViewById(R.id.quote_text)
         quoteAuthor = view.findViewById(R.id.quote_author)
-        sessionsCount = view.findViewById(R.id.sessions_count)
-        totalTime = view.findViewById(R.id.total_time)
         tipText = view.findViewById(R.id.tip_text)
     }
     
@@ -75,29 +70,7 @@ class HomeFragment : Fragment() {
         tipText.text = randomTip
     }
     
-    private fun setupStatistics() {
-        val sharedPreferences = requireContext().getSharedPreferences("TechniqueTimes", Context.MODE_PRIVATE)
-        val allPrefs = sharedPreferences.all
-        
-        // Подсчитываем количество сессий (количество сохраненных времен)
-        val sessions = allPrefs.size
-        sessionsCount.text = sessions.toString()
-        
-        // Подсчитываем общее время (сумма всех времен в минутах)
-        val totalTimeMs = allPrefs.values.sumOf { 
-            when (it) {
-                is Long -> it
-                else -> 0L
-            }
-        }
-        val totalMinutes = (totalTimeMs / 60000).toInt()
-        
-        totalTime.text = when {
-            totalMinutes < 60 -> "$totalMinutes мин"
-            totalMinutes < 1440 -> "${totalMinutes / 60}ч ${totalMinutes % 60}м"
-            else -> "${totalMinutes / 1440}д ${(totalMinutes % 1440) / 60}ч"
-        }
-    }
+    // Статистика сессий и времени скрыта по требованию
     
     private fun setupQuickActions(view: View) {
         val practiceCard = view.findViewById<CardView>(R.id.quick_practice_card)
