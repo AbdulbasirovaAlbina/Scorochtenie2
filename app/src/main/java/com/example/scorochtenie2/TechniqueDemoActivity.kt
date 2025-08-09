@@ -80,6 +80,11 @@ class TechniqueDemoActivity : AppCompatActivity() {
                 findViewById<View>(R.id.diagonal_container).visibility = View.VISIBLE
                 findViewById<View>(R.id.test_fragment_container).visibility = View.GONE
                 guideView.visibility = View.GONE
+                // Явно показываем и выносим линию поверх текста в демо
+                diagonalLineView.visibility = View.VISIBLE
+                diagonalLineView.bringToFront()
+                diagonalLineView.requestLayout()
+                diagonalLineView.invalidate()
                 Log.d("TechniqueDemo", "diagonal_container visible")
             }
             "Зашумленный текст" -> {

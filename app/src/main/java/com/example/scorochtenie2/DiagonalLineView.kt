@@ -17,9 +17,10 @@ class DiagonalLineView @JvmOverloads constructor(
 
     private val paint = Paint().apply {
         color = Color.RED
-        strokeWidth = 4f * resources.displayMetrics.density
+        strokeWidth = 6f * resources.displayMetrics.density // шире
         style = Paint.Style.STROKE
         isAntiAlias = true
+        alpha = (255 * 0.5f).toInt() // полупрозрачная
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

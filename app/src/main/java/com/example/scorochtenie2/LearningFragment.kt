@@ -33,7 +33,7 @@ class LearningFragment : Fragment() {
                 category = "Сканирование",
                 description = "Техника быстрого просмотра текста по диагонали для выделения ключевых слов и фраз. Особенно эффективна для поиска конкретной информации в больших объемах текста.",
                 benefits = "• Быстрый поиск нужной информации\n• Эффективное ознакомление с новым материалом\n• Экономия времени при работе с документами\n• Развитие навыков селективного внимания",
-                difficulty = 2,
+                difficulty = 4,
                 iconResId = R.drawable.ic_diagonal_reading,
                 practiceClass = DiagonalReadingActivity::class.java
             ),
@@ -61,7 +61,7 @@ class LearningFragment : Fragment() {
                 category = "Распознавание",
                 description = "Чтение слов, написанных в обратном порядке букв. Тренирует быстрое распознавание слов, развивает навыки анализа и улучшает концентрацию внимания.",
                 benefits = "• Улучшение распознавания слов\n• Развитие аналитических способностей\n• Тренировка концентрации\n• Повышение скорости обработки информации",
-                difficulty = 3,
+                difficulty = 5,
                 iconResId = R.drawable.ic_word_reverse,
                 practiceClass = WordReverseActivity::class.java
             ),
@@ -88,7 +88,8 @@ class LearningFragment : Fragment() {
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.techniques_list)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = LearningTechniqueAdapter(learningTechniques)
+        val sortedByDifficulty = learningTechniques.sortedBy { it.difficulty }
+        recyclerView.adapter = LearningTechniqueAdapter(sortedByDifficulty)
 
         return view
     }

@@ -79,7 +79,10 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
             textView.gravity = android.view.Gravity.TOP
             textView.isSingleLine = false
             textView.maxLines = Int.MAX_VALUE
-            guideView.visibility = View.INVISIBLE
+            // Для диагонального чтения направляющая линия должна быть видима
+            // Если нам передали линию как guideView (в демо), покажем её.
+            // В обычной активности линия находится и показывается отдельно.
+            guideView.visibility = View.VISIBLE
 
             handler.post {
                 if (isAnimationActive) {
@@ -271,7 +274,10 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
         }
         Log.d("DiagonalReading", "Animation: Width=$width, Height=$animationHeight, Lines=$totalLines")
 
-        guideView.visibility = View.INVISIBLE
+        // В демо guideView = DiagonalLineView, не скрываем его
+        if (guideView !is DiagonalLineView) {
+            guideView.visibility = View.INVISIBLE
+        }
 
         val initialLine = highlightWordAtPosition(textView, 0f, 0f, -1)
 
