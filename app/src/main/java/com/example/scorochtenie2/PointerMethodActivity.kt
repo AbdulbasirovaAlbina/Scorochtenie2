@@ -48,7 +48,7 @@ class PointerMethodActivity : AppCompatActivity() {
             "Короткий" -> 0
             "Средний" -> 1
             "Длинный" -> 2
-            else -> 1
+            else -> (0..2).random() // Случайный выбор из 3 текстов
         }
         val fontSizeMultiplier = FontConfig.getFontSizeMultiplier(intent.getIntExtra("font_size", 1))
 

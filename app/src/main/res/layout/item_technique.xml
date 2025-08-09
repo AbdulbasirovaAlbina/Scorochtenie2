@@ -20,11 +20,10 @@
 
         <ImageView
             android:id="@+id/technique_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/ic_practice"
-            app:tint="?attr/iconTint" />
+            android:src="@drawable/ic_practice" />
 
         <TextView
             android:id="@+id/technique_title"

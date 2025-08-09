@@ -7,5 +7,6 @@
         <item name="textColorPrimary">@color/text_primary_dark</item>
         <item name="textColorSecondary">@color/text_secondary_dark</item>
         <item name="iconTint">@color/text_primary_dark</item>
+        <item name="dividerColor">#424242</item>
     </style>
 </resources>

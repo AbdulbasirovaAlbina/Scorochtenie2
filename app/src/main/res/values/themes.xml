@@ -7,6 +7,7 @@
         <item name="textColorPrimary">@color/text_primary_light</item>
         <item name="textColorSecondary">@color/text_secondary_light</item>
         <item name="iconTint">@color/text_primary_light</item>
+        <item name="dividerColor">#E0E0E0</item>
     </style>
 
     <style name="Theme.Scorochtenie2" parent="Base.Theme.Scorochtenie2" />

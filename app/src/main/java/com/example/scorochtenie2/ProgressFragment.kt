@@ -17,20 +17,20 @@ class ProgressFragment : Fragment() {
     private lateinit var usesCountText: TextView
     private lateinit var avgComprehensionText: TextView
     private lateinit var comprehensionRateText: TextView
-    private lateinit var improvementText: TextView
+    private lateinit var totalTimeText: TextView
+    private lateinit var avgTimeText: TextView
     private lateinit var graphView: ProgressGraphView
     private lateinit var techniqueSelectorAdapter: TechniqueSelectorAdapter
 
     private val techniques = listOf(
         TechniqueItem("Все техники", R.drawable.ic_progress),
-        TechniqueItem("Чтение блоками", R.drawable.ic_practice),
-        TechniqueItem("Чтение по диагонали", R.drawable.ic_diagonal),
-        TechniqueItem("Метод указки", R.drawable.ic_settings),
-        TechniqueItem("Предложения наоборот", R.drawable.ic_progress),
-        TechniqueItem("Слова наоборот", R.drawable.ic_learning),
-        TechniqueItem("Зашумленный текст", R.drawable.ic_home),
-        
-        TechniqueItem("Частично скрытые строки", R.drawable.ic_diagonal)
+        TechniqueItem("Чтение блоками", R.drawable.ic_block_reading),
+        TechniqueItem("Чтение по диагонали", R.drawable.ic_diagonal_reading),
+        TechniqueItem("Метод указки", R.drawable.ic_pointer_method),
+        TechniqueItem("Предложения наоборот", R.drawable.ic_sentence_reverse),
+        TechniqueItem("Слова наоборот", R.drawable.ic_word_reverse),
+        TechniqueItem("Зашумленный текст", R.drawable.ic_noisy_text),
+        TechniqueItem("Частично скрытые строки", R.drawable.ic_partially_hidden_lines)
     )
 
     override fun onCreateView(
@@ -56,7 +56,8 @@ class ProgressFragment : Fragment() {
         usesCountText = progressItemView.findViewById(R.id.uses_count)
         avgComprehensionText = progressItemView.findViewById(R.id.avg_comprehension)
         comprehensionRateText = progressItemView.findViewById(R.id.comprehension_rate)
-        improvementText = progressItemView.findViewById(R.id.improvement_text)
+        totalTimeText = progressItemView.findViewById(R.id.total_time)
+        avgTimeText = progressItemView.findViewById(R.id.avg_time)
         graphView = progressItemView.findViewById(R.id.graph_container)
         
         // Добавляем элемент статистики в контейнер
@@ -88,11 +89,19 @@ class ProgressFragment : Fragment() {
         avgComprehensionText.text = "${stats.avgComprehension}%"
         comprehensionRateText.text = "${stats.avgComprehension}%"
         
-        // Вычисляем улучшение (разница между средним и базовым значением 60%)
-        val improvement = (stats.avgComprehension - 60).coerceAtLeast(0)
-        improvementText.text = "Все время +${improvement}%"
+        // Отображаем время чтения в удобном формате
+        totalTimeText.text = formatTime(stats.totalReadingTimeSeconds)
+        avgTimeText.text = formatTime(stats.avgReadingTimeSeconds)
         
         // Обновляем график с реальными данными по дням
         graphView.setData(stats.dailyComprehension)
+    }
+    
+    private fun formatTime(seconds: Int): String {
+        return when {
+            seconds < 60 -> "${seconds} сек"
+            seconds < 3600 -> "${seconds / 60} мин ${seconds % 60} сек"
+            else -> "${seconds / 3600} ч ${(seconds % 3600) / 60} мин"
+        }
     }
 } 

@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Scorochtenie2</string>
+    <string name="app_name">Скорочтение 2</string>
+    <string name="appbar_scrolling_view_behavior">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
 </resources>

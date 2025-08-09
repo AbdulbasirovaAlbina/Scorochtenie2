@@ -2,6 +2,7 @@ package com.example.scorochtenie2
 
 import android.content.Context
 import android.os.Bundle
+import android.content.Intent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -28,13 +29,29 @@ class MainActivity : AppCompatActivity() {
         // Инициализируем TextResources
         TextResources.initialize(this)
         
-        // Load default fragment (Home)
-        if (savedInstanceState == null) {
-            loadFragment(HomeFragment())
-        }
-        
+        // Вначале настраиваем нижнюю навигацию
         setupBottomNavigation()
         setupWindowInsets()
+
+        // Затем загружаем стартовый фрагмент или вкладку из интента
+        if (savedInstanceState == null) {
+            val tabFromIntent = intent?.getIntExtra("tab", -1) ?: -1
+            if (tabFromIntent in 0..4) {
+                switchToTab(tabFromIntent)
+            } else {
+                // По умолчанию Домой
+                switchToTab(0)
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        val tabFromIntent = intent.getIntExtra("tab", -1)
+        if (tabFromIntent in 0..4) {
+            switchToTab(tabFromIntent)
+        }
     }
     
     private fun setupBottomNavigation() {

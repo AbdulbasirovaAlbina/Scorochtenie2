@@ -10,6 +10,7 @@ import java.util.*
 data class TestResult(
     val techniqueName: String,
     val comprehension: Int, // Процент понимания (0-100)
+    val readingTimeSeconds: Int, // Время чтения в секундах
     val timestamp: Long,
     val date: String // Дата в формате "yyyy-MM-dd"
 )
@@ -20,7 +21,7 @@ object TestResultManager {
     private val gson = Gson()
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-    fun saveTestResult(context: Context, techniqueName: String, comprehension: Int) {
+    fun saveTestResult(context: Context, techniqueName: String, comprehension: Int, readingTimeSeconds: Int = 0) {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         
@@ -28,6 +29,7 @@ object TestResultManager {
         val newResult = TestResult(
             techniqueName = techniqueName,
             comprehension = comprehension,
+            readingTimeSeconds = readingTimeSeconds,
             timestamp = System.currentTimeMillis(),
             date = dateFormat.format(Date())
         )
@@ -58,12 +60,16 @@ object TestResultManager {
             return TechniqueStats(
                 usesCount = 0,
                 avgComprehension = 0,
+                totalReadingTimeSeconds = 0,
+                avgReadingTimeSeconds = 0,
                 dailyComprehension = List(7) { 0 }
             )
         }
 
         val usesCount = results.size
         val avgComprehension = results.map { it.comprehension }.average().toInt()
+        val totalReadingTimeSeconds = results.sumOf { it.readingTimeSeconds }
+        val avgReadingTimeSeconds = if (usesCount > 0) totalReadingTimeSeconds / usesCount else 0
         
         // Получаем данные за последние 7 дней
         val calendar = Calendar.getInstance()
@@ -86,6 +92,8 @@ object TestResultManager {
         return TechniqueStats(
             usesCount = usesCount,
             avgComprehension = avgComprehension,
+            totalReadingTimeSeconds = totalReadingTimeSeconds,
+            avgReadingTimeSeconds = avgReadingTimeSeconds,
             dailyComprehension = dailyComprehension
         )
     }
@@ -97,12 +105,16 @@ object TestResultManager {
             return TechniqueStats(
                 usesCount = 0,
                 avgComprehension = 0,
+                totalReadingTimeSeconds = 0,
+                avgReadingTimeSeconds = 0,
                 dailyComprehension = List(7) { 0 }
             )
         }
 
         val usesCount = allResults.size
         val avgComprehension = allResults.map { it.comprehension }.average().toInt()
+        val totalReadingTimeSeconds = allResults.sumOf { it.readingTimeSeconds }
+        val avgReadingTimeSeconds = if (usesCount > 0) totalReadingTimeSeconds / usesCount else 0
         
         // Получаем данные за последние 7 дней для всех техник
         val calendar = Calendar.getInstance()
@@ -125,6 +137,8 @@ object TestResultManager {
         return TechniqueStats(
             usesCount = usesCount,
             avgComprehension = avgComprehension,
+            totalReadingTimeSeconds = totalReadingTimeSeconds,
+            avgReadingTimeSeconds = avgReadingTimeSeconds,
             dailyComprehension = dailyComprehension
         )
     }
@@ -133,5 +147,7 @@ object TestResultManager {
 data class TechniqueStats(
     val usesCount: Int,
     val avgComprehension: Int,
+    val totalReadingTimeSeconds: Int, // Общее время чтения в секундах
+    val avgReadingTimeSeconds: Int,   // Среднее время чтения в секундах
     val dailyComprehension: List<Int>
 ) 

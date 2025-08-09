@@ -1,6 +1,7 @@
 package com.example.scorochtenie2
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -201,6 +202,13 @@ class TestFragment : Fragment() {
         val radioGroup = view?.findViewById<RadioGroup>(R.id.radioGroup)
         val submitButton = view?.findViewById<Button>(R.id.btnSubmit)
 
+        val resultContainer = view?.findViewById<View>(R.id.resultContainer)
+        val tvResultTitle = view?.findViewById<TextView>(R.id.tvResultTitle)
+        val tvResultPercent = view?.findViewById<TextView>(R.id.tvResultPercent)
+        val progressComprehension = view?.findViewById<android.widget.ProgressBar>(R.id.progressComprehension)
+        val tvResultDetails = view?.findViewById<TextView>(R.id.tvResultDetails)
+        val btnDone = view?.findViewById<Button>(R.id.btnDone)
+
         val totalQuestions = getQuestionsForTechnique(techniqueName, currentTextIndex)?.size ?: 0
         val comprehensionPercentage = if (totalQuestions > 0) {
             (score * 100) / totalQuestions
@@ -208,12 +216,49 @@ class TestFragment : Fragment() {
             0
         }
 
+        // Скрываем элементы вопросов
         questionHeader?.visibility = View.GONE
-        questionText?.text = "Тест завершён! Ваш результат: $score из $totalQuestions (${comprehensionPercentage}%)"
+        questionText?.visibility = View.GONE
         radioGroup?.visibility = View.GONE
         submitButton?.visibility = View.GONE
 
-        // Сохраняем результат с пониманием
-        TestResultManager.saveTestResult(requireContext(), techniqueName, comprehensionPercentage)
+        // Настраиваем экран результатов
+        tvResultTitle?.text = "Тест завершён!"
+        tvResultPercent?.text = "$comprehensionPercentage%"
+        progressComprehension?.progress = 0
+        tvResultDetails?.text = "Верно $score из $totalQuestions"
+
+        // Получаем время чтения (для сохранения в статистику)
+        val sharedPreferences = requireContext().getSharedPreferences("TechniqueTimes", Context.MODE_PRIVATE)
+        val readingTimeMillis = sharedPreferences.getLong(techniqueName, 0L)
+        val readingTimeSeconds = (readingTimeMillis / 1000).toInt()
+
+        // Анимация появления
+        resultContainer?.alpha = 0f
+        resultContainer?.visibility = View.VISIBLE
+        resultContainer?.animate()?.alpha(1f)?.setDuration(250)?.start()
+
+        // Анимация прогресса
+        progressComprehension?.animate()?.setDuration(600)?.withStartAction {
+            progressComprehension.progress = 0
+        }?.withEndAction {
+            // no-op
+        }?.start()
+        progressComprehension?.postDelayed({
+            progressComprehension.progress = comprehensionPercentage
+        }, 100)
+
+        // Сохраняем результат
+        TestResultManager.saveTestResult(requireContext(), techniqueName, comprehensionPercentage, readingTimeSeconds)
+
+        btnDone?.setOnClickListener {
+            // Открываем главную и переключаемся на вкладку Практика
+            val intent = Intent(requireContext(), MainActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                putExtra("tab", 2) // Практика
+            }
+            startActivity(intent)
+            activity?.finish()
+        }
     }
 } 

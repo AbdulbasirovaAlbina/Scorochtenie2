@@ -30,7 +30,7 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         "Частично скрытые строки" to "Развивает навык предугадывания и быстрого чтения"
     )
 
-    private var selectedTextLength = "Средний"
+    private var selectedTextLength: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,7 +96,7 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         val buttons = listOf(shortTextBtn, mediumTextBtn, longTextBtn)
         val texts = listOf("Короткий", "Средний", "Длинный")
 
-        selectTextLengthButton(mediumTextBtn, "Средний")
+        // По умолчанию длина не выбрана — будет случайный текст
 
         buttons.forEachIndexed { index, button ->
             button.setOnClickListener {
@@ -150,7 +150,7 @@ class TechniqueSettingsActivity : AppCompatActivity() {
                 putExtra("technique_name", technique)
                 putExtra("speed", speed)
                 putExtra("font_size", fontSize)
-                putExtra("text_length", selectedTextLength)
+                selectedTextLength?.let { putExtra("text_length", it) }
                 startActivity(this)
             } ?: run {
                 Toast.makeText(
