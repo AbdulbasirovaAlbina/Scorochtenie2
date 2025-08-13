@@ -89,6 +89,38 @@
 
     </LinearLayout>
 
+    <!-- Clear Progress -->
+    <LinearLayout
+        android:id="@+id/clear_progress_layout"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="?attr/surfaceColor"
+        app:layout_constraintTop_toBottomOf="@id/theme_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginVertical="8dp"
+        android:layout_marginHorizontal="16dp"
+        android:paddingHorizontal="16dp">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_practice"
+            app:tint="?attr/iconTint" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Очистить прогресс"
+            android:layout_marginStart="16dp"
+            android:textColor="?attr/textColorPrimary"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
     <!-- Support -->
     <LinearLayout
         android:id="@+id/support_layout"
@@ -97,7 +129,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="?attr/surfaceColor"
-        app:layout_constraintTop_toBottomOf="@id/theme_layout"
+        app:layout_constraintTop_toBottomOf="@id/clear_progress_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginVertical="8dp"
@@ -125,38 +157,6 @@
             android:src="@drawable/ic_back"
             app:tint="?attr/iconTint"
             android:rotation="-90" />
-
-    </LinearLayout>
-
-    <!-- Clear Progress -->
-    <LinearLayout
-        android:id="@+id/clear_progress_layout"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="?attr/surfaceColor"
-        app:layout_constraintTop_toBottomOf="@id/support_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginVertical="8dp"
-        android:layout_marginHorizontal="16dp"
-        android:paddingHorizontal="16dp">
-
-        <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_learning"
-            app:tint="?attr/iconTint" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Очистить весь прогресс"
-            android:layout_marginStart="16dp"
-            android:textColor="?attr/textColorPrimary"
-            android:textSize="16sp" />
 
     </LinearLayout>
 
