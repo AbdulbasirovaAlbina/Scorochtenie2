@@ -18,32 +18,32 @@ class PracticeFragment : Fragment() {
 
         val techniques = listOf(
             ModernTechniqueItem(
-                "Чтение блоками",
-                R.drawable.ic_block_reading
+                title = "Чтение блоками",
+                iconResId = R.drawable.ic_block_reading
             ),
             ModernTechniqueItem(
-                "Чтение по диагонали",
-                R.drawable.ic_diagonal_reading
+                title = "Чтение по диагонали",
+                iconResId = R.drawable.ic_diagonal_reading
             ),
             ModernTechniqueItem(
-                "Метод указки",
-                R.drawable.ic_pointer_method
+                title = "Метод указки",
+                iconResId = R.drawable.ic_pointer_method
             ),
             ModernTechniqueItem(
-                "Предложения наоборот",
-                R.drawable.ic_sentence_reverse
+                title = "Предложения наоборот",
+                iconResId = R.drawable.ic_sentence_reverse
             ),
             ModernTechniqueItem(
-                "Слова наоборот",
-                R.drawable.ic_word_reverse
+                title = "Слова наоборот",
+                iconResId = R.drawable.ic_word_reverse
             ),
             ModernTechniqueItem(
-                "Зашумленный текст",
-                R.drawable.ic_noisy_text
+                title = "Зашумленный текст",
+                iconResId = R.drawable.ic_noisy_text
             ),
             ModernTechniqueItem(
-                "Частично скрытые строки",
-                R.drawable.ic_partially_hidden_lines
+                title = "Частично скрытые строки",
+                iconResId = R.drawable.ic_partially_hidden_lines
             )
         )
 
@@ -54,4 +54,3 @@ class PracticeFragment : Fragment() {
         return view
     }
 }
-
