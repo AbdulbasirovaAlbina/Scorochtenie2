@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import android.widget.Toast
 
 class TechniqueSettingsActivity : AppCompatActivity() {
 
@@ -25,8 +26,7 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         "Метод указки" to "Концентрирует внимание и повышает скорость чтения",
         "Предложения наоборот" to "Развивает гибкость мышления и понимание контекста",
         "Слова наоборот" to "Тренирует быстрое распознавание слов и улучшает концентрацию",
-                    "Зашумленный текст" to "Заставляет читать быстрее, не возвращаясь к уже прочитанному",
-        
+        "Зашумленный текст" to "Заставляет читать быстрее, не возвращаясь к уже прочитанному",
         "Частично скрытые строки" to "Развивает навык предугадывания и быстрого чтения"
     )
 
@@ -96,8 +96,6 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         val buttons = listOf(shortTextBtn, mediumTextBtn, longTextBtn)
         val texts = listOf("Короткий", "Средний", "Длинный")
 
-        // По умолчанию длина не выбрана — будет случайный текст
-
         buttons.forEachIndexed { index, button ->
             button.setOnClickListener {
                 selectTextLengthButton(button, texts[index])
@@ -131,6 +129,11 @@ class TechniqueSettingsActivity : AppCompatActivity() {
 
     private fun setupStartButton() {
         startBtn.setOnClickListener {
+            if (selectedTextLength == null) {
+                Toast.makeText(this, "Выберите размер текста", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val technique = intent.getStringExtra("technique_name") ?: "Чтение блоками"
             val speed = speedSlider.progress
             val fontSize = fontSizeSlider.progress
@@ -150,7 +153,7 @@ class TechniqueSettingsActivity : AppCompatActivity() {
                 putExtra("technique_name", technique)
                 putExtra("speed", speed)
                 putExtra("font_size", fontSize)
-                selectedTextLength?.let { putExtra("text_length", it) }
+                putExtra("text_length", selectedTextLength)
                 startActivity(this)
             } ?: run {
                 Toast.makeText(
