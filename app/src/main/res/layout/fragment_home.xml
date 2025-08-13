@@ -32,8 +32,7 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:gravity="center"
-             />
+            android:gravity="center" />
 
     </LinearLayout>
 
@@ -118,51 +117,13 @@
                 android:layout_marginBottom="20dp"
                 android:weightSum="2">
 
-                <!-- Start Practice Button -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/quick_practice_card"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="?attr/surfaceColor"
-                    android:foreground="?android:attr/selectableItemBackground">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="🎯"
-                            android:textSize="32sp"
-                            android:layout_marginBottom="8dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Практика"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/textColorPrimary" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
                 <!-- Start Learning Button -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/quick_learning_card"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="4dp"
                     app:cardBackgroundColor="?attr/surfaceColor"
@@ -186,6 +147,44 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Обучение"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="?attr/textColorPrimary" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Start Practice Button -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/quick_practice_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="?attr/surfaceColor"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🎯"
+                            android:textSize="32sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Практика"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:textColor="?attr/textColorPrimary" />
