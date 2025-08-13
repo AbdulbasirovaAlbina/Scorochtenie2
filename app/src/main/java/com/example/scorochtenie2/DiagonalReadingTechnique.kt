@@ -63,7 +63,12 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
     ) {
         try {
             this.selectedTextIndex = selectedTextIndex
-            fullText = TextResources.getDiagonalTexts().getOrNull(selectedTextIndex)?.text?.replace("\n", " ") ?: ""
+            // В демонстрационном режиме (selectedTextIndex = -1) используем демонстрационный текст
+            fullText = if (selectedTextIndex == -1) {
+                TextResources.getDemoTextForTechnique(displayName)
+            } else {
+                TextResources.getDiagonalTexts().getOrNull(selectedTextIndex)?.text ?: ""
+            }.replace("\n", " ")
             if (fullText.isEmpty()) {
                 textView.text = "Текст недоступен"
                 onAnimationEnd()

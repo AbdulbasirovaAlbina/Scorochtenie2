@@ -15,8 +15,8 @@ class TechniqueDemoActivity : AppCompatActivity() {
     private lateinit var curtainView: CurtainOverlayView
     private lateinit var diagonalTextView: TextView
     private lateinit var diagonalLineView: DiagonalLineView
-    private val selectedTextIndex = 1 // средний текст для демонстрации
-    private val demoSpeed = 150L // самая медленная скорость для демонстрации
+    private val selectedTextIndex = -1 // используем демонстрационный текст
+    private val demoSpeed = 300L // самая медленная скорость для демонстрации
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

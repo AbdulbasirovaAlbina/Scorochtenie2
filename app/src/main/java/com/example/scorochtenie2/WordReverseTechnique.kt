@@ -60,7 +60,12 @@ class WordReverseTechnique : Technique("Слова наоборот", "Слов�
     ) {
         try {
             this.selectedTextIndex = selectedTextIndex
-            val originalText = TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text?.replace("\n", " ") ?: ""
+            // В демонстрационном режиме (selectedTextIndex = -1) используем демонстрационный текст
+            val originalText = if (selectedTextIndex == -1) {
+                TextResources.getDemoTextForTechnique(displayName)
+            } else {
+                TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
+            }.replace("\n", " ")
             fullText = reverseWords(originalText).replace("\n", " ")
             if (fullText.isEmpty()) {
                 textView.text = "Текст недоступен"

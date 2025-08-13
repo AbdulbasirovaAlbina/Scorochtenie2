@@ -45,7 +45,12 @@ class PointerMethodTechnique : Technique("PointerMethodTechnique", "Метод �
         onAnimationEnd: () -> Unit
     ) {
         this.selectedTextIndex = selectedTextIndex
-        fullText = TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text?.replace("\n", " ") ?: ""
+        // В демонстрационном режиме (selectedTextIndex = -1) используем демонстрационный текст
+        fullText = if (selectedTextIndex == -1) {
+            TextResources.getDemoTextForTechnique(displayName)
+        } else {
+            TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
+        }.replace("\n", " ")
         currentWordIndex = 0
         lastScrollY = 0
         isAnimationActive = true

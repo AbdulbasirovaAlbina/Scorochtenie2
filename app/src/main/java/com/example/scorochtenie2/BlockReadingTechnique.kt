@@ -61,7 +61,12 @@ class BlockReadingTechnique : Technique("Чтение блоками", "Чтен
     ) {
         try {
             this.selectedTextIndex = selectedTextIndex
-            fullText = TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text?.replace("\n", " ") ?: ""
+            // В демонстрационном режиме (selectedTextIndex = -1) используем демонстрационный текст
+            fullText = if (selectedTextIndex == -1) {
+                TextResources.getDemoTextForTechnique(displayName)
+            } else {
+                TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
+            }.replace("\n", " ")
             if (fullText.isEmpty()) {
                 textView.text = "Текст недоступен"
                 onAnimationEnd()

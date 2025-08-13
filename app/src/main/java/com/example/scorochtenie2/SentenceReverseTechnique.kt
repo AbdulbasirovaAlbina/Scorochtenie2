@@ -61,7 +61,13 @@ class SentenceReverseTechnique : Technique("Предложения наобор�
     ) {
         try {
             this.selectedTextIndex = selectedTextIndex
-            fullText = reverseSentences(TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text?.replace("\n", " ") ?: "")
+            // В демонстрационном режиме (selectedTextIndex = -1) используем демонстрационный текст
+            val originalText = if (selectedTextIndex == -1) {
+                TextResources.getDemoTextForTechnique(displayName)
+            } else {
+                TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
+            }.replace("\n", " ")
+            fullText = reverseSentences(originalText)
             if (fullText.isEmpty()) {
                 textView.text = "Текст недоступен"
                 onAnimationEnd()

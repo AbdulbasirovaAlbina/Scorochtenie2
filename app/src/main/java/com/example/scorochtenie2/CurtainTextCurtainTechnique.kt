@@ -44,7 +44,12 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
         isRunning = true
         currentWordIndex = 0
 
-        val text = TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
+        // В демонстрационном режиме (selectedTextIndex = -1) используем демонстрационный текст
+        val text = if (selectedTextIndex == -1) {
+            TextResources.getDemoTextForTechnique(displayName)
+        } else {
+            TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
+        }
         fullText = text
         currentWords = text.split("\\s+".toRegex()).filter { it.isNotEmpty() }
         
