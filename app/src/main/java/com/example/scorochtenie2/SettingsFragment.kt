@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Switch
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 
@@ -22,13 +23,14 @@ class SettingsFragment : Fragment() {
         setupThemeSwitch(view)
         setupGoogleSignIn(view)
         setupOtherSettings(view)
+        setupClearProgress(view)
 
         return view
     }
 
     private fun setupThemeSwitch(view: View) {
         val themeSwitch = view.findViewById<Switch>(R.id.theme_switch)
-        
+
         // Загружаем текущую тему
         val sharedPref = requireActivity().getSharedPreferences("app_settings", Context.MODE_PRIVATE)
         val isDarkTheme = sharedPref.getBoolean("dark_theme", false)
@@ -53,7 +55,6 @@ class SettingsFragment : Fragment() {
     private fun setupGoogleSignIn(view: View) {
         val googleSignInButton = view.findViewById<LinearLayout>(R.id.google_signin_layout)
         googleSignInButton.setOnClickListener {
-            // TODO: Implement Google Sign-In
             Toast.makeText(context, "Вход через Google (в разработке)", Toast.LENGTH_SHORT).show()
         }
     }
@@ -64,5 +65,41 @@ class SettingsFragment : Fragment() {
         supportLayout.setOnClickListener {
             Toast.makeText(context, "Поддержка", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun setupClearProgress(view: View) {
+        val clearProgressLayout = view.findViewById<LinearLayout>(R.id.clear_progress_layout)
+        clearProgressLayout.setOnClickListener {
+            showClearProgressDialog()
+        }
+    }
+
+    private fun showClearProgressDialog() {
+        context?.let { ctx ->
+            AlertDialog.Builder(ctx)
+                .setTitle("Очистить прогресс")
+                .setMessage("Вы уверены, что хотите удалить весь прогресс? Это действие нельзя отменить.")
+                .setPositiveButton("Очистить") { _, _ ->
+                    clearAllProgress()
+                    Toast.makeText(context, "Прогресс успешно очищен", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("Отмена") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .setCancelable(true)
+                .show()
+        }
+    }
+
+    private fun clearAllProgress() {
+        // Очищаем SharedPreferences для времени техник
+        val techniqueTimesPref = requireActivity().getSharedPreferences("TechniqueTimes", Context.MODE_PRIVATE)
+        with(techniqueTimesPref.edit()) {
+            clear()
+            apply()
+        }
+
+        // Очищаем статистику тестов
+        TestResultManager.clearAllProgress(requireContext())
     }
 }

@@ -24,7 +24,7 @@ object TestResultManager {
     fun saveTestResult(context: Context, techniqueName: String, comprehension: Int, readingTimeSeconds: Int = 0) {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        
+
         val currentResults = getTestResults(context).toMutableList()
         val newResult = TestResult(
             techniqueName = techniqueName,
@@ -33,9 +33,9 @@ object TestResultManager {
             timestamp = System.currentTimeMillis(),
             date = dateFormat.format(Date())
         )
-        
+
         currentResults.add(newResult)
-        
+
         val json = gson.toJson(currentResults)
         editor.putString(KEY_RESULTS, json)
         editor.apply()
@@ -44,7 +44,7 @@ object TestResultManager {
     fun getTestResults(context: Context): List<TestResult> {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val json = sharedPreferences.getString(KEY_RESULTS, "[]")
-        
+
         val type = object : TypeToken<List<TestResult>>() {}.type
         return gson.fromJson(json, type) ?: emptyList()
     }
@@ -55,7 +55,7 @@ object TestResultManager {
 
     fun getTechniqueStats(context: Context, techniqueName: String): TechniqueStats {
         val results = getTechniqueResults(context, techniqueName)
-        
+
         if (results.isEmpty()) {
             return TechniqueStats(
                 usesCount = 0,
@@ -70,16 +70,16 @@ object TestResultManager {
         val avgComprehension = results.map { it.comprehension }.average().toInt()
         val totalReadingTimeSeconds = results.sumOf { it.readingTimeSeconds }
         val avgReadingTimeSeconds = if (usesCount > 0) totalReadingTimeSeconds / usesCount else 0
-        
+
         // Получаем данные за последние 7 дней
         val calendar = Calendar.getInstance()
         val dailyComprehension = mutableListOf<Int>()
-        
+
         for (i in 6 downTo 0) {
             calendar.add(Calendar.DAY_OF_YEAR, -i)
             val targetDate = dateFormat.format(calendar.time)
             calendar.add(Calendar.DAY_OF_YEAR, i)
-            
+
             val dayResults = results.filter { it.date == targetDate }
             val dayAvg = if (dayResults.isNotEmpty()) {
                 dayResults.map { it.comprehension }.average().toInt()
@@ -100,7 +100,7 @@ object TestResultManager {
 
     fun getAllTechniquesStats(context: Context): TechniqueStats {
         val allResults = getTestResults(context)
-        
+
         if (allResults.isEmpty()) {
             return TechniqueStats(
                 usesCount = 0,
@@ -115,16 +115,16 @@ object TestResultManager {
         val avgComprehension = allResults.map { it.comprehension }.average().toInt()
         val totalReadingTimeSeconds = allResults.sumOf { it.readingTimeSeconds }
         val avgReadingTimeSeconds = if (usesCount > 0) totalReadingTimeSeconds / usesCount else 0
-        
+
         // Получаем данные за последние 7 дней для всех техник
         val calendar = Calendar.getInstance()
         val dailyComprehension = mutableListOf<Int>()
-        
+
         for (i in 6 downTo 0) {
             calendar.add(Calendar.DAY_OF_YEAR, -i)
             val targetDate = dateFormat.format(calendar.time)
             calendar.add(Calendar.DAY_OF_YEAR, i)
-            
+
             val dayResults = allResults.filter { it.date == targetDate }
             val dayAvg = if (dayResults.isNotEmpty()) {
                 dayResults.map { it.comprehension }.average().toInt()
@@ -142,6 +142,14 @@ object TestResultManager {
             dailyComprehension = dailyComprehension
         )
     }
+
+    fun clearAllProgress(context: Context) {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            remove(KEY_RESULTS)
+            apply()
+        }
+    }
 }
 
 data class TechniqueStats(
@@ -150,4 +158,4 @@ data class TechniqueStats(
     val totalReadingTimeSeconds: Int, // Общее время чтения в секундах
     val avgReadingTimeSeconds: Int,   // Среднее время чтения в секундах
     val dailyComprehension: List<Int>
-) 
+)
