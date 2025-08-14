@@ -29,6 +29,9 @@ class MainActivity : AppCompatActivity() {
         // Инициализируем TextResources
         TextResources.initialize(this)
         
+        // Создаем канал для уведомлений
+        ReminderService.createNotificationChannel(this)
+        
         // Вначале настраиваем нижнюю навигацию
         setupBottomNavigation()
         setupWindowInsets()

@@ -12,7 +12,8 @@ data class TestResult(
     val comprehension: Int, // Процент понимания (0-100)
     val readingTimeSeconds: Int, // Время чтения в секундах
     val timestamp: Long,
-    val date: String // Дата в формате "yyyy-MM-dd"
+    val date: String, // Дата в формате "yyyy-MM-dd"
+    val textIndex: Int = 0 // Индекс прочитанного текста (0, 1, 2)
 )
 
 object TestResultManager {
@@ -21,7 +22,7 @@ object TestResultManager {
     private val gson = Gson()
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-    fun saveTestResult(context: Context, techniqueName: String, comprehension: Int, readingTimeSeconds: Int = 0) {
+    fun saveTestResult(context: Context, techniqueName: String, comprehension: Int, readingTimeSeconds: Int = 0, textIndex: Int = 0) {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
@@ -31,7 +32,8 @@ object TestResultManager {
             comprehension = comprehension,
             readingTimeSeconds = readingTimeSeconds,
             timestamp = System.currentTimeMillis(),
-            date = dateFormat.format(Date())
+            date = dateFormat.format(Date()),
+            textIndex = textIndex
         )
 
         currentResults.add(newResult)
@@ -59,6 +61,7 @@ object TestResultManager {
         if (results.isEmpty()) {
             return TechniqueStats(
                 usesCount = 0,
+                uniqueTextsCount = 0,
                 avgComprehension = 0,
                 totalReadingTimeSeconds = 0,
                 avgReadingTimeSeconds = 0,
@@ -67,6 +70,7 @@ object TestResultManager {
         }
 
         val usesCount = results.size
+        val uniqueTextsCount = results.map { it.textIndex }.distinct().size // Количество уникальных текстов
         val avgComprehension = results.map { it.comprehension }.average().toInt()
         val totalReadingTimeSeconds = results.sumOf { it.readingTimeSeconds }
         val avgReadingTimeSeconds = if (usesCount > 0) totalReadingTimeSeconds / usesCount else 0
@@ -91,6 +95,7 @@ object TestResultManager {
 
         return TechniqueStats(
             usesCount = usesCount,
+            uniqueTextsCount = uniqueTextsCount,
             avgComprehension = avgComprehension,
             totalReadingTimeSeconds = totalReadingTimeSeconds,
             avgReadingTimeSeconds = avgReadingTimeSeconds,
@@ -104,6 +109,7 @@ object TestResultManager {
         if (allResults.isEmpty()) {
             return TechniqueStats(
                 usesCount = 0,
+                uniqueTextsCount = 0,
                 avgComprehension = 0,
                 totalReadingTimeSeconds = 0,
                 avgReadingTimeSeconds = 0,
@@ -112,6 +118,7 @@ object TestResultManager {
         }
 
         val usesCount = allResults.size
+        val uniqueTextsCount = allResults.map { it.textIndex }.distinct().size // Количество уникальных текстов
         val avgComprehension = allResults.map { it.comprehension }.average().toInt()
         val totalReadingTimeSeconds = allResults.sumOf { it.readingTimeSeconds }
         val avgReadingTimeSeconds = if (usesCount > 0) totalReadingTimeSeconds / usesCount else 0
@@ -136,6 +143,7 @@ object TestResultManager {
 
         return TechniqueStats(
             usesCount = usesCount,
+            uniqueTextsCount = uniqueTextsCount,
             avgComprehension = avgComprehension,
             totalReadingTimeSeconds = totalReadingTimeSeconds,
             avgReadingTimeSeconds = avgReadingTimeSeconds,
@@ -144,16 +152,57 @@ object TestResultManager {
     }
 
     fun clearAllProgress(context: Context) {
+        // Очищаем все результаты тестов
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
-            remove(KEY_RESULTS)
+            clear()
             apply()
+        }
+        
+        // Очищаем все связанные настройки прогресса
+        val techniqueTimesPref = context.getSharedPreferences("TechniqueTimes", Context.MODE_PRIVATE)
+        with(techniqueTimesPref.edit()) {
+            clear()
+            apply()
+        }
+        
+        // Очищаем настройки техник (если есть)
+        val techniqueSettingsPref = context.getSharedPreferences("TechniqueSettings", Context.MODE_PRIVATE)
+        with(techniqueSettingsPref.edit()) {
+            clear()
+            apply()
+        }
+        
+        // Очищаем статистику обучения (если есть)
+        val learningStatsPref = context.getSharedPreferences("LearningStats", Context.MODE_PRIVATE)
+        with(learningStatsPref.edit()) {
+            clear()
+            apply()
+        }
+        
+        // Очищаем все другие возможные настройки прогресса
+        val allPrefs = listOf(
+            "TestResults",
+            "TechniqueTimes", 
+            "TechniqueSettings",
+            "LearningStats",
+            "ProgressData",
+            "UserProgress"
+        )
+        
+        allPrefs.forEach { prefName ->
+            val pref = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+            with(pref.edit()) {
+                clear()
+                apply()
+            }
         }
     }
 }
 
 data class TechniqueStats(
     val usesCount: Int,
+    val uniqueTextsCount: Int, // Количество уникальных прочитанных текстов
     val avgComprehension: Int,
     val totalReadingTimeSeconds: Int, // Общее время чтения в секундах
     val avgReadingTimeSeconds: Int,   // Среднее время чтения в секундах

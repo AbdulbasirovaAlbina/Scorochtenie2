@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="Пн"
         android:textSize="12sp"
-        android:textColor="@android:color/darker_gray"
+        android:textColor="?attr/textColorSecondary"
         android:layout_marginBottom="8dp" />
 
     <!-- Столбец прогресса -->
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:text="0%"
         android:textSize="10sp"
-        android:textColor="@android:color/black"
+        android:textColor="?attr/textColorPrimary"
         android:layout_marginTop="4dp" />
 
 </LinearLayout>

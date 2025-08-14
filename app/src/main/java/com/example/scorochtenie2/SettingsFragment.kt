@@ -1,5 +1,6 @@
 package com.example.scorochtenie2
 
+import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,10 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Switch
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
+import java.util.*
 
 class SettingsFragment : Fragment() {
 
@@ -24,6 +28,7 @@ class SettingsFragment : Fragment() {
         setupGoogleSignIn(view)
         setupOtherSettings(view)
         setupClearProgress(view)
+        setupReminderSettings(view)
 
         return view
     }
@@ -49,6 +54,9 @@ class SettingsFragment : Fragment() {
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
+            
+            // Перезапускаем активность для применения темы
+            requireActivity().recreate()
         }
     }
 
@@ -92,14 +100,92 @@ class SettingsFragment : Fragment() {
     }
 
     private fun clearAllProgress() {
-        // Очищаем SharedPreferences для времени техник
-        val techniqueTimesPref = requireActivity().getSharedPreferences("TechniqueTimes", Context.MODE_PRIVATE)
-        with(techniqueTimesPref.edit()) {
-            clear()
-            apply()
-        }
-
-        // Очищаем статистику тестов
+        // Очищаем всю статистику и прогресс
         TestResultManager.clearAllProgress(requireContext())
+        
+        // Показываем подробное сообщение о том, что было очищено
+        Toast.makeText(
+            context, 
+            "Весь прогресс очищен! Теперь вы можете начать заново.", 
+            Toast.LENGTH_LONG
+        ).show()
+        
+        // Обновляем UI для всех фрагментов
+        val currentFragment = parentFragmentManager.findFragmentById(R.id.fragment_container)
+        
+        // Перезагружаем текущий фрагмент для обновления UI
+        when (currentFragment) {
+            is ProgressFragment -> {
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, ProgressFragment())
+                    .commit()
+            }
+            is PracticeFragment -> {
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, PracticeFragment())
+                    .commit()
+            }
+            is HomeFragment -> {
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, HomeFragment())
+                    .commit()
+            }
+        }
+    }
+    
+    private fun setupReminderSettings(view: View) {
+        // Находим элементы в include layout
+        val reminderSettingsView = view.findViewById<View>(R.id.reminder_settings)
+        val reminderSwitch = reminderSettingsView.findViewById<SwitchCompat>(R.id.reminder_switch)
+        val reminderTimeText = reminderSettingsView.findViewById<TextView>(R.id.reminder_time_text)
+        
+        // Загружаем текущие настройки напоминаний
+        val isEnabled = ReminderManager.isReminderEnabled(requireContext())
+        reminderSwitch.isChecked = isEnabled
+        
+        // Устанавливаем текущее время напоминания
+        reminderTimeText.text = ReminderManager.getReminderTimeFormatted(requireContext())
+        
+        // Обработчик переключателя
+        reminderSwitch.setOnCheckedChangeListener { _, isChecked ->
+            ReminderManager.setReminderEnabled(requireContext(), isChecked)
+            
+            if (isChecked) {
+                Toast.makeText(context, "Напоминания включены", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Напоминания отключены", Toast.LENGTH_SHORT).show()
+            }
+        }
+        
+        // Обработчик выбора времени
+        reminderTimeText.setOnClickListener {
+            showTimePickerDialog(reminderTimeText)
+        }
+    }
+    
+    private fun showTimePickerDialog(timeText: TextView) {
+        val calendar = Calendar.getInstance()
+        val currentHour = ReminderManager.getReminderHour(requireContext())
+        val currentMinute = ReminderManager.getReminderMinute(requireContext())
+        
+        val timePickerDialog = TimePickerDialog(
+            requireContext(),
+            { _, hourOfDay, minute ->
+                ReminderManager.setReminderTime(requireContext(), hourOfDay, minute)
+                timeText.text = ReminderManager.getReminderTimeFormatted(requireContext())
+                
+                Toast.makeText(
+                    context,
+                    "Время напоминания установлено на ${ReminderManager.getReminderTimeFormatted(requireContext())}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
+            currentHour,
+            currentMinute,
+            true // 24-часовой формат
+        )
+        
+        timePickerDialog.setTitle("Выберите время напоминания")
+        timePickerDialog.show()
     }
 }

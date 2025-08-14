@@ -19,7 +19,6 @@ class ModernTechniqueAdapter(private val techniques: List<ModernTechniqueItem>) 
     RecyclerView.Adapter<ModernTechniqueAdapter.ModernTechniqueViewHolder>() {
 
     private lateinit var context: Context
-    private val totalTexts = 3 // Общее количество текстов для каждой техники
 
     class ModernTechniqueViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val icon: ImageView = itemView.findViewById(R.id.technique_icon)
@@ -49,11 +48,14 @@ class ModernTechniqueAdapter(private val techniques: List<ModernTechniqueItem>) 
 
         // Получаем статистику для техники
         val stats = TestResultManager.getTechniqueStats(context, technique.title)
-        val completedTests = stats.usesCount
-        holder.progressText.text = "$completedTests/$totalTexts"
+        val completedTexts = stats.uniqueTextsCount // Количество уникальных прочитанных текстов
+        val totalTexts = 3 // У каждой техники 3 текста
         
-        // Обновляем шкалу прогресса
-        val progressPercent = (completedTests.toFloat() / totalTexts).coerceAtMost(1.0f)
+        // Показываем прогресс: количество пройденных текстов из 3
+        holder.progressText.text = "$completedTexts/$totalTexts"
+        
+        // Обновляем шкалу прогресса (максимум 3 текста)
+        val progressPercent = (completedTexts.toFloat() / totalTexts).coerceAtMost(1.0f)
         holder.progressBar.post {
             val width = (holder.progressBar.parent as View).width
             val progressWidth = (width * progressPercent).toInt()

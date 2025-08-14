@@ -46,6 +46,15 @@ class ProgressFragment : Fragment() {
         
         return view
     }
+    
+    override fun onResume() {
+        super.onResume()
+        // Обновляем прогресс при возвращении на фрагмент
+        loadTechniqueProgress("Все техники")
+        
+        // Обновляем адаптер техник
+        techniqueSelectorAdapter?.notifyDataSetChanged()
+    }
 
     private fun initViews(view: View) {
         techniqueSelector = view.findViewById(R.id.technique_selector)

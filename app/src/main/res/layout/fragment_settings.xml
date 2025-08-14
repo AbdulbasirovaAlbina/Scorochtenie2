@@ -160,4 +160,16 @@
 
     </LinearLayout>
 
+    <!-- Reminder Settings -->
+    <include
+        android:id="@+id/reminder_settings"
+        layout="@layout/item_reminder_setting"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/support_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginVertical="8dp"
+        android:layout_marginHorizontal="16dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

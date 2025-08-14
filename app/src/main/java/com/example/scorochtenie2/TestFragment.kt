@@ -248,8 +248,8 @@ class TestFragment : Fragment() {
             progressComprehension.progress = comprehensionPercentage
         }, 100)
 
-        // Сохраняем результат
-        TestResultManager.saveTestResult(requireContext(), techniqueName, comprehensionPercentage, readingTimeSeconds)
+        // Сохраняем результат с индексом текста
+        TestResultManager.saveTestResult(requireContext(), techniqueName, comprehensionPercentage, readingTimeSeconds, currentTextIndex)
 
         btnDone?.setOnClickListener {
             // Открываем главную и переключаемся на вкладку Практика
