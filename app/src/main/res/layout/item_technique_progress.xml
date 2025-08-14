@@ -7,7 +7,7 @@
     android:layout_marginBottom="16dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp"
-    app:cardBackgroundColor="?attr/colorSurface">
+    app:cardBackgroundColor="?attr/surfaceColor">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
             android:text="Название техники"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
+            android:textColor="?attr/textColorPrimary"
             android:layout_marginBottom="16dp"
             android:gravity="center" />
 
@@ -34,46 +34,46 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginBottom="16dp">
-            
+
             <LinearLayout
                 android:id="@+id/stats_row"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="125dp"
                 android:orientation="horizontal">
 
                 <!-- Левая карточка - Использования -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/backgroundColor"
                     app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="?attr/colorSurface">
+                    app:cardElevation="2dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="12dp"
-                        android:gravity="center">
+                        android:padding="12dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
                             android:text="Использования"
-                            android:textSize="14sp"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:layout_marginBottom="4dp" />
+                            android:textColor="?attr/textColorSecondary"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/uses_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0"
+                            android:textColor="?attr/textColorPrimary"
                             android:textSize="24sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorOnSurface" />
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -83,36 +83,36 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/backgroundColor"
                     app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="?attr/colorSurface">
+                    app:cardElevation="2dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="12dp"
-                        android:gravity="center">
+                        android:padding="12dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Среднее\nпонимание"
-                            android:textSize="14sp"
-                            android:textColor="?attr/colorOnSurfaceVariant"
                             android:layout_marginBottom="4dp"
-                            android:gravity="center" />
+                            android:gravity="center"
+                            android:text="Среднее\nпонимание текста"
+                            android:textColor="?attr/textColorSecondary"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/avg_comprehension"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0%"
+                            android:textColor="?attr/textColorPrimary"
                             android:textSize="24sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorOnSurface" />
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -123,43 +123,43 @@
             <!-- Вторая строка статистики - Время чтения -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp">
+                android:layout_height="87dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
 
                 <!-- Левая карточка - Общее время -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/backgroundColor"
                     app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="?attr/colorSurface">
+                    app:cardElevation="2dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="12dp"
-                        android:gravity="center">
+                        android:padding="12dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
                             android:text="Общее время"
-                            android:textSize="14sp"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:layout_marginBottom="4dp" />
+                            android:textColor="?attr/textColorSecondary"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/total_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0 мин"
+                            android:textColor="?attr/textColorPrimary"
                             android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorOnSurface" />
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -169,35 +169,35 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/backgroundColor"
                     app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="?attr/colorSurface">
+                    app:cardElevation="2dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="12dp"
-                        android:gravity="center">
+                        android:padding="12dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
                             android:text="Среднее время"
-                            android:textSize="14sp"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:layout_marginBottom="4dp" />
+                            android:textColor="?attr/textColorSecondary"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/avg_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0 мин"
+                            android:textColor="?attr/textColorPrimary"
                             android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorOnSurface" />
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -211,14 +211,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Показатель понимания"
                 android:textSize="16sp"
-                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textColor="?attr/textColorSecondary"
                 android:layout_marginBottom="8dp" />
 
             <TextView
@@ -228,7 +228,7 @@
                 android:text="0%"
                 android:textSize="36sp"
                 android:textStyle="bold"
-                android:textColor="?attr/colorOnSurface"
+                android:textColor="?attr/textColorPrimary"
                 android:layout_marginBottom="4dp" />
 
 
@@ -247,7 +247,7 @@
                 android:layout_height="wrap_content"
                 android:text="Прогресс по дням"
                 android:textSize="16sp"
-                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textColor="?attr/textColorSecondary"
                 android:layout_marginBottom="16dp" />
 
             <!-- Дни недели с прогрессом -->

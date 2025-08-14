@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:background="?attr/backgroundColor">
 
     <LinearLayout
         android:id="@+id/progress_container"
@@ -18,7 +18,7 @@
             android:text="Прогресс"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
+            android:textColor="?attr/textColorPrimary"
             android:layout_marginBottom="16dp"
             android:gravity="center" />
 
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:text="Выберите технику:"
                 android:textSize="16sp"
-                android:textColor="?attr/colorOnSurface"
+                android:textColor="?attr/textColorPrimary"
                 android:layout_marginBottom="12dp" />
 
             <androidx.recyclerview.widget.RecyclerView

@@ -112,9 +112,12 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="125dp"
+                android:layout_marginHorizontal="5dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="horizontal"
-                android:layout_marginBottom="20dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:weightSum="2">
 
                 <!-- Start Learning Button -->
@@ -122,34 +125,36 @@
                     android:id="@+id/quick_learning_card"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_marginTop="4dp"
                     android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_weight="1"
+                    android:foreground="?android:attr/selectableItemBackground"
                     app:cardBackgroundColor="?attr/surfaceColor"
-                    android:foreground="?android:attr/selectableItemBackground">
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
+                        android:padding="10dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
                             android:text="📚"
-                            android:textSize="32sp"
-                            android:layout_marginBottom="8dp" />
+                            android:textSize="35sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Обучение"
+                            android:textColor="?attr/textColorPrimary"
                             android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/textColorPrimary" />
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -160,34 +165,36 @@
                     android:id="@+id/quick_practice_card"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_weight="1"
+                    android:foreground="?android:attr/selectableItemBackground"
                     app:cardBackgroundColor="?attr/surfaceColor"
-                    android:foreground="?android:attr/selectableItemBackground">
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
+                        android:padding="10dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
                             android:text="🎯"
-                            android:textSize="32sp"
-                            android:layout_marginBottom="8dp" />
+                            android:textSize="35sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Практика"
+                            android:textColor="?attr/textColorPrimary"
                             android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/textColorPrimary" />
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -208,7 +215,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:padding="15dp">
 
                     <TextView
                         android:layout_width="wrap_content"
