@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.view.animation.AccelerateDecelerateInterpolator
 
 class ProgressFragment : Fragment() {
 
@@ -19,7 +20,7 @@ class ProgressFragment : Fragment() {
     private lateinit var comprehensionRateText: TextView
     private lateinit var totalTimeText: TextView
     private lateinit var avgTimeText: TextView
-    private lateinit var graphView: ProgressGraphView
+    private lateinit var daysProgressContainer: ViewGroup
     private lateinit var techniqueSelectorAdapter: TechniqueSelectorAdapter
 
     private val techniques = listOf(
@@ -58,7 +59,7 @@ class ProgressFragment : Fragment() {
         comprehensionRateText = progressItemView.findViewById(R.id.comprehension_rate)
         totalTimeText = progressItemView.findViewById(R.id.total_time)
         avgTimeText = progressItemView.findViewById(R.id.avg_time)
-        graphView = progressItemView.findViewById(R.id.graph_container)
+        daysProgressContainer = progressItemView.findViewById(R.id.days_progress_container)
         
         // Добавляем элемент статистики в контейнер
         progressContainer.addView(progressItemView)
@@ -93,8 +94,8 @@ class ProgressFragment : Fragment() {
         totalTimeText.text = formatTime(stats.totalReadingTimeSeconds)
         avgTimeText.text = formatTime(stats.avgReadingTimeSeconds)
         
-        // Обновляем график с реальными данными по дням
-        graphView.setData(stats.dailyComprehension)
+        // Обновляем прогресс по дням
+        updateDaysProgress(stats.dailyComprehension)
     }
     
     private fun formatTime(seconds: Int): String {
@@ -102,6 +103,42 @@ class ProgressFragment : Fragment() {
             seconds < 60 -> "${seconds} сек"
             seconds < 3600 -> "${seconds / 60} мин ${seconds % 60} сек"
             else -> "${seconds / 3600} ч ${(seconds % 3600) / 60} мин"
+        }
+    }
+    
+    private fun updateDaysProgress(dailyComprehension: List<Int>) {
+        daysProgressContainer.removeAllViews()
+        
+        val dayNames = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
+        
+        dailyComprehension.forEachIndexed { index, comprehension ->
+            val dayView = layoutInflater.inflate(R.layout.item_day_progress, daysProgressContainer, false)
+            
+            val tvDayName = dayView.findViewById<TextView>(R.id.tv_day_name)
+            val tvDayPercentage = dayView.findViewById<TextView>(R.id.tv_day_percentage)
+            val dayProgressBar = dayView.findViewById<View>(R.id.day_progress_bar)
+            
+            tvDayName.text = dayNames[index]
+            tvDayPercentage.text = "${comprehension}%"
+            
+            // Анимируем столбец прогресса
+            val progressPercent = comprehension.toFloat() / 100f
+            dayProgressBar.post {
+                val height = (dayProgressBar.parent as View).height
+                val progressHeight = (height * progressPercent).toInt()
+                
+                // Плавная анимация
+                dayProgressBar.animate()
+                    .setDuration(800)
+                    .setInterpolator(android.view.animation.AccelerateDecelerateInterpolator())
+                    .withEndAction {
+                        dayProgressBar.layoutParams.height = progressHeight
+                        dayProgressBar.requestLayout()
+                    }
+                    .start()
+            }
+            
+            daysProgressContainer.addView(dayView)
         }
     }
 } 

@@ -25,6 +25,7 @@ class ModernTechniqueAdapter(private val techniques: List<ModernTechniqueItem>) 
         val icon: ImageView = itemView.findViewById(R.id.technique_icon)
         val title: TextView = itemView.findViewById(R.id.technique_title)
         val progressText: TextView = itemView.findViewById(R.id.progress_text)
+        val progressBar: View = itemView.findViewById(R.id.technique_progress_bar)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModernTechniqueViewHolder {
@@ -50,6 +51,15 @@ class ModernTechniqueAdapter(private val techniques: List<ModernTechniqueItem>) 
         val stats = TestResultManager.getTechniqueStats(context, technique.title)
         val completedTests = stats.usesCount
         holder.progressText.text = "$completedTests/$totalTexts"
+        
+        // Обновляем шкалу прогресса
+        val progressPercent = (completedTests.toFloat() / totalTexts).coerceAtMost(1.0f)
+        holder.progressBar.post {
+            val width = (holder.progressBar.parent as View).width
+            val progressWidth = (width * progressPercent).toInt()
+            holder.progressBar.layoutParams.width = progressWidth
+            holder.progressBar.requestLayout()
+        }
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, TechniqueSettingsActivity::class.java)

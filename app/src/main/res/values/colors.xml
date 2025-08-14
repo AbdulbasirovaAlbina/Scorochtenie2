@@ -23,6 +23,11 @@
     <!-- Progress colors -->
     <color name="green_primary">#4CAF50</color>
     
+    <!-- Primary and accent colors -->
+    <color name="primary_color">#2196F3</color>
+    <color name="accent_color">#FF9800</color>
+    <color name="success_color">#4CAF50</color>
+    
     <!-- Technique selector colors -->
     <color name="selector_selected_bg_light">#E3F2FD</color>
     <color name="selector_selected_border_light">#2196F3</color>

@@ -16,15 +16,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Контейнер для иконки и названия -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/content_container"
+        <!-- Контейнер для иконки, названия и прогресса -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <!-- Иконка с градиентным фоном -->
             <LinearLayout
@@ -34,9 +31,7 @@
                 android:background="@drawable/technique_icon_modern_bg"
                 android:gravity="center"
                 android:elevation="4dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="16dp">
 
                 <ImageView
@@ -50,7 +45,7 @@
             <!-- Название техники -->
             <TextView
                 android:id="@+id/technique_title"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Название\nтехники"
                 android:textSize="16sp"
@@ -59,25 +54,36 @@
                 android:gravity="center"
                 android:maxLines="3"
                 android:ellipsize="end"
-                app:layout_constraintTop_toBottomOf="@id/icon_container"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="12dp" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- Шкала прогресса -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:background="@drawable/technique_progress_background"
+                android:layout_marginBottom="8dp">
 
-        <!-- Прогресс -->
-        <TextView
-            android:id="@+id/progress_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0/3"
-            android:textSize="12sp"
-            android:textColor="?attr/textColorSecondary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="@dimen/progress_text_margin_bottom" />
+                <View
+                    android:id="@+id/technique_progress_bar"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/technique_progress_fill"
+                    android:layout_gravity="start|center_vertical" />
+
+            </FrameLayout>
+
+            <!-- Текст прогресса -->
+            <TextView
+                android:id="@+id/progress_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0/3"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="?attr/textColorSecondary"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

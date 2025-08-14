@@ -51,8 +51,6 @@
             android:paddingEnd="20dp"
             android:paddingBottom="24dp">
 
-
-
             <!-- Сетка техник -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/techniques_grid"

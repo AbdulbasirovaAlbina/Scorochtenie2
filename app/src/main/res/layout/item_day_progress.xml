@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_marginHorizontal="4dp">
+
+    <!-- День недели -->
+    <TextView
+        android:id="@+id/tv_day_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Пн"
+        android:textSize="12sp"
+        android:textColor="@android:color/darker_gray"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Столбец прогресса -->
+    <FrameLayout
+        android:layout_width="16dp"
+        android:layout_height="80dp"
+        android:background="@drawable/day_progress_background">
+
+        <View
+            android:id="@+id/day_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/day_progress_fill"
+            android:layout_gravity="bottom|center_horizontal" />
+
+    </FrameLayout>
+
+    <!-- Процент понимания -->
+    <TextView
+        android:id="@+id/tv_day_percentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0%"
+        android:textSize="10sp"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="4dp" />
+
+</LinearLayout>

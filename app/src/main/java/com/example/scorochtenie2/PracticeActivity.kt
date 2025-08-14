@@ -5,6 +5,7 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.util.*
 
 class PracticeActivity : AppCompatActivity() {
 
@@ -27,9 +28,50 @@ class PracticeActivity : AppCompatActivity() {
             TechniqueItem("Частично скрытые строки", R.drawable.ic_partially_hidden_lines)
         )
 
+        // Добавляем тестовые данные для демонстрации (можно убрать в продакшене)
+        addTestDataIfEmpty()
+
+        // Настройка сетки техник
         val recyclerView = findViewById<RecyclerView>(R.id.techniques_grid)
         recyclerView.layoutManager = GridLayoutManager(this, 2)
         recyclerView.adapter = TechniqueAdapter(techniques)
+    }
+    
+    private fun addTestDataIfEmpty() {
+        val existingResults = TestResultManager.getTestResults(this)
+        if (existingResults.isEmpty()) {
+            // Добавляем тестовые данные за последние 7 дней
+            val calendar = Calendar.getInstance()
+            val techniques = listOf(
+                "Чтение блоками",
+                "Чтение по диагонали",
+                "Метод указки",
+                "Предложения наоборот",
+                "Слова наоборот",
+                "Зашумленный текст",
+                "Частично скрытые строки"
+            )
+            
+            for (i in 6 downTo 0) {
+                calendar.add(Calendar.DAY_OF_YEAR, -i)
+                val targetDate = calendar.time
+                calendar.add(Calendar.DAY_OF_YEAR, i)
+                
+                // Добавляем 2-3 результата для каждого дня
+                repeat((2..3).random()) {
+                    val technique = techniques.random()
+                    val comprehension = (60..95).random()
+                    val readingTime = (30..180).random()
+                    
+                    TestResultManager.saveTestResult(
+                        this,
+                        technique,
+                        comprehension,
+                        readingTime
+                    )
+                }
+            }
+        }
     }
 }
 

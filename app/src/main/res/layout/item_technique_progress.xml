@@ -235,12 +235,34 @@
 
         </LinearLayout>
 
-        <!-- График -->
-        <com.example.scorochtenie2.ProgressGraphView
-            android:id="@+id/graph_container"
+        <!-- Шкала прогресса по дням -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:layout_marginTop="8dp" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Прогресс по дням"
+                android:textSize="16sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Дни недели с прогрессом -->
+            <LinearLayout
+                android:id="@+id/days_progress_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <!-- Дни будут добавляться программно -->
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
