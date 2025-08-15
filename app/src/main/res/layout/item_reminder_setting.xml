@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="?attr/surfaceColor">
+    android:background="?attr/backgroundColor">
 
-    <!-- Заголовок секции -->
+    <!-- Заголовок -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Напоминания о занятиях"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="?attr/textColorPrimary"
+        android:textColor="?attr/colorOnBackground"
         android:layout_marginBottom="16dp" />
 
-    <!-- Переключатель включения/выключения -->
+    <!-- Переключатель напоминаний -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_notification"
-            android:tint="@color/primary_color"
+            android:textColor="?attr/textColorPrimary"
             android:layout_marginEnd="12dp" />
 
         <TextView
@@ -37,7 +37,7 @@
             android:layout_weight="1"
             android:text="Ежедневные напоминания"
             android:textSize="16sp"
-            android:textColor="?attr/textColorPrimary" />
+            android:textColor="?attr/colorOnBackground" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/reminder_switch"
@@ -53,13 +53,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="16dp">
 
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_time"
-            android:tint="@color/primary_color"
+            android:textColor="?attr/textColorPrimary"
             android:layout_marginEnd="12dp" />
 
         <TextView
@@ -68,7 +68,7 @@
             android:layout_weight="1"
             android:text="Время напоминания"
             android:textSize="16sp"
-            android:textColor="?attr/textColorPrimary" />
+            android:textColor="?attr/colorOnBackground" />
 
         <TextView
             android:id="@+id/reminder_time_text"
@@ -77,14 +77,42 @@
             android:text="09:00"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/primary_color"
-            android:background="?attr/selectableItemBackground"
+            android:textColor="?attr/colorPrimary"
+            android:background="?android:attr/selectableItemBackground"
             android:padding="8dp"
             android:layout_marginStart="16dp" />
 
     </LinearLayout>
 
-    <!-- Описание -->
+    <!-- Переключатель вибрации -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_vibrate"
+            android:textColor="?attr/textColorPrimary"
+            android:layout_marginEnd="12dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Вибрация при уведомлении"
+            android:textSize="16sp"
+            android:textColor="?attr/colorOnBackground" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/vibration_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp" />
+
+    </LinearLayout>
 
 </LinearLayout>
-

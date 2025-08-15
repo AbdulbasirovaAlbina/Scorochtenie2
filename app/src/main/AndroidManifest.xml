@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -24,33 +25,21 @@
         <activity android:name=".DiagonalReadingActivity" android:exported="false" />
         <activity android:name=".PartiallyHiddenLinesActivity" android:exported="false" />
         <activity android:name=".CurtainTextCurtainActivity" android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
+        <activity android:name=".ReminderSettingsActivity" android:exported="false" />
+        <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".PracticeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LearningActivity"
-            android:exported="false" />
-        <activity
-            android:name=".TechniqueSettingsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".TechniqueDemoActivity"
-            android:exported="false" />
-            
+        <activity android:name=".PracticeActivity" android:exported="false" />
+        <activity android:name=".LearningActivity" android:exported="false" />
+        <activity android:name=".TechniqueSettingsActivity" android:exported="false" />
+        <activity android:name=".TechniqueDemoActivity" android:exported="false" />
+
         <!-- Сервис для напоминаний -->
         <receiver
             android:name=".ReminderService"
             android:exported="false" />
-            
     </application>
-
 </manifest>
