@@ -4,4 +4,7 @@
     <color name="primary_color">#64B5F6</color>
     <color name="accent_color">#FFB74D</color>
     <color name="success_color">#81C784</color>
+    
+    <!-- Text colors for dark theme -->
+    <color name="text_color_secondary">#CCCCCC</color>
 </resources>

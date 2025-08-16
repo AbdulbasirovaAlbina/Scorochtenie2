@@ -20,6 +20,9 @@
     <color name="button_unselected">#E0E0E0</color>
     <color name="text_secondary">#666666</color>
     
+    <!-- Text colors for light theme -->
+    <color name="text_color_secondary">#666666</color>
+    
     <!-- Progress colors -->
     <color name="green_primary">#4CAF50</color>
     

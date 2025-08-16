@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 
 class TechniqueSelectorAdapter(
@@ -48,10 +49,11 @@ class TechniqueSelectorAdapter(
         holder.card.isSelected = (currentPosition == selectedPosition)
         if (currentPosition == selectedPosition) {
             holder.card.elevation = 8f
-            holder.title.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.primary_color))
+            holder.title.setTextColor(ResourcesCompat.getColor(holder.itemView.context.resources, R.color.primary_color, holder.itemView.context.theme))
         } else {
             holder.card.elevation = 4f
-            holder.title.setTextColor(ContextCompat.getColor(holder.itemView.context, android.R.color.black))
+            // Используем цвет, который автоматически адаптируется к теме
+            holder.title.setTextColor(ResourcesCompat.getColor(holder.itemView.context.resources, R.color.text_color_secondary, holder.itemView.context.theme))
         }
 
         holder.itemView.setOnClickListener {
