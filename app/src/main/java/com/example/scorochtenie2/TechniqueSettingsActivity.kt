@@ -30,7 +30,7 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         "Частично скрытые строки" to "Развивает навык предугадывания и быстрого чтения"
     )
 
-    private var selectedTextLength: String? = null
+    private var selectedTextLength: String = "Средний"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,6 +96,9 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         val buttons = listOf(shortTextBtn, mediumTextBtn, longTextBtn)
         val texts = listOf("Короткий", "Средний", "Длинный")
 
+        // Устанавливаем средний размер текста по умолчанию
+        selectTextLengthButton(mediumTextBtn, "Средний")
+
         buttons.forEachIndexed { index, button ->
             button.setOnClickListener {
                 selectTextLengthButton(button, texts[index])
@@ -129,11 +132,6 @@ class TechniqueSettingsActivity : AppCompatActivity() {
 
     private fun setupStartButton() {
         startBtn.setOnClickListener {
-            if (selectedTextLength == null) {
-                Toast.makeText(this, "Выберите размер текста", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
             val technique = intent.getStringExtra("technique_name") ?: "Чтение блоками"
             val speed = speedSlider.progress
             val fontSize = fontSizeSlider.progress

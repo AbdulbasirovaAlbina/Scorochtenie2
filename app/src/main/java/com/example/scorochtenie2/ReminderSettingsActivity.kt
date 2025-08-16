@@ -19,7 +19,6 @@ import android.app.TimePickerDialog
 class ReminderSettingsActivity : AppCompatActivity() {
 
     private lateinit var reminderSwitch: SwitchCompat
-    private lateinit var vibrationSwitch: SwitchCompat
     private lateinit var reminderTimeText: TextView
     private val TAG = "ReminderSettingsActivity"
 
@@ -39,11 +38,10 @@ class ReminderSettingsActivity : AppCompatActivity() {
         setContentView(R.layout.item_reminder_setting)
 
         reminderSwitch = findViewById(R.id.reminder_switch)
-        vibrationSwitch = findViewById(R.id.vibration_switch)
         reminderTimeText = findViewById(R.id.reminder_time_text)
 
         loadSettings()
-        Log.d(TAG, "onCreate: reminderSwitch=${reminderSwitch.isChecked}, vibrationSwitch=${vibrationSwitch.isChecked}, time=${reminderTimeText.text}")
+        Log.d(TAG, "onCreate: reminderSwitch=${reminderSwitch.isChecked}, time=${reminderTimeText.text}")
 
         reminderSwitch.setOnCheckedChangeListener { _, isChecked ->
             Log.d(TAG, "reminderSwitch changed: $isChecked")
@@ -60,11 +58,7 @@ class ReminderSettingsActivity : AppCompatActivity() {
             }
         }
 
-        vibrationSwitch.setOnCheckedChangeListener { _, isChecked ->
-            Log.d(TAG, "vibrationSwitch changed: $isChecked")
-            ReminderManager.setVibrationEnabled(this, isChecked)
-            Toast.makeText(this, "Вибрация установлена на: $isChecked", Toast.LENGTH_SHORT).show()
-        }
+
 
         reminderTimeText.setOnClickListener {
             val hour = ReminderManager.getReminderHour(this)
@@ -80,16 +74,11 @@ class ReminderSettingsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         loadSettings()
-        val loadedVibration = ReminderManager.isVibrationEnabled(this)
-        Toast.makeText(this, "Загружено вибрация: $loadedVibration", Toast.LENGTH_LONG).show()
-        Log.d(TAG, "onResume: reloaded settings, vibration=$loadedVibration")
     }
 
     private fun loadSettings() {
         val isReminderEnabled = ReminderManager.isReminderEnabled(this)
-        val isVibrationEnabled = ReminderManager.isVibrationEnabled(this)
         reminderSwitch.isChecked = isReminderEnabled
-        vibrationSwitch.isChecked = isVibrationEnabled
         reminderTimeText.text = ReminderManager.getReminderTimeString(this)
     }
 
@@ -108,6 +97,6 @@ class ReminderSettingsActivity : AppCompatActivity() {
     private fun updateReminderSettings() {
         ReminderManager.setReminderEnabled(this, reminderSwitch.isChecked)
         reminderTimeText.text = ReminderManager.getReminderTimeString(this)
-        Log.d(TAG, "updateReminderSettings: reminderSwitch=${reminderSwitch.isChecked}, vibrationSwitch=${vibrationSwitch.isChecked}, time=${reminderTimeText.text}")
+        Log.d(TAG, "updateReminderSettings: reminderSwitch=${reminderSwitch.isChecked}, time=${reminderTimeText.text}")
     }
 }

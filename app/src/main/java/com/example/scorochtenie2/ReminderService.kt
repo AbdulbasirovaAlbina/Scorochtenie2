@@ -8,7 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Vibrator
+
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import java.util.*
@@ -90,14 +90,12 @@ class ReminderService : BroadcastReceiver() {
                     val name = "Напоминания о чтении"
                     val descriptionText = "Канал для напоминаний о ежедневных занятиях чтением"
                     val importance = NotificationManager.IMPORTANCE_DEFAULT
-                    val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                        description = descriptionText
-                        enableVibration(true)
-                        vibrationPattern = longArrayOf(0, 1000)
-                    }
+                                    val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                    description = descriptionText
+                }
 
                     notificationManager.createNotificationChannel(channel)
-                    Log.d(TAG, "Notification channel created with vibration enabled, shouldVibrate=${notificationManager.getNotificationChannel(CHANNEL_ID)?.shouldVibrate()}")
+                    Log.d(TAG, "Notification channel created")
                 } else {
                     Log.d(TAG, "Notification channel already exists")
                 }
@@ -124,20 +122,6 @@ class ReminderService : BroadcastReceiver() {
 
     fun showReminderNotification(context: Context) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        val isVibrationEnabled = ReminderManager.isVibrationEnabled(context)
-        Log.d(TAG, "showReminderNotification: vibration enabled = $isVibrationEnabled")
-
-        val canVibrate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.hasVibrator() && notificationManager.getNotificationChannel(CHANNEL_ID)?.shouldVibrate() == true
-        } else {
-            vibrator.hasVibrator()
-        }
-        Log.d(TAG, "showReminderNotification: device can vibrate = $canVibrate")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Log.d(TAG, "showReminderNotification: channel vibration enabled = ${notificationManager.getNotificationChannel(CHANNEL_ID)?.shouldVibrate()}")
-            Log.d(TAG, "showReminderNotification: has vibrator = ${vibrator.hasVibrator()}")
-        }
 
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -157,19 +141,6 @@ class ReminderService : BroadcastReceiver() {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
-
-        if (isVibrationEnabled && canVibrate) {
-            notificationBuilder.setVibrate(longArrayOf(0, 1000))
-            Log.d(TAG, "Notification with vibration triggered")
-        } else {
-            notificationBuilder.setVibrate(null)
-            Log.d(TAG, "Notification without vibration triggered")
-            if (!canVibrate) {
-                notificationBuilder.setContentText("Не забудьте потренироваться в скорочтении (вибрация отключена в настройках устройства)")
-            } else {
-                notificationBuilder.setContentText("Не забудьте потренироваться в скорочтении (вибрация отключена)")
-            }
-        }
 
         val notification = notificationBuilder.build()
         notificationManager.notify(NOTIFICATION_ID, notification)

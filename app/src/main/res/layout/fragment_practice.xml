@@ -9,11 +9,12 @@
     <LinearLayout
         android:id="@+id/header_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:orientation="vertical"
         android:background="@drawable/practice_header_gradient"
-        android:paddingTop="48dp"
-        android:paddingBottom="32dp"
+        android:gravity="center"
+        android:paddingTop="40dp"
+        android:paddingBottom="20dp"
         android:paddingStart="24dp"
         android:paddingEnd="24dp">
 
@@ -26,13 +27,6 @@
             android:textColor="@android:color/white"
             android:layout_marginBottom="8dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Выберите технику для тренировки"
-            android:textSize="16sp"
-            android:textColor="#E0E0E0"
-            android:alpha="0.9" />
 
     </LinearLayout>
 
@@ -41,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:layout_marginTop="165dp">
+        android:layout_marginTop="150dp">
 
         <LinearLayout
             android:layout_width="match_parent"

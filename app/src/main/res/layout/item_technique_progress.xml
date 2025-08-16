@@ -33,12 +33,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="5dp">
 
             <LinearLayout
                 android:id="@+id/stats_row"
                 android:layout_width="match_parent"
-                android:layout_height="125dp"
+                android:layout_height="110dp"
                 android:orientation="horizontal">
 
                 <!-- Левая карточка - Использования -->
@@ -62,7 +62,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
-                            android:text="Использования"
+                            android:gravity="center"
+                            android:text="Использования техники"
                             android:textColor="?attr/textColorSecondary"
                             android:textSize="14sp" />
 
@@ -101,7 +102,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
                             android:gravity="center"
-                            android:text="Среднее\nпонимание текста"
+                            android:text="Средний результат теста"
                             android:textColor="?attr/textColorSecondary"
                             android:textSize="14sp" />
 
@@ -123,8 +124,8 @@
             <!-- Вторая строка статистики - Время чтения -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="87dp"
-                android:layout_marginTop="16dp"
+                android:layout_height="90dp"
+
                 android:orientation="horizontal">
 
                 <!-- Левая карточка - Общее время -->
@@ -142,13 +143,14 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="12dp">
+                        android:padding="10dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
-                            android:text="Общее время"
+                            android:text="Общее время чтения"
+                            android:gravity="center"
                             android:textColor="?attr/textColorSecondary"
                             android:textSize="14sp" />
 
@@ -180,15 +182,16 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="12dp">
+                        android:padding="10dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
-                            android:text="Среднее время"
+                            android:text="Среднее время чтения"
                             android:textColor="?attr/textColorSecondary"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:gravity="center"/>
 
                         <TextView
                             android:id="@+id/avg_time"
@@ -206,41 +209,14 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Показатель понимания -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="10dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Показатель понимания"
-                android:textSize="16sp"
-                android:textColor="?attr/textColorSecondary"
-                android:layout_marginBottom="8dp" />
-
-            <TextView
-                android:id="@+id/comprehension_rate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0%"
-                android:textSize="36sp"
-                android:textStyle="bold"
-                android:textColor="?attr/textColorPrimary"
-                android:layout_marginBottom="4dp" />
-
-
-
-        </LinearLayout>
 
         <!-- Шкала прогресса по дням -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="10dp">
 
             <TextView
                 android:layout_width="wrap_content"

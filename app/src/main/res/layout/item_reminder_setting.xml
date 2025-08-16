@@ -14,7 +14,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="?attr/colorOnBackground"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="10dp" />
 
     <!-- Переключатель напоминаний -->
     <LinearLayout
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="10dp">
 
         <ImageView
             android:layout_width="24dp"
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="10dp">
 
         <ImageView
             android:layout_width="24dp"
@@ -82,34 +82,6 @@
 
     </LinearLayout>
 
-    <!-- Переключатель вибрации -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_vibrate"
-            android:layout_marginEnd="12dp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Вибрация при уведомлении"
-            android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/vibration_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp" />
-
-    </LinearLayout>
 
 </LinearLayout>

@@ -10,7 +10,6 @@ object ReminderManager {
     private const val KEY_REMINDER_ENABLED = "reminder_enabled"
     private const val KEY_REMINDER_HOUR = "reminder_hour"
     private const val KEY_REMINDER_MINUTE = "reminder_minute"
-    private const val KEY_VIBRATION_ENABLED = "vibration_enabled"
     private const val TAG = "ReminderManager"
 
     private var isInitialized = false
@@ -85,29 +84,7 @@ object ReminderManager {
         }
     }
 
-    fun isVibrationEnabled(context: Context): Boolean {
-        initialize(context)
-        val enabled = getSharedPreferences(context).getBoolean(KEY_VIBRATION_ENABLED, true)
-        Log.d(TAG, "isVibrationEnabled: $enabled")
-        return enabled
-    }
 
-    fun setVibrationEnabled(context: Context, enabled: Boolean) {
-        initialize(context)
-        val editor = getSharedPreferences(context).edit().putBoolean(KEY_VIBRATION_ENABLED, enabled)
-        val success = editor.commit()
-        val savedValue = getSharedPreferences(context).getBoolean(KEY_VIBRATION_ENABLED, true)
-        Log.d(TAG, "setVibrationEnabled: set=$enabled, saved=$savedValue, success=$success")
-        if (!success) {
-            Toast.makeText(context, "Ошибка сохранения настройки вибрации", Toast.LENGTH_SHORT).show()
-        }
-
-        if (isReminderEnabled(context)) {
-            val hour = getReminderHour(context)
-            val minute = getReminderMinute(context)
-            ReminderService.scheduleReminder(context, hour, minute)
-        }
-    }
 
     fun getReminderTimeString(context: Context): String {
         initialize(context)

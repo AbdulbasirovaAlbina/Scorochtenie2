@@ -18,14 +18,13 @@ class ProgressFragment : Fragment() {
     private lateinit var techniqueNameText: TextView
     private lateinit var usesCountText: TextView
     private lateinit var avgComprehensionText: TextView
-    private lateinit var comprehensionRateText: TextView
     private lateinit var totalTimeText: TextView
     private lateinit var avgTimeText: TextView
     private lateinit var daysProgressContainer: ViewGroup
     private lateinit var techniqueSelectorAdapter: TechniqueSelectorAdapter
 
     private val techniques = listOf(
-        TechniqueItem("Все техники", R.drawable.ic_progress),
+        TechniqueItem("Все техники", R.drawable.ic_all_techniques),
         TechniqueItem("Чтение блоками", R.drawable.ic_block_reading),
         TechniqueItem("Чтение по диагонали", R.drawable.ic_diagonal_reading),
         TechniqueItem("Метод указки", R.drawable.ic_pointer_method),
@@ -66,7 +65,6 @@ class ProgressFragment : Fragment() {
         techniqueNameText = progressItemView.findViewById(R.id.technique_name)
         usesCountText = progressItemView.findViewById(R.id.uses_count)
         avgComprehensionText = progressItemView.findViewById(R.id.avg_comprehension)
-        comprehensionRateText = progressItemView.findViewById(R.id.comprehension_rate)
         totalTimeText = progressItemView.findViewById(R.id.total_time)
         avgTimeText = progressItemView.findViewById(R.id.avg_time)
         daysProgressContainer = progressItemView.findViewById(R.id.days_progress_container)
@@ -98,7 +96,6 @@ class ProgressFragment : Fragment() {
         techniqueNameText.text = techniqueName
         usesCountText.text = stats.usesCount.toString()
         avgComprehensionText.text = "${stats.avgComprehension}%"
-        comprehensionRateText.text = "${stats.avgComprehension}%"
         
         // Отображаем время чтения в удобном формате
         totalTimeText.text = formatTime(stats.totalReadingTimeSeconds)
