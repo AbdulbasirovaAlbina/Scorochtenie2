@@ -75,15 +75,31 @@ object TestResultManager {
         val totalReadingTimeSeconds = results.sumOf { it.readingTimeSeconds }
         val avgReadingTimeSeconds = if (usesCount > 0) totalReadingTimeSeconds / usesCount else 0
 
-        // Получаем данные за последние 7 дней
+        // Получаем данные за текущую неделю (с понедельника по воскресенье)
         val calendar = Calendar.getInstance()
         val dailyComprehension = mutableListOf<Int>()
-
-        for (i in 6 downTo 0) {
-            calendar.add(Calendar.DAY_OF_YEAR, -i)
+        
+        // Находим понедельник текущей недели
+        // Пример: если сегодня среда (Calendar.WEDNESDAY = 4), то daysFromMonday = 2
+        // Значит нужно отступить на 2 дня назад, чтобы попасть на понедельник
+        val currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+        val daysFromMonday = when (currentDayOfWeek) {
+            Calendar.SUNDAY -> 6      // Воскресенье - отступаем на 6 дней назад
+            Calendar.MONDAY -> 0      // Понедельник - не отступаем
+            Calendar.TUESDAY -> 1     // Вторник - отступаем на 1 день назад
+            Calendar.WEDNESDAY -> 2   // Среда - отступаем на 2 дня назад
+            Calendar.THURSDAY -> 3    // Четверг - отступаем на 3 дня назад
+            Calendar.FRIDAY -> 4      // Пятница - отступаем на 4 дня назад
+            Calendar.SATURDAY -> 5    // Суббота - отступаем на 5 дней назад
+            else -> 0
+        }
+        
+        // Переходим к понедельнику текущей недели
+        calendar.add(Calendar.DAY_OF_YEAR, -daysFromMonday)
+        
+        // Получаем данные для каждого дня недели (пн-вс)
+        for (i in 0..6) {
             val targetDate = dateFormat.format(calendar.time)
-            calendar.add(Calendar.DAY_OF_YEAR, i)
-
             val dayResults = results.filter { it.date == targetDate }
             val dayAvg = if (dayResults.isNotEmpty()) {
                 dayResults.map { it.comprehension }.average().toInt()
@@ -91,6 +107,9 @@ object TestResultManager {
                 0
             }
             dailyComprehension.add(dayAvg)
+            
+            // Переходим к следующему дню
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
         }
 
         return TechniqueStats(
@@ -123,15 +142,31 @@ object TestResultManager {
         val totalReadingTimeSeconds = allResults.sumOf { it.readingTimeSeconds }
         val avgReadingTimeSeconds = if (usesCount > 0) totalReadingTimeSeconds / usesCount else 0
 
-        // Получаем данные за последние 7 дней для всех техник
+        // Получаем данные за текущую неделю (с понедельника по воскресенье) для всех техник
         val calendar = Calendar.getInstance()
         val dailyComprehension = mutableListOf<Int>()
-
-        for (i in 6 downTo 0) {
-            calendar.add(Calendar.DAY_OF_YEAR, -i)
+        
+        // Находим понедельник текущей недели
+        // Пример: если сегодня среда (Calendar.WEDNESDAY = 4), то daysFromMonday = 2
+        // Значит нужно отступить на 2 дня назад, чтобы попасть на понедельник
+        val currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+        val daysFromMonday = when (currentDayOfWeek) {
+            Calendar.SUNDAY -> 6      // Воскресенье - отступаем на 6 дней назад
+            Calendar.MONDAY -> 0      // Понедельник - не отступаем
+            Calendar.TUESDAY -> 1     // Вторник - отступаем на 1 день назад
+            Calendar.WEDNESDAY -> 2   // Среда - отступаем на 2 дня назад
+            Calendar.THURSDAY -> 3    // Четверг - отступаем на 3 дня назад
+            Calendar.FRIDAY -> 4      // Пятница - отступаем на 4 дня назад
+            Calendar.SATURDAY -> 5    // Суббота - отступаем на 5 дней назад
+            else -> 0
+        }
+        
+        // Переходим к понедельнику текущей недели
+        calendar.add(Calendar.DAY_OF_YEAR, -daysFromMonday)
+        
+        // Получаем данные для каждого дня недели (пн-вс)
+        for (i in 0..6) {
             val targetDate = dateFormat.format(calendar.time)
-            calendar.add(Calendar.DAY_OF_YEAR, i)
-
             val dayResults = allResults.filter { it.date == targetDate }
             val dayAvg = if (dayResults.isNotEmpty()) {
                 dayResults.map { it.comprehension }.average().toInt()
@@ -139,6 +174,9 @@ object TestResultManager {
                 0
             }
             dailyComprehension.add(dayAvg)
+            
+            // Переходим к следующему дню
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
         }
 
         return TechniqueStats(

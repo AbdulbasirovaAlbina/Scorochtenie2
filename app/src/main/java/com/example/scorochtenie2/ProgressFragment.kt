@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.animation.AccelerateDecelerateInterpolator
+import java.util.Calendar
 
 class ProgressFragment : Fragment() {
 
@@ -119,6 +120,20 @@ class ProgressFragment : Fragment() {
         daysProgressContainer.removeAllViews()
         
         val dayNames = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
+        val calendar = Calendar.getInstance()
+        val currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+        
+        // Определяем индекс текущего дня недели (0 = понедельник, 6 = воскресенье)
+        val currentDayIndex = when (currentDayOfWeek) {
+            Calendar.SUNDAY -> 6
+            Calendar.MONDAY -> 0
+            Calendar.TUESDAY -> 1
+            Calendar.WEDNESDAY -> 2
+            Calendar.THURSDAY -> 3
+            Calendar.FRIDAY -> 4
+            Calendar.SATURDAY -> 5
+            else -> 0
+        }
         
         dailyComprehension.forEachIndexed { index, comprehension ->
             val dayView = layoutInflater.inflate(R.layout.item_day_progress, daysProgressContainer, false)
@@ -127,7 +142,15 @@ class ProgressFragment : Fragment() {
             val tvDayPercentage = dayView.findViewById<TextView>(R.id.tv_day_percentage)
             val dayProgressBar = dayView.findViewById<View>(R.id.day_progress_bar)
             
+            // Устанавливаем название дня
             tvDayName.text = dayNames[index]
+            
+            // Выделяем текущий день недели
+            if (index == currentDayIndex) {
+                tvDayName.setTextColor(resources.getColor(R.color.primary_color, null))
+                tvDayName.setTypeface(null, android.graphics.Typeface.BOLD)
+            }
+            
             tvDayPercentage.text = "${comprehension}%"
             
             // Анимируем столбец прогресса
