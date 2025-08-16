@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 class BlockReadingActivity : AppCompatActivity() {
     private lateinit var textView: TextView
@@ -44,11 +45,12 @@ class BlockReadingActivity : AppCompatActivity() {
         // Получение параметров из Intent
         techniqueName = intent.getStringExtra("technique_name") ?: "Чтение блоками"
         durationPerWord = SpeedConfig.getDurationPerWord(intent.getIntExtra("speed", 1))
-        selectedTextIndex = when (intent.getStringExtra("text_length")) {
-            "Короткий" -> 0
-            "Средний" -> 1
-            "Длинный" -> 2
-            else -> (0..2).random() // Случайный выбор из 3 текстов
+        val textLength = intent.getStringExtra("text_length") ?: "Средний"
+        selectedTextIndex = when (textLength) {
+            "Короткий" -> Random.nextInt(0, 3) // Случайный выбор из id 0, 1, 2
+            "Средний" -> Random.nextInt(3, 6) // Случайный выбор из id 3, 4, 5
+            "Длинный" -> Random.nextInt(6, 9) // Случайный выбор из id 6, 7, 8
+            else -> Random.nextInt(3, 6) // По умолчанию средний текст
         }
         val fontSizeMultiplier = FontConfig.getFontSizeMultiplier(intent.getIntExtra("font_size", 1))
 
