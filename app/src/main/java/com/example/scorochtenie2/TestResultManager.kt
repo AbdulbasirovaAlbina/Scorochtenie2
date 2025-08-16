@@ -70,7 +70,8 @@ object TestResultManager {
         }
 
         val usesCount = results.size
-        val uniqueTextsCount = results.map { it.textIndex }.distinct().size // Количество уникальных текстов
+        // Считаем только тексты с 100% результатом как завершенные
+        val uniqueTextsCount = getCompletedTextsCount(context, techniqueName)
         val avgComprehension = results.map { it.comprehension }.average().toInt()
         val totalReadingTimeSeconds = results.sumOf { it.readingTimeSeconds }
         val avgReadingTimeSeconds = if (usesCount > 0) totalReadingTimeSeconds / usesCount else 0
@@ -120,6 +121,57 @@ object TestResultManager {
             avgReadingTimeSeconds = avgReadingTimeSeconds,
             dailyComprehension = dailyComprehension
         )
+    }
+
+    // Функция для получения количества завершенных текстов (100% результат)
+    fun getCompletedTextsCount(context: Context, techniqueName: String): Int {
+        val results = getTechniqueResults(context, techniqueName)
+        // Считаем только тексты с 100% результатом
+        return results.filter { it.comprehension == 100 }
+            .map { it.textIndex }
+            .distinct()
+            .size
+    }
+
+    // Функция для получения списка завершенных текстов
+    fun getCompletedTexts(context: Context, techniqueName: String): List<Int> {
+        val results = getTechniqueResults(context, techniqueName)
+        return results.filter { it.comprehension == 100 }
+            .map { it.textIndex }
+            .distinct()
+    }
+
+    // Функция для проверки, завершен ли конкретный текст
+    fun isTextCompleted(context: Context, techniqueName: String, textIndex: Int): Boolean {
+        val results = getTechniqueResults(context, techniqueName)
+        return results.any { it.textIndex == textIndex && it.comprehension == 100 }
+    }
+
+    // Функция для получения доступных текстов по длине
+    fun getAvailableTextsByLength(context: Context, techniqueName: String, textLength: String): List<Int> {
+        val completedTexts = getCompletedTexts(context, techniqueName)
+        
+        val availableRange = when (textLength) {
+            "Короткий" -> 0..2
+            "Средний" -> 3..5
+            "Длинный" -> 6..8
+            else -> 3..5
+        }
+        
+        return availableRange.filter { textIndex -> 
+            !completedTexts.contains(textIndex) 
+        }
+    }
+
+    // Функция для проверки, есть ли доступные тексты для данной длины
+    fun hasAvailableTexts(context: Context, techniqueName: String, textLength: String): Boolean {
+        return getAvailableTextsByLength(context, techniqueName, textLength).isNotEmpty()
+    }
+
+    // Функция для проверки полного завершения техники (9/9)
+    fun isTechniqueFullyCompleted(context: Context, techniqueName: String): Boolean {
+        val completedCount = getCompletedTextsCount(context, techniqueName)
+        return completedCount >= 9
     }
 
     fun getAllTechniquesStats(context: Context): TechniqueStats {

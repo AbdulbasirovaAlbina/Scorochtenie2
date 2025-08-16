@@ -40,19 +40,23 @@ class TechniqueSelectorAdapter(
         }
 
         // Обновляем внешний вид в зависимости от выбора
-        holder.card.isSelected = (position == selectedPosition)
-        if (position == selectedPosition) {
+        val currentPosition = holder.getAdapterPosition()
+        holder.card.isSelected = (currentPosition == selectedPosition)
+        if (currentPosition == selectedPosition) {
             holder.card.elevation = 8f
         } else {
             holder.card.elevation = 4f
         }
 
         holder.itemView.setOnClickListener {
-            val previousPosition = selectedPosition
-            selectedPosition = position
-            notifyItemChanged(previousPosition)
-            notifyItemChanged(selectedPosition)
-            onTechniqueSelected(technique)
+            val clickedPosition = holder.getAdapterPosition()
+            if (clickedPosition != RecyclerView.NO_POSITION) {
+                val previousPosition = selectedPosition
+                selectedPosition = clickedPosition
+                notifyItemChanged(previousPosition)
+                notifyItemChanged(selectedPosition)
+                onTechniqueSelected(technique)
+            }
         }
     }
 

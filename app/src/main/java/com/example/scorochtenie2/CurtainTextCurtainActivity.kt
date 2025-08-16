@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 class CurtainTextCurtainActivity : AppCompatActivity() {
     private lateinit var textView: TextView
@@ -41,14 +42,22 @@ class CurtainTextCurtainActivity : AppCompatActivity() {
         // Init texts
         TextResources.initialize(this)
 
-        techniqueName = intent.getStringExtra("technique_name") ?: techniqueName
+        // Получение параметров из Intent
+        techniqueName = intent.getStringExtra("technique_name") ?: "Зашумленный текст"
         durationPerWord = SpeedConfig.getDurationPerWord(intent.getIntExtra("speed", 1))
-        selectedTextIndex = when (intent.getStringExtra("text_length")) {
-            "Короткий" -> 0
-            "Средний" -> 1
-            "Длинный" -> 2
-            else -> (0..2).random() // Случайный выбор из 3 текстов
+        val textLength = intent.getStringExtra("text_length") ?: "Средний"
+        
+        // Проверяем, есть ли доступные тексты для выбранной длины
+        val availableTexts = TestResultManager.getAvailableTextsByLength(this, techniqueName, textLength)
+        
+        if (availableTexts.isEmpty()) {
+            // Все тексты данной длины завершены
+            showCompletionDialog(textLength)
+            return
         }
+        
+        // Выбираем случайный доступный текст
+        selectedTextIndex = availableTexts.random()
         val fontSizeMultiplier = FontConfig.getFontSizeMultiplier(intent.getIntExtra("font_size", 1))
 
         findViewById<TextView>(R.id.toolbar_title).text = techniqueName
@@ -117,6 +126,19 @@ class CurtainTextCurtainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.test_fragment_container, testFragment)
             .commit()
+    }
+
+    private fun showCompletionDialog(textLength: String) {
+        val message = "Все тексты длины \"$textLength\" завершены. Пожалуйста, выберите другую длину."
+        val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Все тексты завершены")
+            .setMessage(message)
+            .setPositiveButton("ОК") { _, _ ->
+                // Закрываем текущую активность
+                finish()
+            }
+            .create()
+        dialog.show()
     }
 }
 

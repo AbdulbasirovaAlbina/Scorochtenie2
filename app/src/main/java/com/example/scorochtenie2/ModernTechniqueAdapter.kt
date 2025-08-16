@@ -49,12 +49,12 @@ class ModernTechniqueAdapter(private val techniques: List<ModernTechniqueItem>) 
         // Получаем статистику для техники
         val stats = TestResultManager.getTechniqueStats(context, technique.title)
         val completedTexts = stats.uniqueTextsCount // Количество уникальных прочитанных текстов
-        val totalTexts = 3 // У каждой техники 3 текста
+        val totalTexts = 9 // У каждой техники теперь 9 текстов
         
-        // Показываем прогресс: количество пройденных текстов из 3
+        // Показываем прогресс: количество пройденных текстов из 9
         holder.progressText.text = "$completedTexts/$totalTexts"
         
-        // Обновляем шкалу прогресса (максимум 3 текста)
+        // Обновляем шкалу прогресса (максимум 9 текстов)
         val progressPercent = (completedTexts.toFloat() / totalTexts).coerceAtMost(1.0f)
         holder.progressBar.post {
             val width = (holder.progressBar.parent as View).width
@@ -64,9 +64,20 @@ class ModernTechniqueAdapter(private val techniques: List<ModernTechniqueItem>) 
         }
 
         holder.itemView.setOnClickListener {
-            val intent = Intent(context, TechniqueSettingsActivity::class.java)
-            intent.putExtra("technique_name", technique.title)
-            context.startActivity(intent)
+            // Проверяем, завершена ли техника полностью (9/9)
+            if (TestResultManager.isTechniqueFullyCompleted(context, technique.title)) {
+                // Техника полностью завершена - показываем тост
+                android.widget.Toast.makeText(
+                    context,
+                    "🎉 Техника \"${technique.title}\" полностью освоена! Все тексты пройдены на 100%",
+                    android.widget.Toast.LENGTH_LONG
+                ).show()
+            } else {
+                // Техника не завершена - переходим в настройки
+                val intent = Intent(context, TechniqueSettingsActivity::class.java)
+                intent.putExtra("technique_name", technique.title)
+                context.startActivity(intent)
+            }
         }
     }
 

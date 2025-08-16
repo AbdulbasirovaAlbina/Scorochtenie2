@@ -89,7 +89,6 @@ class SettingsFragment : Fragment() {
                 .setMessage("Вы уверены, что хотите удалить весь прогресс? Это действие нельзя отменить.")
                 .setPositiveButton("Очистить") { _, _ ->
                     clearAllProgress()
-                    Toast.makeText(context, "Прогресс успешно очищен", Toast.LENGTH_SHORT).show()
                 }
                 .setNegativeButton("Отмена") { dialog, _ ->
                     dialog.dismiss()

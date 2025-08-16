@@ -46,12 +46,18 @@ class BlockReadingActivity : AppCompatActivity() {
         techniqueName = intent.getStringExtra("technique_name") ?: "Чтение блоками"
         durationPerWord = SpeedConfig.getDurationPerWord(intent.getIntExtra("speed", 1))
         val textLength = intent.getStringExtra("text_length") ?: "Средний"
-        selectedTextIndex = when (textLength) {
-            "Короткий" -> Random.nextInt(0, 3) // Случайный выбор из id 0, 1, 2
-            "Средний" -> Random.nextInt(3, 6) // Случайный выбор из id 3, 4, 5
-            "Длинный" -> Random.nextInt(6, 9) // Случайный выбор из id 6, 7, 8
-            else -> Random.nextInt(3, 6) // По умолчанию средний текст
+        
+        // Проверяем, есть ли доступные тексты для выбранной длины
+        val availableTexts = TestResultManager.getAvailableTextsByLength(this, techniqueName, textLength)
+        
+        if (availableTexts.isEmpty()) {
+            // Все тексты данной длины завершены
+            showCompletionDialog(textLength)
+            return
         }
+        
+        // Выбираем случайный доступный текст
+        selectedTextIndex = availableTexts.random()
         val fontSizeMultiplier = FontConfig.getFontSizeMultiplier(intent.getIntExtra("font_size", 1))
 
         // Инициализация UI
@@ -124,5 +130,18 @@ class BlockReadingActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.test_fragment_container, testFragment)
             .commit()
+    }
+
+    private fun showCompletionDialog(textLength: String) {
+        val message = "Все тексты длины \"$textLength\" завершены. Пожалуйста, выберите другую длину."
+        val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Все тексты завершены")
+            .setMessage(message)
+            .setPositiveButton("ОК") { _, _ ->
+                // Закрываем текущую активность
+                finish()
+            }
+            .create()
+        dialog.show()
     }
 }
