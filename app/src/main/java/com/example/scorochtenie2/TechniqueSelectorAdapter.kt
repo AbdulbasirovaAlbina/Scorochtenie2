@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
 class TechniqueSelectorAdapter(
@@ -16,6 +18,7 @@ class TechniqueSelectorAdapter(
     class TechniqueViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val icon: ImageView = itemView.findViewById(R.id.technique_icon)
         val iconContainer: View = itemView.findViewById(R.id.technique_icon_container)
+        val title: TextView = itemView.findViewById(R.id.technique_title)
         val card: View = itemView
     }
 
@@ -28,15 +31,16 @@ class TechniqueSelectorAdapter(
     override fun onBindViewHolder(holder: TechniqueViewHolder, position: Int) {
         val technique = techniques[position]
         holder.icon.setImageResource(technique.iconResId)
+        holder.title.text = technique.title
 
         // Специальная обработка для иконки "Все техники"
         if (technique.title == "Все техники") {
             holder.icon.setColorFilter(android.graphics.Color.WHITE)
             // Устанавливаем специальный background для иконки "Все техники"
-            holder.iconContainer.background = holder.itemView.context.getDrawable(R.drawable.technique_icon_all_techniques_bg)
+            holder.iconContainer.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.technique_icon_all_techniques_bg)
         } else {
             holder.icon.clearColorFilter()
-            holder.iconContainer.background = holder.itemView.context.getDrawable(R.drawable.technique_icon_modern_bg)
+            holder.iconContainer.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.technique_icon_modern_bg)
         }
 
         // Обновляем внешний вид в зависимости от выбора
@@ -44,8 +48,10 @@ class TechniqueSelectorAdapter(
         holder.card.isSelected = (currentPosition == selectedPosition)
         if (currentPosition == selectedPosition) {
             holder.card.elevation = 8f
+            holder.title.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.primary_color))
         } else {
             holder.card.elevation = 4f
+            holder.title.setTextColor(ContextCompat.getColor(holder.itemView.context, android.R.color.black))
         }
 
         holder.itemView.setOnClickListener {
