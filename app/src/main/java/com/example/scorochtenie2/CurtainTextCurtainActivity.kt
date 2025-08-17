@@ -4,8 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.ImageButton
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.util.concurrent.TimeUnit
@@ -15,6 +17,7 @@ class CurtainTextCurtainActivity : AppCompatActivity() {
     private lateinit var textView: TextView
     private lateinit var guideView: CurtainOverlayView
     private lateinit var timerView: TextView
+    private lateinit var scrollView: ScrollView
     private val technique: Technique = CurtainTextCurtainTechnique()
     private var durationPerWord: Long = 400L
     private var selectedTextIndex: Int = 0
@@ -39,31 +42,35 @@ class CurtainTextCurtainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_curtain_text)
 
-        // Init texts
+        // Инициализация TextResources
         TextResources.initialize(this)
 
         // Получение параметров из Intent
         techniqueName = intent.getStringExtra("technique_name") ?: "Зашумленный текст"
         durationPerWord = SpeedConfig.getDurationPerWord(intent.getIntExtra("speed", 1))
         val textLength = intent.getStringExtra("text_length") ?: "Средний"
-        
-        // Проверяем, есть ли доступные тексты для выбранной длины
+
+        // Проверяем доступные тексты
         val availableTexts = TestResultManager.getAvailableTextsByLength(this, techniqueName, textLength)
-        
+
         if (availableTexts.isEmpty()) {
-            // Все тексты данной длины завершены
+            Log.w("CurtainTextActivity", "No available texts for length: $textLength")
             showCompletionDialog(textLength)
             return
         }
-        
-        // Выбираем случайный доступный текст
+
+        // Выбираем случайный текст
         selectedTextIndex = availableTexts.random()
+        Log.d("CurtainTextActivity", "Selected text index: $selectedTextIndex, length: $textLength")
+
         val fontSizeMultiplier = FontConfig.getFontSizeMultiplier(intent.getIntExtra("font_size", 1))
 
+        // Инициализация UI
         findViewById<TextView>(R.id.toolbar_title).text = techniqueName
         textView = findViewById(R.id.text_view)
         guideView = findViewById(R.id.guide_view)
         timerView = findViewById(R.id.timer_view)
+        scrollView = findViewById(R.id.scroll_view)
         textView.textSize = FontConfig.BASE_TEXT_SIZE * fontSizeMultiplier
 
         findViewById<ImageButton>(R.id.btn_back).setOnClickListener {
@@ -74,8 +81,8 @@ class CurtainTextCurtainActivity : AppCompatActivity() {
         }
 
         startTimer()
-        
-        // Добавляем небольшую задержку для правильной инициализации layout
+
+        // Запускаем анимацию после инициализации layout
         textView.post {
             technique.startAnimation(
                 textView = textView,
@@ -118,8 +125,8 @@ class CurtainTextCurtainActivity : AppCompatActivity() {
     }
 
     private fun showTestFragment() {
-        findViewById<View>(R.id.scroll_view).visibility = View.GONE
-        findViewById<View>(R.id.guide_view).visibility = View.GONE
+        scrollView.visibility = View.GONE
+        guideView.visibility = View.GONE
         findViewById<View>(R.id.test_fragment_container).visibility = View.VISIBLE
 
         val testFragment = TestFragment.newInstance(selectedTextIndex, techniqueName, durationPerWord)
@@ -134,12 +141,9 @@ class CurtainTextCurtainActivity : AppCompatActivity() {
             .setTitle("Все тексты завершены")
             .setMessage(message)
             .setPositiveButton("ОК") { _, _ ->
-                // Закрываем текущую активность
                 finish()
             }
             .create()
         dialog.show()
     }
 }
-
-

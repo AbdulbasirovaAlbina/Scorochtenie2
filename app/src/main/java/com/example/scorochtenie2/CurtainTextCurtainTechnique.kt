@@ -10,6 +10,7 @@ import android.text.style.BackgroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Log
 import android.view.View
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.animation.addListener
 
@@ -20,6 +21,8 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
     private var fullText: String = ""
     private var currentWords: List<String> = emptyList()
     private var animator: ValueAnimator? = null
+    private var scrollView: ScrollView? = null
+    private var lastScrollY: Int = 0
     private val handler = Handler(Looper.getMainLooper())
 
     override val description: SpannableString
@@ -44,33 +47,43 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
         isRunning = true
         currentWordIndex = 0
 
-        // В демонстрационном режиме (selectedTextIndex = -1) используем демонстрационный текст
-        val text = if (selectedTextIndex == -1) {
+        // Загружаем текст
+        fullText = if (selectedTextIndex == -1) {
             TextResources.getDemoTextForTechnique(displayName)
         } else {
             TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
+        }.replace("\n", " ")
+        if (fullText.isEmpty()) {
+            Log.e("CurtainText", "Text is empty for index $selectedTextIndex")
+            textView.text = "Текст недоступен"
+            onAnimationEnd()
+            return
         }
-        fullText = text
-        currentWords = text.split("\\s+".toRegex()).filter { it.isNotEmpty() }
-        
-        textView.text = text
 
-        // Настройка TextView для прокрутки
+        currentWords = fullText.split("\\s+".toRegex()).filter { it.isNotEmpty() }
+        Log.d("CurtainText", "Total words: ${currentWords.size}")
+
+        // Настройка TextView
         textView.gravity = android.view.Gravity.TOP
         textView.isSingleLine = false
         textView.maxLines = Int.MAX_VALUE
+        textView.text = fullText
+
+        // Находим ScrollView
+        scrollView = textView.parent as? ScrollView
+        lastScrollY = 0
 
         if (guideView is CurtainOverlayView) {
             guideView.visibility = View.VISIBLE
-            
             // Запускаем подсветку слов
             startWordHighlighting(textView, durationPerWord, onAnimationEnd)
-            
+            // Запускаем анимацию шторки
             guideView.start(durationPerWord, currentWords.size) {
-                if (isRunning) onAnimationEnd()
+                // Не вызываем onAnimationEnd здесь, так как подсветка слов управляет завершением
+                Log.d("CurtainText", "Curtain animation completed")
             }
         } else {
-            // If guideView is not our overlay, just end immediately
+            Log.e("CurtainText", "guideView is not CurtainOverlayView")
             onAnimationEnd()
         }
     }
@@ -83,7 +96,7 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
         if (!isRunning) return
 
         val wordDurationMs = (60_000 / durationPerWord).coerceAtLeast(50L)
-        
+
         handler.post {
             if (isRunning) {
                 highlightNextWord(textView, wordDurationMs, onAnimationEnd)
@@ -99,16 +112,32 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
         if (!isRunning) return
 
         if (currentWordIndex >= currentWords.size) {
-            // Анимация завершена
-            if (isRunning) onAnimationEnd()
-            Log.d("CurtainText", "Word highlighting completed")
+            textView.text = fullText // Убираем подсветку
+            if (isRunning) {
+                Log.d("CurtainText", "Word highlighting completed at index $currentWordIndex")
+                isRunning = false
+                onAnimationEnd()
+            }
+            return
+        }
+
+        // Проверяем layout
+        val layout = textView.layout
+        if (layout == null) {
+            Log.w("CurtainText", "Layout not ready, retrying")
+            handler.postDelayed({
+                if (isRunning) highlightNextWord(textView, wordDurationMs, onAnimationEnd)
+            }, 200)
             return
         }
 
         // Подсвечиваем текущее слово
         highlightCurrentWord(textView)
-        
-        // Переходим к следующему слову через заданное время
+
+        // Прокрутка ScrollView
+        scrollToCurrentWord(textView, wordDurationMs)
+
+        // Переходим к следующему слову
         handler.postDelayed({
             if (isRunning) {
                 currentWordIndex++
@@ -121,7 +150,7 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
         if (!isRunning) return
 
         val spannable = SpannableString(fullText)
-        
+
         // Удаляем предыдущие подсветки
         val existingSpans = spannable.getSpans(0, spannable.length, BackgroundColorSpan::class.java)
         for (span in existingSpans) {
@@ -135,13 +164,15 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
         currentWords.forEach { word ->
             if (wordCount == currentWordIndex) {
                 val endIndex = startIndex + word.length
-                spannable.setSpan(
-                    BackgroundColorSpan(Color.YELLOW),
-                    startIndex,
-                    endIndex,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                Log.d("CurtainText", "Highlighted word at index: $currentWordIndex, word: '$word'")
+                if (startIndex < fullText.length && endIndex <= fullText.length) {
+                    spannable.setSpan(
+                        BackgroundColorSpan(Color.YELLOW),
+                        startIndex,
+                        endIndex,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    Log.d("CurtainText", "Highlighted word at index: $currentWordIndex, word: '$word'")
+                }
             }
             startIndex += word.length
             if (startIndex < fullText.length && fullText[startIndex] == ' ') {
@@ -153,11 +184,70 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
         textView.text = spannable
     }
 
+    private fun scrollToCurrentWord(textView: TextView, wordDurationMs: Long) {
+        if (!isRunning) return
+
+        val layout = textView.layout ?: return
+        val wordStartIndex = getWordStartIndex(currentWordIndex, fullText)
+        if (wordStartIndex < 0 || wordStartIndex >= fullText.length) {
+            Log.w("CurtainText", "Invalid word start index: $wordStartIndex")
+            return
+        }
+
+        val startLine = layout.getLineForOffset(wordStartIndex)
+        val lineTopPosition = layout.getLineTop(startLine)
+        val lineBottomPosition = layout.getLineBottom(startLine)
+
+        scrollView?.let { sv ->
+            handler.post {
+                if (!isRunning) return@post
+                val scrollViewHeight = sv.height
+                val currentScrollY = sv.scrollY
+                val visibleTop = currentScrollY
+                val visibleBottom = currentScrollY + scrollViewHeight * 2 / 3
+
+                if (lineTopPosition < visibleTop || lineBottomPosition > visibleBottom) {
+                    val targetScrollY = (lineTopPosition - scrollViewHeight / 3).coerceAtLeast(0).toInt()
+                    if (targetScrollY != lastScrollY) {
+                        ValueAnimator.ofInt(currentScrollY, targetScrollY).apply {
+                            duration = wordDurationMs / 2
+                            addUpdateListener { animation ->
+                                val value = animation.animatedValue as Int
+                                sv.scrollTo(0, value)
+                            }
+                            addListener(
+                                onEnd = {
+                                    lastScrollY = targetScrollY
+                                    Log.d("CurtainText", "Scrolled to Y: $targetScrollY")
+                                }
+                            )
+                            start()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getWordStartIndex(wordIndex: Int, text: String): Int {
+        var startIndex = 0
+        var count = 0
+        text.split("\\s+".toRegex()).forEachIndexed { index, word ->
+            if (count == wordIndex) {
+                return startIndex
+            }
+            startIndex += word.length
+            if (startIndex < text.length && text[startIndex] == ' ') {
+                startIndex++
+            }
+            count++
+        }
+        return startIndex
+    }
+
     override fun cancelAnimation() {
         isRunning = false
         animator?.cancel()
         handler.removeCallbacksAndMessages(null)
     }
 }
-
-
