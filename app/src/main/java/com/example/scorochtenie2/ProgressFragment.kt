@@ -158,7 +158,7 @@ class ProgressFragment : Fragment() {
                 
                 // Плавная анимация
                 dayProgressBar.animate()
-                    .setDuration(800)
+                    .setDuration(1)
                     .setInterpolator(android.view.animation.AccelerateDecelerateInterpolator())
                     .withEndAction {
                         dayProgressBar.layoutParams.height = progressHeight
