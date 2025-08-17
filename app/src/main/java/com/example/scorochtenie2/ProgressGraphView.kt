@@ -7,6 +7,8 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ProgressGraphView @JvmOverloads constructor(
     context: Context,
@@ -30,9 +32,13 @@ class ProgressGraphView @JvmOverloads constructor(
     private val textPaint = Paint().apply {
         isAntiAlias = true
         textSize = 12f
-        color = Color.GRAY
+        color = getTextColor()
     }
-    
+
+    private var dataPoints: List<Int> = emptyList()
+    private var startDate: Calendar? = null
+    private val dateFormat = SimpleDateFormat("dd.MM", Locale.getDefault())
+
     private fun getTextColor(): Int {
         val typedValue = android.util.TypedValue()
         context.theme.resolveAttribute(android.R.attr.textColorSecondary, typedValue, true)
@@ -43,21 +49,16 @@ class ProgressGraphView @JvmOverloads constructor(
         }
     }
 
-    private var dataPoints: List<Int> = emptyList()
-
-    fun setData(points: List<Int>) {
-        dataPoints = points
+    fun setData(points: List<Int>, startDate: Calendar? = null) {
+        this.dataPoints = points
+        this.startDate = startDate
         invalidate()
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        
-        // Обновляем цвет текста под текущую тему
-        textPaint.color = getTextColor()
 
         if (dataPoints.isEmpty()) {
-            // Рисуем заглушку
             val centerX = width / 2f
             val centerY = height / 2f
             canvas.drawText("График прогресса", centerX - 50f, centerY, textPaint)
@@ -72,8 +73,6 @@ class ProgressGraphView @JvmOverloads constructor(
 
         val maxValue = dataPoints.maxOrNull() ?: 100
         val minValue = dataPoints.minOrNull() ?: 0
-        
-        // Избегаем деления на ноль
         val valueRange = (maxValue - minValue).toFloat()
         val normalizedMaxValue = if (valueRange > 0) maxValue.toFloat() else 100f
         val normalizedMinValue = if (valueRange > 0) minValue.toFloat() else 0f
@@ -82,19 +81,16 @@ class ProgressGraphView @JvmOverloads constructor(
         val fillPath = Path()
 
         dataPoints.forEachIndexed { index, value ->
-            // Обрабатываем случай с одним элементом
             val x = if (dataPoints.size == 1) {
                 padding + graphWidth / 2f
             } else {
                 padding + (index.toFloat() / (dataPoints.size - 1)) * graphWidth
             }
-            
             val normalizedValue = if (normalizedMaxValue > normalizedMinValue) {
                 (value - normalizedMinValue) / (normalizedMaxValue - normalizedMinValue)
             } else {
-                0.5f // Среднее значение если все точки одинаковые
+                0.5f
             }
-            
             val y = height - padding - normalizedValue * graphHeight
 
             if (index == 0) {
@@ -107,7 +103,6 @@ class ProgressGraphView @JvmOverloads constructor(
             }
         }
 
-        // Завершаем fill path
         if (dataPoints.isNotEmpty()) {
             val lastX = if (dataPoints.size == 1) {
                 padding + graphWidth / 2f
@@ -118,37 +113,36 @@ class ProgressGraphView @JvmOverloads constructor(
             fillPath.close()
         }
 
-        // Рисуем заливку
         canvas.drawPath(fillPath, fillPaint)
-        
-        // Рисуем линию
         canvas.drawPath(path, paint)
 
-        // Рисуем точки
         dataPoints.forEachIndexed { index, value ->
             val x = if (dataPoints.size == 1) {
                 padding + graphWidth / 2f
             } else {
                 padding + (index.toFloat() / (dataPoints.size - 1)) * graphWidth
             }
-            
             val normalizedValue = if (normalizedMaxValue > normalizedMinValue) {
                 (value - normalizedMinValue) / (normalizedMaxValue - normalizedMinValue)
             } else {
                 0.5f
             }
-            
             val y = height - padding - normalizedValue * graphHeight
-
             canvas.drawCircle(x, y, 6f, paint)
         }
 
         // Рисуем подписи осей
         val dayCount = if (dataPoints.size == 1) 1 else dataPoints.size
-        canvas.drawText("День 1", padding, height - 10f, textPaint)
-        canvas.drawText("День $dayCount", width - padding - 40f, height - 10f, textPaint)
-        
-        // Рисуем значения осей Y
+        if (startDate == null) {
+            canvas.drawText("День 1", padding, height - 10f, textPaint)
+            canvas.drawText("День $dayCount", width - padding - 40f, height - 10f, textPaint)
+        } else {
+            val calendar = Calendar.getInstance().apply { timeInMillis = startDate!!.timeInMillis }
+            canvas.drawText(dateFormat.format(calendar.time), padding, height - 10f, textPaint)
+            calendar.add(Calendar.DAY_OF_YEAR, dayCount - 1)
+            canvas.drawText(dateFormat.format(calendar.time), width - padding - 40f, height - 10f, textPaint)
+        }
+
         val yLabelCount = 3
         for (i in 0..yLabelCount) {
             val yValue = normalizedMinValue + (normalizedMaxValue - normalizedMinValue) * i / yLabelCount
@@ -156,4 +150,4 @@ class ProgressGraphView @JvmOverloads constructor(
             canvas.drawText("${yValue.toInt()}", 5f, y + 4f, textPaint)
         }
     }
-} 
+}

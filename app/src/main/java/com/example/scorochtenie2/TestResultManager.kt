@@ -1,7 +1,7 @@
 package com.example.scorochtenie2
 
 import android.content.Context
-import android.content.SharedPreferences
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
@@ -9,11 +9,20 @@ import java.util.*
 
 data class TestResult(
     val techniqueName: String,
-    val comprehension: Int, // Процент понимания (0-100)
-    val readingTimeSeconds: Int, // Время чтения в секундах
+    val comprehension: Int,
+    val readingTimeSeconds: Int,
     val timestamp: Long,
-    val date: String, // Дата в формате "yyyy-MM-dd"
-    val textIndex: Int = 0 // Индекс прочитанного текста (0, 1, 2)
+    val date: String,
+    val textIndex: Int = 0
+)
+
+data class TechniqueStats(
+    val usesCount: Int,
+    val uniqueTextsCount: Int,
+    val avgComprehension: Int,
+    val totalReadingTimeSeconds: Int,
+    val avgReadingTimeSeconds: Int,
+    val dailyComprehension: List<Int>
 )
 
 object TestResultManager {
@@ -37,6 +46,7 @@ object TestResultManager {
         )
 
         currentResults.add(newResult)
+        Log.d("TestResultManager", "Saving result: $newResult")
 
         val json = gson.toJson(currentResults)
         editor.putString(KEY_RESULTS, json)
@@ -46,19 +56,24 @@ object TestResultManager {
     fun getTestResults(context: Context): List<TestResult> {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val json = sharedPreferences.getString(KEY_RESULTS, "[]")
-
         val type = object : TypeToken<List<TestResult>>() {}.type
-        return gson.fromJson(json, type) ?: emptyList()
+        val results = gson.fromJson<List<TestResult>>(json, type) ?: emptyList()
+        Log.d("TestResultManager", "Loaded ${results.size} results: $results")
+        return results
     }
 
     fun getTechniqueResults(context: Context, techniqueName: String): List<TestResult> {
-        return getTestResults(context).filter { it.techniqueName == techniqueName }
+        val results = getTestResults(context).filter { it.techniqueName == techniqueName }
+        Log.d("TestResultManager", "Filtered $techniqueName results: ${results.size}")
+        return results
     }
 
-    fun getTechniqueStats(context: Context, techniqueName: String): TechniqueStats {
+    fun getTechniqueStats(context: Context, techniqueName: String, startDate: Calendar? = null): TechniqueStats {
         val results = getTechniqueResults(context, techniqueName)
+        val filteredResults = filterResultsByPeriod(results, startDate)
+        Log.d("TestResultManager", "Technique $techniqueName, filtered ${filteredResults.size} results for startDate=$startDate")
 
-        if (results.isEmpty()) {
+        if (filteredResults.isEmpty()) {
             return TechniqueStats(
                 usesCount = 0,
                 uniqueTextsCount = 0,
@@ -69,49 +84,15 @@ object TestResultManager {
             )
         }
 
-        val usesCount = results.size
-        // Считаем только тексты с 100% результатом как завершенные
-        val uniqueTextsCount = getCompletedTextsCount(context, techniqueName)
-        val avgComprehension = results.map { it.comprehension }.average().toInt()
-        val totalReadingTimeSeconds = results.sumOf { it.readingTimeSeconds }
+        val usesCount = filteredResults.size
+        val uniqueTextsCount = filteredResults.filter { it.comprehension == 100 }
+            .map { it.textIndex }
+            .distinct()
+            .size
+        val avgComprehension = filteredResults.map { it.comprehension }.average().toInt()
+        val totalReadingTimeSeconds = filteredResults.sumOf { it.readingTimeSeconds }
         val avgReadingTimeSeconds = if (usesCount > 0) totalReadingTimeSeconds / usesCount else 0
-
-        // Получаем данные за текущую неделю (с понедельника по воскресенье)
-        val calendar = Calendar.getInstance()
-        val dailyComprehension = mutableListOf<Int>()
-        
-        // Находим понедельник текущей недели
-        // Пример: если сегодня среда (Calendar.WEDNESDAY = 4), то daysFromMonday = 2
-        // Значит нужно отступить на 2 дня назад, чтобы попасть на понедельник
-        val currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-        val daysFromMonday = when (currentDayOfWeek) {
-            Calendar.SUNDAY -> 6      // Воскресенье - отступаем на 6 дней назад
-            Calendar.MONDAY -> 0      // Понедельник - не отступаем
-            Calendar.TUESDAY -> 1     // Вторник - отступаем на 1 день назад
-            Calendar.WEDNESDAY -> 2   // Среда - отступаем на 2 дня назад
-            Calendar.THURSDAY -> 3    // Четверг - отступаем на 3 дня назад
-            Calendar.FRIDAY -> 4      // Пятница - отступаем на 4 дня назад
-            Calendar.SATURDAY -> 5    // Суббота - отступаем на 5 дней назад
-            else -> 0
-        }
-        
-        // Переходим к понедельнику текущей недели
-        calendar.add(Calendar.DAY_OF_YEAR, -daysFromMonday)
-        
-        // Получаем данные для каждого дня недели (пн-вс)
-        for (i in 0..6) {
-            val targetDate = dateFormat.format(calendar.time)
-            val dayResults = results.filter { it.date == targetDate }
-            val dayAvg = if (dayResults.isNotEmpty()) {
-                dayResults.map { it.comprehension }.average().toInt()
-            } else {
-                0
-            }
-            dailyComprehension.add(dayAvg)
-            
-            // Переходим к следующему дню
-            calendar.add(Calendar.DAY_OF_YEAR, 1)
-        }
+        val dailyComprehension = getDailyComprehension(filteredResults, startDate)
 
         return TechniqueStats(
             usesCount = usesCount,
@@ -123,17 +104,143 @@ object TestResultManager {
         )
     }
 
-    // Функция для получения количества завершенных текстов (100% результат)
+    fun getAllTechniquesStats(context: Context, startDate: Calendar? = null): TechniqueStats {
+        val allResults = getTestResults(context)
+        val filteredResults = filterResultsByPeriod(allResults, startDate)
+        Log.d("TestResultManager", "All techniques, filtered ${filteredResults.size} results for startDate=$startDate")
+
+        if (filteredResults.isEmpty()) {
+            return TechniqueStats(
+                usesCount = 0,
+                uniqueTextsCount = 0,
+                avgComprehension = 0,
+                totalReadingTimeSeconds = 0,
+                avgReadingTimeSeconds = 0,
+                dailyComprehension = List(7) { 0 }
+            )
+        }
+
+        val usesCount = filteredResults.size
+        val uniqueTextsCount = filteredResults.map { it.textIndex }.distinct().size
+        val avgComprehension = filteredResults.map { it.comprehension }.average().toInt()
+        val totalReadingTimeSeconds = filteredResults.sumOf { it.readingTimeSeconds }
+        val avgReadingTimeSeconds = if (usesCount > 0) totalReadingTimeSeconds / usesCount else 0
+        val dailyComprehension = getDailyComprehension(filteredResults, startDate)
+
+        return TechniqueStats(
+            usesCount = usesCount,
+            uniqueTextsCount = uniqueTextsCount,
+            avgComprehension = avgComprehension,
+            totalReadingTimeSeconds = totalReadingTimeSeconds,
+            avgReadingTimeSeconds = avgReadingTimeSeconds,
+            dailyComprehension = dailyComprehension
+        )
+    }
+
+    private fun filterResultsByPeriod(results: List<TestResult>, startDate: Calendar?): List<TestResult> {
+        val calendar = Calendar.getInstance()
+        val start: Long
+        val end: Long
+
+        if (startDate == null) {
+            // Текущая неделя: от понедельника до конца текущего дня
+            val currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+            val daysFromMonday = when (currentDayOfWeek) {
+                Calendar.SUNDAY -> 6
+                Calendar.MONDAY -> 0
+                Calendar.TUESDAY -> 1
+                Calendar.WEDNESDAY -> 2
+                Calendar.THURSDAY -> 3
+                Calendar.FRIDAY -> 4
+                Calendar.SATURDAY -> 5
+                else -> 0
+            }
+            // Устанавливаем начало недели (понедельник, 00:00:00)
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
+            calendar.add(Calendar.DAY_OF_YEAR, -daysFromMonday)
+            start = calendar.timeInMillis
+            // Конец недели: текущий момент
+            calendar.timeInMillis = System.currentTimeMillis()
+            end = calendar.timeInMillis
+        } else {
+            // Выбранный период: от startDate до startDate + 6 дней
+            calendar.timeInMillis = startDate.timeInMillis
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
+            start = calendar.timeInMillis
+            calendar.add(Calendar.DAY_OF_YEAR, 6)
+            calendar.set(Calendar.HOUR_OF_DAY, 23)
+            calendar.set(Calendar.MINUTE, 59)
+            calendar.set(Calendar.SECOND, 59)
+            calendar.set(Calendar.MILLISECOND, 999)
+            end = calendar.timeInMillis
+        }
+
+        val filtered = results.filter { it.timestamp in start..end }
+        Log.d("TestResultManager", "Filtering period: start=$start (${dateFormat.format(Date(start))}), end=$end (${dateFormat.format(Date(end))}), results=${filtered.size}")
+        return filtered
+    }
+
+    private fun getDailyComprehension(results: List<TestResult>, startDate: Calendar?): List<Int> {
+        val dailyComprehension = mutableListOf<Int>()
+        val calendar = Calendar.getInstance()
+
+        if (startDate == null) {
+            // Текущая неделя: от понедельника до текущего дня
+            val currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+            val daysFromMonday = when (currentDayOfWeek) {
+                Calendar.SUNDAY -> 6
+                Calendar.MONDAY -> 0
+                Calendar.TUESDAY -> 1
+                Calendar.WEDNESDAY -> 2
+                Calendar.THURSDAY -> 3
+                Calendar.FRIDAY -> 4
+                Calendar.SATURDAY -> 5
+                else -> 0
+            }
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
+            calendar.add(Calendar.DAY_OF_YEAR, -daysFromMonday)
+        } else {
+            calendar.timeInMillis = startDate.timeInMillis
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
+        }
+
+        for (i in 0..6) {
+            val dayStart = calendar.timeInMillis
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+            val dayEnd = calendar.timeInMillis - 1 // До конца предыдущего дня
+            val dayResults = results.filter { it.timestamp in dayStart..dayEnd }
+            val dayAvg = if (dayResults.isNotEmpty()) {
+                dayResults.map { it.comprehension }.average().toInt()
+            } else {
+                0
+            }
+            dailyComprehension.add(dayAvg)
+            Log.d("TestResultManager", "Day $i: ${dateFormat.format(Date(dayStart))} - results=${dayResults.size}, avg=$dayAvg")
+        }
+
+        return dailyComprehension
+    }
+
     fun getCompletedTextsCount(context: Context, techniqueName: String): Int {
         val results = getTechniqueResults(context, techniqueName)
-        // Считаем только тексты с 100% результатом
         return results.filter { it.comprehension == 100 }
             .map { it.textIndex }
             .distinct()
             .size
     }
 
-    // Функция для получения списка завершенных текстов
     fun getCompletedTexts(context: Context, techniqueName: String): List<Int> {
         val results = getTechniqueResults(context, techniqueName)
         return results.filter { it.comprehension == 100 }
@@ -141,145 +248,39 @@ object TestResultManager {
             .distinct()
     }
 
-    // Функция для проверки, завершен ли конкретный текст
     fun isTextCompleted(context: Context, techniqueName: String, textIndex: Int): Boolean {
         val results = getTechniqueResults(context, techniqueName)
         return results.any { it.textIndex == textIndex && it.comprehension == 100 }
     }
 
-    // Функция для получения доступных текстов по длине
     fun getAvailableTextsByLength(context: Context, techniqueName: String, textLength: String): List<Int> {
         val completedTexts = getCompletedTexts(context, techniqueName)
-        
         val availableRange = when (textLength) {
             "Короткий" -> 0..2
             "Средний" -> 3..5
             "Длинный" -> 6..8
             else -> 3..5
         }
-        
-        return availableRange.filter { textIndex -> 
-            !completedTexts.contains(textIndex) 
-        }
+        return availableRange.filter { !completedTexts.contains(it) }
     }
 
-    // Функция для проверки, есть ли доступные тексты для данной длины
     fun hasAvailableTexts(context: Context, techniqueName: String, textLength: String): Boolean {
         return getAvailableTextsByLength(context, techniqueName, textLength).isNotEmpty()
     }
 
-    // Функция для проверки полного завершения техники (9/9)
     fun isTechniqueFullyCompleted(context: Context, techniqueName: String): Boolean {
-        val completedCount = getCompletedTextsCount(context, techniqueName)
-        return completedCount >= 9
-    }
-
-    fun getAllTechniquesStats(context: Context): TechniqueStats {
-        val allResults = getTestResults(context)
-
-        if (allResults.isEmpty()) {
-            return TechniqueStats(
-                usesCount = 0,
-                uniqueTextsCount = 0,
-                avgComprehension = 0,
-                totalReadingTimeSeconds = 0,
-                avgReadingTimeSeconds = 0,
-                dailyComprehension = List(7) { 0 }
-            )
-        }
-
-        val usesCount = allResults.size
-        val uniqueTextsCount = allResults.map { it.textIndex }.distinct().size // Количество уникальных текстов
-        val avgComprehension = allResults.map { it.comprehension }.average().toInt()
-        val totalReadingTimeSeconds = allResults.sumOf { it.readingTimeSeconds }
-        val avgReadingTimeSeconds = if (usesCount > 0) totalReadingTimeSeconds / usesCount else 0
-
-        // Получаем данные за текущую неделю (с понедельника по воскресенье) для всех техник
-        val calendar = Calendar.getInstance()
-        val dailyComprehension = mutableListOf<Int>()
-        
-        // Находим понедельник текущей недели
-        // Пример: если сегодня среда (Calendar.WEDNESDAY = 4), то daysFromMonday = 2
-        // Значит нужно отступить на 2 дня назад, чтобы попасть на понедельник
-        val currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-        val daysFromMonday = when (currentDayOfWeek) {
-            Calendar.SUNDAY -> 6      // Воскресенье - отступаем на 6 дней назад
-            Calendar.MONDAY -> 0      // Понедельник - не отступаем
-            Calendar.TUESDAY -> 1     // Вторник - отступаем на 1 день назад
-            Calendar.WEDNESDAY -> 2   // Среда - отступаем на 2 дня назад
-            Calendar.THURSDAY -> 3    // Четверг - отступаем на 3 дня назад
-            Calendar.FRIDAY -> 4      // Пятница - отступаем на 4 дня назад
-            Calendar.SATURDAY -> 5    // Суббота - отступаем на 5 дней назад
-            else -> 0
-        }
-        
-        // Переходим к понедельнику текущей недели
-        calendar.add(Calendar.DAY_OF_YEAR, -daysFromMonday)
-        
-        // Получаем данные для каждого дня недели (пн-вс)
-        for (i in 0..6) {
-            val targetDate = dateFormat.format(calendar.time)
-            val dayResults = allResults.filter { it.date == targetDate }
-            val dayAvg = if (dayResults.isNotEmpty()) {
-                dayResults.map { it.comprehension }.average().toInt()
-            } else {
-                0
-            }
-            dailyComprehension.add(dayAvg)
-            
-            // Переходим к следующему дню
-            calendar.add(Calendar.DAY_OF_YEAR, 1)
-        }
-
-        return TechniqueStats(
-            usesCount = usesCount,
-            uniqueTextsCount = uniqueTextsCount,
-            avgComprehension = avgComprehension,
-            totalReadingTimeSeconds = totalReadingTimeSeconds,
-            avgReadingTimeSeconds = avgReadingTimeSeconds,
-            dailyComprehension = dailyComprehension
-        )
+        return getCompletedTextsCount(context, techniqueName) >= 9
     }
 
     fun clearAllProgress(context: Context) {
-        // Очищаем все результаты тестов
-        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        with(sharedPreferences.edit()) {
-            clear()
-            apply()
-        }
-        
-        // Очищаем все связанные настройки прогресса
-        val techniqueTimesPref = context.getSharedPreferences("TechniqueTimes", Context.MODE_PRIVATE)
-        with(techniqueTimesPref.edit()) {
-            clear()
-            apply()
-        }
-        
-        // Очищаем настройки техник (если есть)
-        val techniqueSettingsPref = context.getSharedPreferences("TechniqueSettings", Context.MODE_PRIVATE)
-        with(techniqueSettingsPref.edit()) {
-            clear()
-            apply()
-        }
-        
-        // Очищаем статистику обучения (если есть)
-        val learningStatsPref = context.getSharedPreferences("LearningStats", Context.MODE_PRIVATE)
-        with(learningStatsPref.edit()) {
-            clear()
-            apply()
-        }
-        
-        // Очищаем все другие возможные настройки прогресса
         val allPrefs = listOf(
             "TestResults",
-            "TechniqueTimes", 
+            "TechniqueTimes",
             "TechniqueSettings",
             "LearningStats",
             "ProgressData",
             "UserProgress"
         )
-        
         allPrefs.forEach { prefName ->
             val pref = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
             with(pref.edit()) {
@@ -287,14 +288,6 @@ object TestResultManager {
                 apply()
             }
         }
+        Log.d("TestResultManager", "All progress cleared")
     }
 }
-
-data class TechniqueStats(
-    val usesCount: Int,
-    val uniqueTextsCount: Int, // Количество уникальных прочитанных текстов
-    val avgComprehension: Int,
-    val totalReadingTimeSeconds: Int, // Общее время чтения в секундах
-    val avgReadingTimeSeconds: Int,   // Среднее время чтения в секундах
-    val dailyComprehension: List<Int>
-)

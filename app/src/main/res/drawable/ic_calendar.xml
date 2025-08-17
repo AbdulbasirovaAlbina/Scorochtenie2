@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Корпус календаря (прямоугольник с закруглёнными углами) -->
+    <path
+        android:pathData="M4,4h16c1.1,0 2,0.9 2,2v12c0,1.1 -0.9,2 -2,2H4c-1.1,0 -2,-0.9 -2,-2V6c0,-1.1 0.9,-2 2,-2z"
+        android:fillColor="?attr/colorOnSurface"
+        android:fillAlpha="0.1"
+        android:strokeColor="?attr/colorOnSurface"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round" />
+
+    <!-- Верхняя часть (имитация крепления) -->
+    <path
+        android:pathData="M8,2v4M16,2v4"
+        android:strokeColor="?attr/colorOnSurface"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round" />
+
+    <!-- Горизонтальная линия под "креплением" -->
+    <path
+        android:pathData="M3,8h18"
+        android:strokeColor="?attr/colorOnSurface"
+        android:strokeWidth="1"
+        android:strokeLineCap="round" />
+
+    <!-- Сетка дат (3x3) -->
+    <path
+        android:pathData="M6,12h2M12,12h2M18,12h2M6,15h2M12,15h2M18,15h2M6,18h2M18,18h2"
+        android:strokeColor="?attr/colorOnSurface"
+        android:strokeWidth="0.5"
+        android:strokeLineCap="round" />
+
+    <!-- Выделенный день (например, центральная дата) -->
+    <path
+        android:pathData="M11,14h4v4h-4z"
+        android:fillColor="?attr/colorPrimary"
+        android:strokeColor="?attr/colorOnSurface"
+        android:strokeWidth="0.5" />
+
+</vector>

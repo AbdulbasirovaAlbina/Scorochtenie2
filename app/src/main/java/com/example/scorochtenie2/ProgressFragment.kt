@@ -1,15 +1,21 @@
 package com.example.scorochtenie2
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.animation.AccelerateDecelerateInterpolator
-import java.util.Calendar
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.CalendarConstraints.DateValidator
+import com.google.android.material.datepicker.MaterialDatePicker
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ProgressFragment : Fragment() {
 
@@ -21,7 +27,12 @@ class ProgressFragment : Fragment() {
     private lateinit var totalTimeText: TextView
     private lateinit var avgTimeText: TextView
     private lateinit var daysProgressContainer: ViewGroup
+    private lateinit var selectedPeriodText: TextView
+    private lateinit var selectPeriodButton: MaterialButton
     private lateinit var techniqueSelectorAdapter: TechniqueSelectorAdapter
+    private var selectedStartDate: Calendar? = null
+    private var selectedTechnique: String = "Все техники"
+    private val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
 
     private val techniques = listOf(
         TechniqueItem("Все техники", R.drawable.ic_all_techniques),
@@ -39,28 +50,25 @@ class ProgressFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_progress, container, false)
-        
+
         initViews(view)
         setupTechniqueSelector()
-        loadTechniqueProgress("Все техники")
-        
+        setupPeriodSelector()
+        loadTechniqueProgress(selectedTechnique)
+
         return view
     }
-    
+
     override fun onResume() {
         super.onResume()
-        // Обновляем прогресс при возвращении на фрагмент
-        loadTechniqueProgress("Все техники")
-        
-        // Обновляем адаптер техник
-        techniqueSelectorAdapter?.notifyDataSetChanged()
+        loadTechniqueProgress(selectedTechnique)
+        techniqueSelectorAdapter.notifyDataSetChanged()
     }
 
     private fun initViews(view: View) {
         techniqueSelector = view.findViewById(R.id.technique_selector)
         progressContainer = view.findViewById(R.id.progress_container)
-        
-        // Находим элементы статистики в item_technique_progress
+
         val progressItemView = layoutInflater.inflate(R.layout.item_technique_progress, progressContainer, false)
         techniqueNameText = progressItemView.findViewById(R.id.technique_name)
         usesCountText = progressItemView.findViewById(R.id.uses_count)
@@ -68,27 +76,117 @@ class ProgressFragment : Fragment() {
         totalTimeText = progressItemView.findViewById(R.id.total_time)
         avgTimeText = progressItemView.findViewById(R.id.avg_time)
         daysProgressContainer = progressItemView.findViewById(R.id.days_progress_container)
-        
-        // Добавляем элемент статистики в контейнер
+        selectedPeriodText = progressItemView.findViewById(R.id.selected_period)
+        selectPeriodButton = progressItemView.findViewById(R.id.select_period_button)
+
         progressContainer.addView(progressItemView)
     }
 
     private fun setupTechniqueSelector() {
         techniqueSelectorAdapter = TechniqueSelectorAdapter(techniques) { technique ->
+            selectedTechnique = technique.title
             loadTechniqueProgress(technique.title)
         }
-        
+
         techniqueSelector.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         techniqueSelector.adapter = techniqueSelectorAdapter
     }
 
+    private fun setupPeriodSelector() {
+        selectPeriodButton.setOnClickListener {
+            showDatePicker()
+        }
+        updatePeriodDisplay(null)
+    }
+
+    private fun showDatePicker() {
+        // Ограничение: даты от 1 января 2025 до конца текущего дня
+        val startDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+            set(2025, Calendar.JANUARY, 1, 0, 0, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        val endDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+            set(Calendar.MILLISECOND, 999)
+        }
+        Log.d("ProgressFragment", "Date constraints: start=${dateFormat.format(startDate.time)} (${startDate.timeInMillis}), end=${dateFormat.format(endDate.time)} (${endDate.timeInMillis})")
+
+        // Кастомный валидатор для запрета дат после endDate
+        val dateValidator = object : DateValidator {
+            override fun isValid(date: Long): Boolean {
+                return date >= startDate.timeInMillis && date <= endDate.timeInMillis
+            }
+
+            override fun writeToParcel(dest: android.os.Parcel, flags: Int) {
+                // Реализация для Parcelable (требуется для MaterialDatePicker)
+                dest.writeLong(startDate.timeInMillis)
+                dest.writeLong(endDate.timeInMillis)
+            }
+
+            override fun describeContents(): Int = 0
+        }
+
+        val constraintsBuilder = CalendarConstraints.Builder()
+            .setStart(startDate.timeInMillis)
+            .setEnd(endDate.timeInMillis)
+            .setOpenAt(endDate.timeInMillis)
+            .setValidator(dateValidator)
+
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Выберите начало периода")
+            .setSelection(endDate.timeInMillis)
+            .setCalendarConstraints(constraintsBuilder.build())
+            .build()
+
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            val selectedCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+                timeInMillis = selection
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+            val currentDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+            if (selectedCalendar.after(currentDate)) {
+                Toast.makeText(requireContext(), "Нельзя выбирать даты после текущей даты!", Toast.LENGTH_SHORT).show()
+                Log.d("ProgressFragment", "Rejected date: ${dateFormat.format(selectedCalendar.time)} is after ${dateFormat.format(currentDate.time)}")
+                return@addOnPositiveButtonClickListener
+            }
+            selectedStartDate = selectedCalendar
+            updatePeriodDisplay(selectedCalendar)
+            loadTechniqueProgress(selectedTechnique)
+            Log.d("ProgressFragment", "Selected date: ${dateFormat.format(selectedCalendar.time)} (${selection})")
+        }
+
+        datePicker.show(childFragmentManager, "DATE_PICKER")
+    }
+
+    private fun updatePeriodDisplay(startDate: Calendar?) {
+        if (startDate == null) {
+            selectedPeriodText.text = "Текущая неделя"
+        } else {
+            val endDate = Calendar.getInstance().apply {
+                timeInMillis = startDate.timeInMillis
+                add(Calendar.DAY_OF_YEAR, 6)
+            }
+            selectedPeriodText.text = "${dateFormat.format(startDate.time)} - ${dateFormat.format(endDate.time)}"
+        }
+    }
+
     private fun loadTechniqueProgress(techniqueName: String) {
         val stats = if (techniqueName == "Все техники") {
-            TestResultManager.getAllTechniquesStats(requireContext())
+            TestResultManager.getAllTechniquesStats(requireContext(), selectedStartDate)
         } else {
-            TestResultManager.getTechniqueStats(requireContext(), techniqueName)
+            TestResultManager.getTechniqueStats(requireContext(), techniqueName, selectedStartDate)
         }
-        
+
         updateProgressDisplay(techniqueName, stats)
     }
 
@@ -96,15 +194,11 @@ class ProgressFragment : Fragment() {
         techniqueNameText.text = techniqueName
         usesCountText.text = stats.usesCount.toString()
         avgComprehensionText.text = "${stats.avgComprehension}%"
-        
-        // Отображаем время чтения в удобном формате
         totalTimeText.text = formatTime(stats.totalReadingTimeSeconds)
         avgTimeText.text = formatTime(stats.avgReadingTimeSeconds)
-        
-        // Обновляем прогресс по дням
         updateDaysProgress(stats.dailyComprehension)
     }
-    
+
     private fun formatTime(seconds: Int): String {
         return when {
             seconds < 60 -> "${seconds} сек"
@@ -112,51 +206,76 @@ class ProgressFragment : Fragment() {
             else -> "${seconds / 3600} ч ${(seconds % 3600) / 60} мин"
         }
     }
-    
+
     private fun updateDaysProgress(dailyComprehension: List<Int>) {
         daysProgressContainer.removeAllViews()
-        
-        val dayNames = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
+
+        // Генерация списка дней недели
+        val dayNames = mutableListOf<String>()
         val calendar = Calendar.getInstance()
-        val currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-        
-        // Определяем индекс текущего дня недели (0 = понедельник, 6 = воскресенье)
-        val currentDayIndex = when (currentDayOfWeek) {
-            Calendar.SUNDAY -> 6
-            Calendar.MONDAY -> 0
-            Calendar.TUESDAY -> 1
-            Calendar.WEDNESDAY -> 2
-            Calendar.THURSDAY -> 3
-            Calendar.FRIDAY -> 4
-            Calendar.SATURDAY -> 5
-            else -> 0
+        val baseDayNames = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
+
+        if (selectedStartDate == null) {
+            // Текущая неделя: начинается с понедельника
+            dayNames.addAll(baseDayNames)
+        } else {
+            // Выбранный период: начинаем с дня недели selectedStartDate
+            calendar.timeInMillis = selectedStartDate!!.timeInMillis
+            for (i in 0..6) {
+                val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+                val index = when (dayOfWeek) {
+                    Calendar.SUNDAY -> 6
+                    Calendar.MONDAY -> 0
+                    Calendar.TUESDAY -> 1
+                    Calendar.WEDNESDAY -> 2
+                    Calendar.THURSDAY -> 3
+                    Calendar.FRIDAY -> 4
+                    Calendar.SATURDAY -> 5
+                    else -> 0
+                }
+                dayNames.add(baseDayNames[index])
+                calendar.add(Calendar.DAY_OF_YEAR, 1)
+            }
         }
-        
+
+        // Определяем текущий день для выделения (только для текущей недели)
+        val currentDayIndex = if (selectedStartDate == null) {
+            val currentDayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+            when (currentDayOfWeek) {
+                Calendar.SUNDAY -> 6
+                Calendar.MONDAY -> 0
+                Calendar.TUESDAY -> 1
+                Calendar.WEDNESDAY -> 2
+                Calendar.THURSDAY -> 3
+                Calendar.FRIDAY -> 4
+                Calendar.SATURDAY -> 5
+                else -> 0
+            }
+        } else {
+            -1 // Не выделяем текущий день для выбранного периода
+        }
+
         dailyComprehension.forEachIndexed { index, comprehension ->
             val dayView = layoutInflater.inflate(R.layout.item_day_progress, daysProgressContainer, false)
-            
+
             val tvDayName = dayView.findViewById<TextView>(R.id.tv_day_name)
             val tvDayPercentage = dayView.findViewById<TextView>(R.id.tv_day_percentage)
             val dayProgressBar = dayView.findViewById<View>(R.id.day_progress_bar)
-            
-            // Устанавливаем название дня
+
             tvDayName.text = dayNames[index]
-            
-            // Выделяем текущий день недели
+
             if (index == currentDayIndex) {
                 tvDayName.setTextColor(resources.getColor(R.color.primary_color, null))
                 tvDayName.setTypeface(null, android.graphics.Typeface.BOLD)
             }
-            
+
             tvDayPercentage.text = "${comprehension}%"
-            
-            // Анимируем столбец прогресса
+
             val progressPercent = comprehension.toFloat() / 100f
             dayProgressBar.post {
                 val height = (dayProgressBar.parent as View).height
                 val progressHeight = (height * progressPercent).toInt()
-                
-                // Плавная анимация
+
                 dayProgressBar.animate()
                     .setDuration(1)
                     .setInterpolator(android.view.animation.AccelerateDecelerateInterpolator())
@@ -166,8 +285,8 @@ class ProgressFragment : Fragment() {
                     }
                     .start()
             }
-            
+
             daysProgressContainer.addView(dayView)
         }
     }
-} 
+}

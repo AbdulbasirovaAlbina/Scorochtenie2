@@ -120,12 +120,11 @@
                 </androidx.cardview.widget.CardView>
 
             </LinearLayout>
-            
+
             <!-- Вторая строка статистики - Время чтения -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="90dp"
-
                 android:orientation="horizontal">
 
                 <!-- Левая карточка - Общее время -->
@@ -209,8 +208,6 @@
             </LinearLayout>
         </LinearLayout>
 
-
-
         <!-- Шкала прогресса по дням -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -226,20 +223,42 @@
                 android:textColor="?attr/textColorSecondary"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Дни недели с прогрессом -->
             <LinearLayout
                 android:id="@+id/days_progress_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center" />
 
-                <!-- Дни будут добавляться программно -->
+        </LinearLayout>
 
-            </LinearLayout>
+        <!-- Контейнер для выбора периода и отображения дат -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/selected_period"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Текущая неделя"
+                android:textSize="16sp"
+                android:textColor="?attr/textColorSecondary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/select_period_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Выбрать период"
+                app:icon="@drawable/ic_calendar"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
         </LinearLayout>
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView> 
+</androidx.cardview.widget.CardView>
