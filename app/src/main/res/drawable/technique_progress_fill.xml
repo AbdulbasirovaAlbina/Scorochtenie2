@@ -6,5 +6,5 @@
         android:startColor="@color/primary_color"
         android:endColor="@color/accent_color"
         android:angle="0" />
-    <stroke android:width="0.5dp" android:color="@color/primary_color" />
+
 </shape>

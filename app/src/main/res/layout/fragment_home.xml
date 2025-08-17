@@ -5,56 +5,72 @@
     android:layout_height="match_parent"
     android:background="?attr/backgroundColor">
 
-    <!-- Header with gradient background -->
-    <LinearLayout
+    <!-- Modern Header with Pinterest-style design -->
+    <androidx.cardview.widget.CardView
         android:id="@+id/header_section"
         android:layout_width="match_parent"
         android:layout_height="190dp"
-        android:orientation="vertical"
-        android:background="@drawable/home_header_gradient"
-        android:gravity="center"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="10dp">
+        android:layout_margin="16dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="@android:color/transparent">
 
-        <!-- Контейнер для иконки с фоном -->
-        <FrameLayout
-            android:layout_width="110dp"
-            android:layout_height="110dp"
-            android:layout_marginBottom="1dp">
-            
-            <!-- Полупрозрачный фон -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/home_logo_bg" />
-            
-            <!-- Иконка (можно изменять размер независимо) -->
-            <ImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/ic_launcher_foreground"
-                android:layout_gravity="center" />
-                
-        </FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/home_header_gradient"
+            android:gravity="center"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingTop="32dp"
+            android:paddingBottom="24dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Скорочтение"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:gravity="center" />
+            <!-- Modern icon container with shadow -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
 
-    </LinearLayout>
+                app:cardCornerRadius="20dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <ImageView
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:src="@drawable/ic_launcher_foreground"
+                    android:layout_gravity="center"
+                    android:alpha="0.9" />
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Modern title with better typography -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Скорочтение"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.05"
+                android:shadowColor="#40000000"
+                android:shadowDx="0"
+                android:shadowDy="2"
+                android:shadowRadius="4" />
+
+            <!-- Subtitle -->
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <!-- Scrollable content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="190dp"
+        android:layout_marginTop="195dp"
         android:clipToPadding="false">
 
         <LinearLayout
@@ -70,13 +86,16 @@
                 android:layout_marginBottom="15dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="6dp"
+                android:layout_marginTop="5dp"
                 app:cardBackgroundColor="?attr/surfaceColor">
 
                 <LinearLayout
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="20dp">
+
+                    android:padding="15dp">
 
                     <TextView
                         android:layout_width="wrap_content"
