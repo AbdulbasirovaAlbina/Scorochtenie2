@@ -81,7 +81,7 @@
             android:text="09:00"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="?attr/textColorPrimary"
             android:background="?android:attr/selectableItemBackground"
             android:padding="8dp" />
 

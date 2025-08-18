@@ -261,6 +261,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="Выбрать период"
+                    android:textColor="?attr/textColorPrimary"
+                    app:iconTint="?attr/textColorPrimary"
+                    app:strokeColor="?attr/textColorPrimary"
                     app:icon="@drawable/ic_calendar"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 

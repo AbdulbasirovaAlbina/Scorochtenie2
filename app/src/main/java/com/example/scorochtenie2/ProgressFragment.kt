@@ -201,6 +201,9 @@ class ProgressFragment : Fragment() {
             .create()
 
         dialog.show()
+        // Принудительно сделать текст кнопок диалога белым в тёмной теме
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(resources.getColor(android.R.color.white, null))
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(resources.getColor(android.R.color.white, null))
         Log.d("ProgressFragment", "CalendarView dialog shown")
     }
 

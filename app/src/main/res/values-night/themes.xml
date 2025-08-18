@@ -8,5 +8,11 @@
         <item name="textColorSecondary">@color/text_secondary_dark</item>
         <item name="iconTint">@color/text_primary_dark</item>
         <item name="dividerColor">#424242</item>
+        <!-- Darker primary for buttons in dark theme -->
+        <item name="colorPrimary">#5f2cc7</item>
+        <item name="colorPrimaryContainer">#6121cf</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Outlined buttons stroke color override (Material3 uses colorOutline) -->
+        <item name="colorOutline">#2E3A59</item>
     </style>
 </resources>

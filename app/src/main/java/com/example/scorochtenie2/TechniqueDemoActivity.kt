@@ -16,7 +16,8 @@ class TechniqueDemoActivity : AppCompatActivity() {
     private lateinit var diagonalTextView: TextView
     private lateinit var diagonalLineView: DiagonalLineView
     private val selectedTextIndex = -1 // используем демонстрационный текст
-    private val demoSpeed = 300L // самая медленная скорость для демонстрации
+    // Скорость демонстрации (слов в минуту). Меньше значение — медленнее показ.
+    private val demoSpeed = 120L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,13 +113,20 @@ class TechniqueDemoActivity : AppCompatActivity() {
         textView.requestLayout()
         Log.d("TechniqueDemo", "Requesting layout for textView")
 
+        // Индивидуальная скорость для техник в демо-режиме
+        val speedForTechnique: Long = when (technique) {
+            is DiagonalReadingTechnique -> 165L // чуть быстрее, чем базовая демо-скорость
+            is WordReverseTechnique -> 70L // помедленнее, чем базовая демо-скорость
+            else -> demoSpeed
+        }
+
         if (technique is DiagonalReadingTechnique) {
             // Для диагонального чтения используем специальный textView
             diagonalTextView.requestLayout()
             technique.startAnimation(
                 textView = diagonalTextView,
                 guideView = diagonalLineView,
-                durationPerWord = demoSpeed,
+                durationPerWord = speedForTechnique,
                 selectedTextIndex = selectedTextIndex,
                 onAnimationEnd = {
                     Log.d("TechniqueDemo", "Demo finished for technique: ${technique.displayName}")
@@ -130,7 +138,7 @@ class TechniqueDemoActivity : AppCompatActivity() {
             technique.startAnimation(
                 textView = textView,
                 guideView = guideView,
-                durationPerWord = demoSpeed,
+                durationPerWord = speedForTechnique,
                 selectedTextIndex = selectedTextIndex,
                 onAnimationEnd = {
                     Log.d("TechniqueDemo", "Demo finished for technique: ${technique.displayName}")
