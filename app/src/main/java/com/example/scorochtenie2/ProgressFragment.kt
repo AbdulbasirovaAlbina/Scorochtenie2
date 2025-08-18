@@ -1,19 +1,20 @@
 package com.example.scorochtenie2
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CalendarView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.datepicker.CalendarConstraints
-import com.google.android.material.datepicker.CalendarConstraints.DateValidator
-import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -49,6 +50,7 @@ class ProgressFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("ProgressFragment", "onCreateView called")
         val view = inflater.inflate(R.layout.fragment_progress, container, false)
 
         initViews(view)
@@ -61,11 +63,13 @@ class ProgressFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        Log.d("ProgressFragment", "onResume called")
         loadTechniqueProgress(selectedTechnique)
         techniqueSelectorAdapter.notifyDataSetChanged()
     }
 
     private fun initViews(view: View) {
+        Log.d("ProgressFragment", "initViews called")
         techniqueSelector = view.findViewById(R.id.technique_selector)
         progressContainer = view.findViewById(R.id.progress_container)
 
@@ -83,89 +87,121 @@ class ProgressFragment : Fragment() {
     }
 
     private fun setupTechniqueSelector() {
+        Log.d("ProgressFragment", "setupTechniqueSelector called")
         techniqueSelectorAdapter = TechniqueSelectorAdapter(techniques) { technique ->
             selectedTechnique = technique.title
             loadTechniqueProgress(technique.title)
         }
-
         techniqueSelector.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         techniqueSelector.adapter = techniqueSelectorAdapter
     }
 
     private fun setupPeriodSelector() {
+        Log.d("ProgressFragment", "setupPeriodSelector called")
         selectPeriodButton.setOnClickListener {
+            Log.d("ProgressFragment", "select_period_button clicked")
             showDatePicker()
         }
         updatePeriodDisplay(null)
     }
 
     private fun showDatePicker() {
+        Log.d("ProgressFragment", "showDatePicker called")
+
         // Ограничение: даты от 1 января 2025 до конца текущего дня
         val startDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
             set(2025, Calendar.JANUARY, 1, 0, 0, 0)
             set(Calendar.MILLISECOND, 0)
         }
         val endDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
-            set(Calendar.SECOND, 59)
-            set(Calendar.MILLISECOND, 999)
+            set(2025, Calendar.AUGUST, 18, 0, 0, 0)
+            set(Calendar.MILLISECOND, 0)
         }
         Log.d("ProgressFragment", "Date constraints: start=${dateFormat.format(startDate.time)} (${startDate.timeInMillis}), end=${dateFormat.format(endDate.time)} (${endDate.timeInMillis})")
 
-        // Кастомный валидатор для запрета дат после endDate
-        val dateValidator = object : DateValidator {
-            override fun isValid(date: Long): Boolean {
-                return date >= startDate.timeInMillis && date <= endDate.timeInMillis
-            }
-
-            override fun writeToParcel(dest: android.os.Parcel, flags: Int) {
-                // Реализация для Parcelable (требуется для MaterialDatePicker)
-                dest.writeLong(startDate.timeInMillis)
-                dest.writeLong(endDate.timeInMillis)
-            }
-
-            override fun describeContents(): Int = 0
+        // Создаём CalendarView
+        val calendarView = CalendarView(requireContext()).apply {
+            minDate = startDate.timeInMillis
+            maxDate = endDate.timeInMillis
+            setDate(selectedStartDate?.timeInMillis ?: endDate.timeInMillis, false, true)
         }
 
-        val constraintsBuilder = CalendarConstraints.Builder()
-            .setStart(startDate.timeInMillis)
-            .setEnd(endDate.timeInMillis)
-            .setOpenAt(endDate.timeInMillis)
-            .setValidator(dateValidator)
+        // Переменная для хранения выбранной даты
+        var selectedDateMillis: Long = selectedStartDate?.timeInMillis ?: endDate.timeInMillis
 
-        val datePicker = MaterialDatePicker.Builder.datePicker()
-            .setTitleText("Выберите начало периода")
-            .setSelection(endDate.timeInMillis)
-            .setCalendarConstraints(constraintsBuilder.build())
-            .build()
+        // TextView для отображения диапазона дат
+        val rangeTextView = TextView(requireContext()).apply {
+            val initialDate = selectedStartDate?.time ?: endDate.time
+            val rangeEnd = Calendar.getInstance().apply {
+                time = initialDate
+                add(Calendar.DAY_OF_YEAR, 6)
+            }
+            text = "Диапазон: ${dateFormat.format(initialDate)} - ${dateFormat.format(rangeEnd.time)}"
+            setPadding(90, 0, 16, 24)
+            textSize = 16f
+        }
 
-        datePicker.addOnPositiveButtonClickListener { selection ->
+        // Обработчик выбора даты
+        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val selectedCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-                timeInMillis = selection
-                set(Calendar.HOUR_OF_DAY, 0)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.SECOND, 0)
+                set(year, month, dayOfMonth, 0, 0, 0)
                 set(Calendar.MILLISECOND, 0)
             }
-            val currentDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-                set(Calendar.HOUR_OF_DAY, 0)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
+            selectedDateMillis = selectedCalendar.timeInMillis
+            val rangeEnd = Calendar.getInstance().apply {
+                timeInMillis = selectedDateMillis
+                add(Calendar.DAY_OF_YEAR, 6)
             }
-            if (selectedCalendar.after(currentDate)) {
-                Toast.makeText(requireContext(), "Нельзя выбирать даты после текущей даты!", Toast.LENGTH_SHORT).show()
-                Log.d("ProgressFragment", "Rejected date: ${dateFormat.format(selectedCalendar.time)} is after ${dateFormat.format(currentDate.time)}")
-                return@addOnPositiveButtonClickListener
-            }
-            selectedStartDate = selectedCalendar
-            updatePeriodDisplay(selectedCalendar)
-            loadTechniqueProgress(selectedTechnique)
-            Log.d("ProgressFragment", "Selected date: ${dateFormat.format(selectedCalendar.time)} (${selection})")
+            rangeTextView.text = "Диапазон: ${dateFormat.format(selectedCalendar.time)} - ${dateFormat.format(rangeEnd.time)}"
+            Log.d("ProgressFragment", "Date selected in CalendarView: ${dateFormat.format(selectedCalendar.time)} (${selectedDateMillis})")
         }
 
-        datePicker.show(childFragmentManager, "DATE_PICKER")
+        // Создаём кастомный заголовок
+        val titleTextView = TextView(requireContext()).apply {
+            text = "Укажите дату начала"
+            textSize = 20f
+            setPadding(16, 50, 16, 0)
+            gravity = Gravity.CENTER
+        }
+
+        // Создаём кастомный макет для диалога
+        val container = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(calendarView)
+            addView(rangeTextView)
+        }
+
+        // Создаём диалог
+        val dialog = AlertDialog.Builder(requireContext())
+            .setCustomTitle(titleTextView)
+            .setView(container)
+            .setPositiveButton("OK") { _, _ ->
+                val selectedCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+                    timeInMillis = selectedDateMillis
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+                val currentDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+                    set(2025, Calendar.AUGUST, 18, 0, 0, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+                if (selectedCalendar.after(currentDate)) {
+                    Toast.makeText(requireContext(), "Нельзя выбирать даты после текущей даты!", Toast.LENGTH_SHORT).show()
+                    Log.d("ProgressFragment", "Rejected date: ${dateFormat.format(selectedCalendar.time)} is after ${dateFormat.format(currentDate.time)}")
+                    return@setPositiveButton
+                }
+                selectedStartDate = selectedCalendar
+                updatePeriodDisplay(selectedCalendar)
+                loadTechniqueProgress(selectedTechnique)
+                Log.d("ProgressFragment", "Confirmed date: ${dateFormat.format(selectedCalendar.time)} (${selectedDateMillis})")
+            }
+            .setNegativeButton("Отмена", null)
+            .create()
+
+        dialog.show()
+        Log.d("ProgressFragment", "CalendarView dialog shown")
     }
 
     private fun updatePeriodDisplay(startDate: Calendar?) {
