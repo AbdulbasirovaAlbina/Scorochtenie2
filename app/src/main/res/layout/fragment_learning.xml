@@ -5,104 +5,119 @@
     android:layout_height="match_parent"
     android:background="?attr/backgroundColor">
 
-    <!-- Modern Header with Pinterest-style design -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/header_section"
+    <!-- AppBarLayout for scrolling header -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="170dp"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="@android:color/transparent">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
 
-        <LinearLayout
+        <!-- Modern Header with Pinterest-style design -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/header_section"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:background="@drawable/learning_header_gradient"
-            android:gravity="center"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:paddingTop="32dp"
-            android:paddingBottom="24dp">
+            android:layout_height="170dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:layout_scrollFlags="scroll|enterAlways|snap">
 
-            <!-- Modern icon with background -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginEnd="20dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="8dp"
-                app:cardBackgroundColor="@android:color/white">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📚"
-                    android:textSize="40sp"
-                    android:layout_gravity="center"
-                    android:alpha="0.9" />
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Text content -->
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:background="@drawable/learning_header_gradient"
+                android:gravity="center"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:paddingTop="32dp"
+                android:paddingBottom="24dp">
 
-                <!-- Modern title with better typography -->
-                <TextView
-                    android:gravity="start"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Техники скорочтения"
-                    android:textSize="26sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/white"
-                    android:fontFamily="sans-serif-medium"
-                    android:letterSpacing="0.05"
-                    android:shadowColor="#20000000"
-                    android:shadowDx="0"
-                    android:shadowDy="1"
-                    android:shadowRadius="2" />
+                <!-- Modern icon with background -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginEnd="20dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="@android:color/white">
 
-                <!-- Subtitle -->
-                <TextView
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📚"
+                        android:textSize="40sp"
+                        android:layout_gravity="center"
+                        android:alpha="0.9" />
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Text content -->
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Изучите эффективные методы скорочтения"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/white"
-                    android:gravity="start"
-                    android:layout_marginTop="4dp"
-                    android:alpha="0.9"
-                    android:fontFamily="sans-serif-light" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Modern title with better typography -->
+                    <TextView
+                        android:gravity="start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Техники скорочтения"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.05"
+                        android:shadowColor="#20000000"
+                        android:shadowDx="0"
+                        android:shadowDy="1"
+                        android:shadowRadius="2" />
+
+                    <!-- Subtitle -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Изучите эффективные методы скорочтения"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/white"
+                        android:gravity="start"
+                        android:layout_marginTop="4dp"
+                        android:alpha="0.9"
+                        android:fontFamily="sans-serif-light" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <!-- Scrollable content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="170dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="10dp">
 
             <!-- Techniques list -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/techniques_list"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false" />
