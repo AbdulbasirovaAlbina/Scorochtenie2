@@ -46,14 +46,13 @@ class ModernTechniqueAdapter(private val techniques: List<ModernTechniqueItem>) 
             technique.title
         }
 
-        // Получаем статистику для техники
-        val stats = TestResultManager.getTechniqueStats(context, technique.title)
-        val completedTexts = stats.uniqueTextsCount // Количество уникальных прочитанных текстов
-        val totalTexts = 9 // У каждой техники теперь 9 текстов
-        
+        // Получаем количество завершённых текстов (без фильтрации по периоду)
+        val completedTexts = TestResultManager.getCompletedTextsCount(context, technique.title)
+        val totalTexts = 9 // У каждой техники 9 текстов
+
         // Показываем прогресс: количество пройденных текстов из 9
         holder.progressText.text = "$completedTexts/$totalTexts"
-        
+
         // Обновляем шкалу прогресса (максимум 9 текстов)
         val progressPercent = (completedTexts.toFloat() / totalTexts).coerceAtMost(1.0f)
         holder.progressBar.post {

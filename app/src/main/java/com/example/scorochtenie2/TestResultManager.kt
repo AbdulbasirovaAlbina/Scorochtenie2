@@ -68,6 +68,13 @@ object TestResultManager {
         return results
     }
 
+    // Новый метод для получения всех результатов без фильтрации по периоду
+    fun getAllTechniqueResults(context: Context, techniqueName: String): List<TestResult> {
+        val results = getTestResults(context).filter { it.techniqueName == techniqueName }
+        Log.d("TestResultManager", "All $techniqueName results (no period filter): ${results.size}")
+        return results
+    }
+
     fun getTechniqueStats(context: Context, techniqueName: String, startDate: Calendar? = null): TechniqueStats {
         val results = getTechniqueResults(context, techniqueName)
         val filteredResults = filterResultsByPeriod(results, startDate)
@@ -234,23 +241,29 @@ object TestResultManager {
     }
 
     fun getCompletedTextsCount(context: Context, techniqueName: String): Int {
-        val results = getTechniqueResults(context, techniqueName)
-        return results.filter { it.comprehension == 100 }
+        val results = getAllTechniqueResults(context, techniqueName)
+        val count = results.filter { it.comprehension == 100 }
             .map { it.textIndex }
             .distinct()
             .size
+        Log.d("TestResultManager", "Completed texts count for $techniqueName: $count")
+        return count
     }
 
     fun getCompletedTexts(context: Context, techniqueName: String): List<Int> {
-        val results = getTechniqueResults(context, techniqueName)
-        return results.filter { it.comprehension == 100 }
+        val results = getAllTechniqueResults(context, techniqueName)
+        val completedTexts = results.filter { it.comprehension == 100 }
             .map { it.textIndex }
             .distinct()
+        Log.d("TestResultManager", "Completed texts for $techniqueName: $completedTexts")
+        return completedTexts
     }
 
     fun isTextCompleted(context: Context, techniqueName: String, textIndex: Int): Boolean {
-        val results = getTechniqueResults(context, techniqueName)
-        return results.any { it.textIndex == textIndex && it.comprehension == 100 }
+        val results = getAllTechniqueResults(context, techniqueName)
+        val isCompleted = results.any { it.textIndex == textIndex && it.comprehension == 100 }
+        Log.d("TestResultManager", "Is text $textIndex completed for $techniqueName: $isCompleted")
+        return isCompleted
     }
 
     fun getAvailableTextsByLength(context: Context, techniqueName: String, textLength: String): List<Int> {
@@ -261,15 +274,21 @@ object TestResultManager {
             "Длинный" -> 6..8
             else -> 3..5
         }
-        return availableRange.filter { !completedTexts.contains(it) }
+        val availableTexts = availableRange.filter { !completedTexts.contains(it) }
+        Log.d("TestResultManager", "Available texts for $techniqueName ($textLength): $availableTexts")
+        return availableTexts
     }
 
     fun hasAvailableTexts(context: Context, techniqueName: String, textLength: String): Boolean {
-        return getAvailableTextsByLength(context, techniqueName, textLength).isNotEmpty()
+        val hasAvailable = getAvailableTextsByLength(context, techniqueName, textLength).isNotEmpty()
+        Log.d("TestResultManager", "Has available texts for $techniqueName ($textLength): $hasAvailable")
+        return hasAvailable
     }
 
     fun isTechniqueFullyCompleted(context: Context, techniqueName: String): Boolean {
-        return getCompletedTextsCount(context, techniqueName) >= 9
+        val isFullyCompleted = getCompletedTextsCount(context, techniqueName) >= 9
+        Log.d("TestResultManager", "Is $techniqueName fully completed: $isFullyCompleted")
+        return isFullyCompleted
     }
 
     fun clearAllProgress(context: Context) {
