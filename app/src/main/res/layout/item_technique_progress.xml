@@ -33,18 +33,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="5dp">
+            android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:id="@+id/stats_row"
                 android:layout_width="match_parent"
-                android:layout_height="110dp"
+                android:layout_height="100dp"
                 android:orientation="horizontal">
 
                 <!-- Левая карточка - Использования -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     app:cardBackgroundColor="?attr/backgroundColor"
@@ -83,7 +83,7 @@
                 <!-- Правая карточка - Среднее понимание -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     app:cardBackgroundColor="?attr/backgroundColor"
@@ -121,16 +121,21 @@
 
             </LinearLayout>
 
+            <!-- Отступ между строками статистики -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="8dp" />
+
             <!-- Вторая строка статистики - Время чтения -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="90dp"
+                android:layout_height="100dp"
                 android:orientation="horizontal">
 
                 <!-- Левая карточка - Общее время -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     app:cardBackgroundColor="?attr/backgroundColor"
@@ -169,7 +174,7 @@
                 <!-- Правая карточка - Среднее время -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     app:cardBackgroundColor="?attr/backgroundColor"
@@ -216,12 +221,41 @@
             android:layout_marginTop="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Прогресс по дням"
                 android:textSize="16sp"
-                android:textColor="?attr/textColorSecondary"
-                android:layout_marginBottom="16dp" />
+                android:textStyle="bold"
+                android:textColor="?attr/textColorPrimary"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_horizontal" />
+
+            <!-- Контейнер для выбора периода и отображения дат -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/selected_period"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Текущая неделя"
+                    android:textSize="16sp"
+                    android:textColor="?attr/textColorSecondary" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/select_period_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Выбрать период"
+                    app:icon="@drawable/ic_calendar"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/days_progress_container"
@@ -229,33 +263,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center" />
-
-        </LinearLayout>
-
-        <!-- Контейнер для выбора периода и отображения дат -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="16dp">
-
-            <TextView
-                android:id="@+id/selected_period"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Текущая неделя"
-                android:textSize="16sp"
-                android:textColor="?attr/textColorSecondary" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/select_period_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Выбрать период"
-                app:icon="@drawable/ic_calendar"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
         </LinearLayout>
 
