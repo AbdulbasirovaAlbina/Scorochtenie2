@@ -15,7 +15,17 @@
         android:text="Пн"
         android:textSize="12sp"
         android:textColor="?attr/textColorSecondary"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="2dp" />
+
+    <!-- Дата (дд.мм) -->
+    <TextView
+        android:id="@+id/tv_day_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="01.01"
+        android:textSize="10sp"
+        android:textColor="?attr/textColorSecondary"
+        android:layout_marginBottom="6dp" />
 
     <!-- Столбец прогресса -->
     <FrameLayout

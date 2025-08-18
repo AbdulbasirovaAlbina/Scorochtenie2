@@ -38,8 +38,11 @@
             <LinearLayout
                 android:id="@+id/stats_row"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="15dp"
+                >
 
                 <!-- Левая карточка - Использования -->
                 <androidx.cardview.widget.CardView
@@ -49,14 +52,16 @@
                     android:layout_weight="1"
                     app:cardBackgroundColor="?attr/backgroundColor"
                     app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="2dp"
+                    android:layout_marginBottom="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="12dp">
+                        android:padding="12dp"
+                        >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -88,14 +93,16 @@
                     android:layout_weight="1"
                     app:cardBackgroundColor="?attr/backgroundColor"
                     app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="2dp"
+                    android:layout_marginBottom="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="12dp">
+                        android:padding="12dp"
+                      >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -121,16 +128,14 @@
 
             </LinearLayout>
 
-            <!-- Отступ между строками статистики -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="8dp" />
+
 
             <!-- Вторая строка статистики - Время чтения -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
 
                 <!-- Левая карточка - Общее время -->
                 <androidx.cardview.widget.CardView
@@ -140,7 +145,8 @@
                     android:layout_weight="1"
                     app:cardBackgroundColor="?attr/backgroundColor"
                     app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="2dp"
+                    android:layout_marginBottom="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -179,14 +185,16 @@
                     android:layout_weight="1"
                     app:cardBackgroundColor="?attr/backgroundColor"
                     app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="2dp"
+                    android:layout_marginBottom="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="10dp">
+                        android:padding="10dp"
+                        >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -218,8 +226,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="10dp">
+            >
 
+            <!-- Заголовок "Прогресс по дням" отдельной строкой -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -230,7 +239,7 @@
                 android:layout_marginBottom="8dp"
                 android:gravity="center_horizontal" />
 
-            <!-- Контейнер для выбора периода и отображения дат -->
+            <!-- Строка выбора периода: выбранный период и кнопка -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -242,8 +251,8 @@
                     android:id="@+id/selected_period"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Текущая неделя"
-                    android:textSize="16sp"
+                    android:text="Выбрана текущая неделя"
+                    android:textSize="14sp"
                     android:textColor="?attr/textColorSecondary" />
 
                 <com.google.android.material.button.MaterialButton

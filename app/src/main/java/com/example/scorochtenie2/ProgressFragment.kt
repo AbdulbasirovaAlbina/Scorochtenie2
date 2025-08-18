@@ -251,6 +251,41 @@ class ProgressFragment : Fragment() {
         val calendar = Calendar.getInstance()
         val baseDayNames = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
 
+        // Генерация дат (dd.MM) для каждого дня периода
+        val dayDates = mutableListOf<String>()
+        val dayDateFormat = SimpleDateFormat("dd.MM", Locale.getDefault())
+        val dateCalendar = Calendar.getInstance()
+        if (selectedStartDate == null) {
+            val tempCal = Calendar.getInstance()
+            val currentDayOfWeek = tempCal.get(Calendar.DAY_OF_WEEK)
+            val daysFromMonday = when (currentDayOfWeek) {
+                Calendar.SUNDAY -> 6
+                Calendar.MONDAY -> 0
+                Calendar.TUESDAY -> 1
+                Calendar.WEDNESDAY -> 2
+                Calendar.THURSDAY -> 3
+                Calendar.FRIDAY -> 4
+                Calendar.SATURDAY -> 5
+                else -> 0
+            }
+            tempCal.set(Calendar.HOUR_OF_DAY, 0)
+            tempCal.set(Calendar.MINUTE, 0)
+            tempCal.set(Calendar.SECOND, 0)
+            tempCal.set(Calendar.MILLISECOND, 0)
+            tempCal.add(Calendar.DAY_OF_YEAR, -daysFromMonday)
+            dateCalendar.timeInMillis = tempCal.timeInMillis
+        } else {
+            dateCalendar.timeInMillis = selectedStartDate!!.timeInMillis
+            dateCalendar.set(Calendar.HOUR_OF_DAY, 0)
+            dateCalendar.set(Calendar.MINUTE, 0)
+            dateCalendar.set(Calendar.SECOND, 0)
+            dateCalendar.set(Calendar.MILLISECOND, 0)
+        }
+        for (i in 0..6) {
+            dayDates.add(dayDateFormat.format(dateCalendar.time))
+            dateCalendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
+
         if (selectedStartDate == null) {
             // Текущая неделя: начинается с понедельника
             dayNames.addAll(baseDayNames)
@@ -295,14 +330,18 @@ class ProgressFragment : Fragment() {
             val dayView = layoutInflater.inflate(R.layout.item_day_progress, daysProgressContainer, false)
 
             val tvDayName = dayView.findViewById<TextView>(R.id.tv_day_name)
+            val tvDayDate = dayView.findViewById<TextView>(R.id.tv_day_date)
             val tvDayPercentage = dayView.findViewById<TextView>(R.id.tv_day_percentage)
             val dayProgressBar = dayView.findViewById<View>(R.id.day_progress_bar)
 
             tvDayName.text = dayNames[index]
+            tvDayDate.text = dayDates.getOrNull(index) ?: ""
 
             if (index == currentDayIndex) {
                 tvDayName.setTextColor(resources.getColor(R.color.primary_color, null))
                 tvDayName.setTypeface(null, android.graphics.Typeface.BOLD)
+                tvDayDate.setTextColor(resources.getColor(R.color.primary_color, null))
+                tvDayDate.setTypeface(null, android.graphics.Typeface.BOLD)
             }
 
             tvDayPercentage.text = "${comprehension}%"
