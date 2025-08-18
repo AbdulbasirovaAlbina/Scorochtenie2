@@ -165,10 +165,7 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
         }
 
         val spannable = SpannableString(currentPartText)
-        val existingSpans = spannable.getSpans(0, spannable.length, BackgroundColorSpan::class.java)
-        for (span in existingSpans) {
-            spannable.removeSpan(span)
-        }
+        HighlightColorHelper.clearHighlights(spannable)
 
         var startIndex = 0
         var wordCount = 0
@@ -176,11 +173,11 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
         currentPartWords.forEach { word ->
             if (wordCount == currentWordIndex) {
                 val endIndex = startIndex + word.length
-                spannable.setSpan(
-                    BackgroundColorSpan(Color.YELLOW),
+                HighlightColorHelper.applyHighlight(
+                    textView.context,
+                    spannable,
                     startIndex,
-                    endIndex,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    endIndex
                 )
             }
             startIndex += word.length

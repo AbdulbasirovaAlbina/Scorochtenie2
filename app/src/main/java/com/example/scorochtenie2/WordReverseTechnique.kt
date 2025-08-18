@@ -179,20 +179,17 @@ class WordReverseTechnique : Technique("Слова наоборот", "Слов�
         if (!isAnimationActive) return
 
         val spannable = SpannableString(currentPartText)
-        val existingSpans = spannable.getSpans(0, spannable.length, BackgroundColorSpan::class.java)
-        for (span in existingSpans) {
-            spannable.removeSpan(span)
-        }
+        HighlightColorHelper.clearHighlights(spannable)
 
         val (startIndex, word) = getWordPosition(currentWordIndex)
         if (startIndex >= 0 && startIndex < currentPartText.length) {
             val endIndex = startIndex + word.length
             if (endIndex <= currentPartText.length) {
-                spannable.setSpan(
-                    BackgroundColorSpan(Color.YELLOW),
+                HighlightColorHelper.applyHighlight(
+                    textView.context,
+                    spannable,
                     startIndex,
-                    endIndex,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    endIndex
                 )
             }
         }

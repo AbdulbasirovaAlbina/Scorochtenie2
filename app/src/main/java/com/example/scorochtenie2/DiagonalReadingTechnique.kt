@@ -362,11 +362,11 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
             for (span in existingSpans) {
                 spannable.removeSpan(span)
             }
-            spannable.setSpan(
-                BackgroundColorSpan(Color.YELLOW),
+            HighlightColorHelper.applyHighlight(
+                textView.context,
+                spannable,
                 start,
-                end,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                end
             )
             textView.text = spannable
             Log.d("DiagonalReading", "Highlighted word: ${text.substring(start, end)}")

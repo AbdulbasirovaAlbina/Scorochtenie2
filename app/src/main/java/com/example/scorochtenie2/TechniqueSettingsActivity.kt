@@ -1,6 +1,8 @@
 package com.example.scorochtenie2
 
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +21,15 @@ class TechniqueSettingsActivity : AppCompatActivity() {
     private lateinit var mediumTextBtn: Button
     private lateinit var longTextBtn: Button
     private lateinit var startBtn: Button
+    
+    // Кнопки выбора цвета
+    private lateinit var colorYellowBtn: ImageButton
+    private lateinit var colorGreenBtn: ImageButton
+    private lateinit var colorBlueBtn: ImageButton
+    private lateinit var colorPinkBtn: ImageButton
+    private lateinit var colorOrangeBtn: ImageButton
+    
+    private lateinit var sharedPreferences: SharedPreferences
 
     private val techniqueDescriptions = mapOf(
         "Чтение блоками" to "Увеличивает скорость чтения путем группировки слов в смысловые блоки",
@@ -36,9 +47,12 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_technique_settings)
 
+        sharedPreferences = getSharedPreferences("technique_settings", MODE_PRIVATE)
+        
         initViews()
         setupTechnique()
         setupSliders()
+        setupColorButtons()
         setupTextLengthButtons()
         setupStartButton()
     }
@@ -56,6 +70,13 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         mediumTextBtn = findViewById(R.id.btn_medium_text)
         longTextBtn = findViewById(R.id.btn_long_text)
         startBtn = findViewById(R.id.btn_start)
+        
+        // Цветовые кнопки
+        colorYellowBtn = findViewById(R.id.btn_color_yellow)
+        colorGreenBtn = findViewById(R.id.btn_color_green)
+        colorBlueBtn = findViewById(R.id.btn_color_blue)
+        colorPinkBtn = findViewById(R.id.btn_color_pink)
+        colorOrangeBtn = findViewById(R.id.btn_color_orange)
     }
 
     private fun setupTechnique() {
@@ -125,6 +146,31 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupColorButtons() {
+        val colorButtons = listOf(colorYellowBtn, colorGreenBtn, colorBlueBtn, colorPinkBtn, colorOrangeBtn)
+        
+        // Получаем сохраненный цвет или устанавливаем желтый по умолчанию
+        val savedColorIndex = sharedPreferences.getInt("highlight_color_index", 0)
+        selectColorButton(colorButtons[savedColorIndex], savedColorIndex)
+        
+        colorButtons.forEachIndexed { index, button ->
+            button.setOnClickListener {
+                selectColorButton(button, index)
+                // Сохраняем выбранный цвет
+                sharedPreferences.edit().putInt("highlight_color_index", index).apply()
+            }
+        }
+    }
+    
+    private fun selectColorButton(selectedButton: ImageButton, colorIndex: Int) {
+        val colorButtons = listOf(colorYellowBtn, colorGreenBtn, colorBlueBtn, colorPinkBtn, colorOrangeBtn)
+        
+        colorButtons.forEach { button ->
+            // ImageButton использует drawable селектор для отображения выбранного состояния
+            button.isSelected = (button == selectedButton)
+        }
+    }
+
     private fun updateDescriptionPreview() {
         val fontSizeMultiplier = FontConfig.getFontSizeMultiplier(fontSizeSlider.progress)
         techniqueDescription.textSize = FontConfig.BASE_TEXT_SIZE * fontSizeMultiplier
@@ -148,10 +194,12 @@ class TechniqueSettingsActivity : AppCompatActivity() {
             }
 
             intent?.apply {
+                val selectedColorIndex = sharedPreferences.getInt("highlight_color_index", 0)
                 putExtra("technique_name", technique)
                 putExtra("speed", speed)
                 putExtra("font_size", fontSize)
                 putExtra("text_length", selectedTextLength)
+                putExtra("highlight_color_index", selectedColorIndex)
                 startActivity(this)
             } ?: run {
                 Toast.makeText(

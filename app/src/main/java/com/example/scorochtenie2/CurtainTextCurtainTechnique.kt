@@ -150,12 +150,7 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
         if (!isRunning) return
 
         val spannable = SpannableString(fullText)
-
-        // Удаляем предыдущие подсветки
-        val existingSpans = spannable.getSpans(0, spannable.length, BackgroundColorSpan::class.java)
-        for (span in existingSpans) {
-            spannable.removeSpan(span)
-        }
+        HighlightColorHelper.clearHighlights(spannable)
 
         // Подсвечиваем текущее слово
         var startIndex = 0
@@ -165,11 +160,11 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
             if (wordCount == currentWordIndex) {
                 val endIndex = startIndex + word.length
                 if (startIndex < fullText.length && endIndex <= fullText.length) {
-                    spannable.setSpan(
-                        BackgroundColorSpan(Color.YELLOW),
+                    HighlightColorHelper.applyHighlight(
+                        textView.context,
+                        spannable,
                         startIndex,
-                        endIndex,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        endIndex
                     )
                     Log.d("CurtainText", "Highlighted word at index: $currentWordIndex, word: '$word'")
                 }

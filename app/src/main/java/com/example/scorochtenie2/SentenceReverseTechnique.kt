@@ -274,10 +274,7 @@ class SentenceReverseTechnique : Technique("Предложения наобор�
         if (!isAnimationActive) return
 
         val spannable = SpannableString(fullText)
-        val existingSpans = spannable.getSpans(0, spannable.length, BackgroundColorSpan::class.java)
-        for (span in existingSpans) {
-            spannable.removeSpan(span)
-        }
+        HighlightColorHelper.clearHighlights(spannable)
 
         val currentSentence = sentences.getOrNull(currentSentenceIndex)
         if (currentSentence == null || currentSentence.isEmpty() || currentWordIndexInSentence < 0 || currentWordIndexInSentence >= currentSentence.size) {
@@ -296,11 +293,11 @@ class SentenceReverseTechnique : Technique("Предложения наобор�
         if (wordStartIndex >= 0 && wordStartIndex < fullText.length) {
             val endIndex = wordStartIndex + word.length
             if (endIndex <= fullText.length) {
-                spannable.setSpan(
-                    BackgroundColorSpan(Color.YELLOW),
+                HighlightColorHelper.applyHighlight(
+                    textView.context,
+                    spannable,
                     wordStartIndex,
-                    endIndex,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    endIndex
                 )
             }
         }

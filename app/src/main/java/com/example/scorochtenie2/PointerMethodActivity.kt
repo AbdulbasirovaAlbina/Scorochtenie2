@@ -46,6 +46,7 @@ class PointerMethodActivity : AppCompatActivity() {
         techniqueName = intent.getStringExtra("technique_name") ?: "Метод указки"
         durationPerWord = SpeedConfig.getDurationPerWord(intent.getIntExtra("speed", 1))
         val textLength = intent.getStringExtra("text_length") ?: "Средний"
+        val highlightColorIndex = intent.getIntExtra("highlight_color_index", 0)
         
         // Проверяем, есть ли доступные тексты для выбранной длины
         val availableTexts = TestResultManager.getAvailableTextsByLength(this, techniqueName, textLength)
@@ -80,7 +81,19 @@ class PointerMethodActivity : AppCompatActivity() {
 
         // Запуск анимации и таймера
         startTimer()
-        technique.startAnimation(
+        (technique as? PointerMethodTechnique)?.startAnimation(
+            textView = textView,
+            guideView = guideView,
+            durationPerWord = durationPerWord,
+            selectedTextIndex = selectedTextIndex,
+            highlightColorIndex = highlightColorIndex,
+            onAnimationEnd = {
+                stopTimer()
+                saveTime(techniqueName, System.currentTimeMillis() - startTime)
+                // Запускаем тест после завершения анимации
+                showTestFragment()
+            }
+        ) ?: technique.startAnimation(
             textView = textView,
             guideView = guideView,
             durationPerWord = durationPerWord,
@@ -88,7 +101,6 @@ class PointerMethodActivity : AppCompatActivity() {
             onAnimationEnd = {
                 stopTimer()
                 saveTime(techniqueName, System.currentTimeMillis() - startTime)
-                // Запускаем тест после завершения анимации
                 showTestFragment()
             }
         )

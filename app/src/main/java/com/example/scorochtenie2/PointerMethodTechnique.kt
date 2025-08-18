@@ -1,12 +1,14 @@
 package com.example.scorochtenie2
 
 import android.animation.ValueAnimator
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ScrollView
@@ -24,6 +26,8 @@ class PointerMethodTechnique : Technique("PointerMethodTechnique", "Метод �
     private var lastScrollY: Int = 0
     private val handler = Handler(Looper.getMainLooper())
     private var isAnimationActive = false
+    private var highlightColorIndex = 0
+    private var textView: TextView? = null
 
     override val description: SpannableString
         get() {
@@ -44,7 +48,20 @@ class PointerMethodTechnique : Technique("PointerMethodTechnique", "Метод �
         selectedTextIndex: Int,
         onAnimationEnd: () -> Unit
     ) {
+        startAnimation(textView, guideView, durationPerWord, selectedTextIndex, 0, onAnimationEnd)
+    }
+    
+    fun startAnimation(
+        textView: TextView,
+        guideView: View,
+        durationPerWord: Long,
+        selectedTextIndex: Int,
+        highlightColorIndex: Int,
+        onAnimationEnd: () -> Unit
+    ) {
         this.selectedTextIndex = selectedTextIndex
+        this.highlightColorIndex = highlightColorIndex
+        this.textView = textView
         // В демонстрационном режиме (selectedTextIndex = -1) используем демонстрационный текст
         fullText = if (selectedTextIndex == -1) {
             TextResources.getDemoTextForTechnique(displayName)
@@ -110,10 +127,7 @@ class PointerMethodTechnique : Technique("PointerMethodTechnique", "Метод �
         if (!isAnimationActive) return
 
         val spannable = SpannableString(currentPartText)
-        val existingSpans = spannable.getSpans(0, spannable.length, BackgroundColorSpan::class.java)
-        for (span in existingSpans) {
-            spannable.removeSpan(span)
-        }
+        HighlightColorHelper.clearHighlights(spannable)
 
         var startIndex = 0
         var wordCount = 0
@@ -121,11 +135,11 @@ class PointerMethodTechnique : Technique("PointerMethodTechnique", "Метод �
         currentPartWords.forEach { word ->
             if (wordCount == currentWordIndex) {
                 val endIndex = startIndex + word.length
-                spannable.setSpan(
-                    BackgroundColorSpan(Color.YELLOW),
+                HighlightColorHelper.applyHighlight(
+                    textView.context,
+                    spannable,
                     startIndex,
-                    endIndex,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    endIndex
                 )
             }
             startIndex += word.length

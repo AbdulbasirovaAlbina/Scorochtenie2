@@ -1,12 +1,14 @@
 package com.example.scorochtenie2
 
 import android.animation.ValueAnimator
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.ScrollView
 import android.widget.TextView
@@ -147,10 +149,7 @@ class BlockReadingTechnique : Technique("Чтение блоками", "Чтен
         if (!isAnimationActive) return Triple(0, 0, 0)
 
         val spannable = SpannableString(currentPartText)
-        val existingSpans = spannable.getSpans(0, spannable.length, BackgroundColorSpan::class.java)
-        for (span in existingSpans) {
-            spannable.removeSpan(span)
-        }
+        HighlightColorHelper.clearHighlights(spannable)
 
         val firstLineIndex = currentBlockIndex * 2
         val secondLineIndex = min(firstLineIndex + 1, lineCount - 1)
@@ -171,11 +170,11 @@ class BlockReadingTechnique : Technique("Чтение блоками", "Чтен
         val secondLineWordCount = secondLineText.split("\\s+".toRegex()).filter { it.isNotEmpty() }.size
 
         if (startIndex < spannable.length && endIndex <= spannable.length) {
-            spannable.setSpan(
-                BackgroundColorSpan(Color.YELLOW),
+            HighlightColorHelper.applyHighlight(
+                textView.context,
+                spannable,
                 startIndex,
-                endIndex,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                endIndex
             )
         }
 

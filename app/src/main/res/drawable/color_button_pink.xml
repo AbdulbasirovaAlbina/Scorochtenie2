@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true">
+        <layer-list>
+            <!-- Белая граница для выбранного состояния -->
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="#FFFFFF" />
+                    <size android:width="48dp" android:height="48dp" />
+                </shape>
+            </item>
+            <!-- Розовый круг внутри -->
+            <item android:top="3dp" android:bottom="3dp" android:left="3dp" android:right="3dp">
+                <shape android:shape="oval">
+                    <solid android:color="#E91E63" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item>
+        <!-- Обычное состояние -->
+        <shape android:shape="oval">
+            <solid android:color="#E91E63" />
+            <size android:width="42dp" android:height="42dp" />
+        </shape>
+    </item>
+</selector>
