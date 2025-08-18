@@ -19,9 +19,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Google Sign-In -->
+    <!-- Theme Switch -->
     <LinearLayout
-        android:id="@+id/google_signin_layout"
+        android:id="@+id/theme_layout"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:orientation="horizontal"
@@ -37,39 +37,7 @@
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/ic_home"
-            app:tint="?attr/iconTint" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Войти через Google"
-            android:layout_marginStart="16dp"
-            android:textColor="?attr/textColorPrimary"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
-    <!-- Theme Switch -->
-    <LinearLayout
-        android:id="@+id/theme_layout"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="?attr/surfaceColor"
-        app:layout_constraintTop_toBottomOf="@id/google_signin_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginVertical="8dp"
-        android:layout_marginHorizontal="16dp"
-        android:paddingHorizontal="16dp">
-
-        <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_practice"
+            android:src="@drawable/ic_dark_theme"
             app:tint="?attr/iconTint" />
 
         <TextView
@@ -107,7 +75,7 @@
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/ic_practice"
+            android:src="@drawable/ic_delete"
             app:tint="?attr/iconTint" />
 
         <TextView
@@ -121,52 +89,13 @@
 
     </LinearLayout>
 
-    <!-- Support -->
-    <LinearLayout
-        android:id="@+id/support_layout"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="?attr/surfaceColor"
-        app:layout_constraintTop_toBottomOf="@id/clear_progress_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginVertical="8dp"
-        android:layout_marginHorizontal="16dp"
-        android:paddingHorizontal="16dp">
-
-        <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_learning"
-            app:tint="?attr/iconTint" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Поддержка"
-            android:layout_marginStart="16dp"
-            android:textColor="?attr/textColorPrimary"
-            android:textSize="16sp" />
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_back"
-            app:tint="?attr/iconTint"
-            android:rotation="-90" />
-
-    </LinearLayout>
-
     <!-- Reminder Settings -->
     <include
         android:id="@+id/reminder_settings"
         layout="@layout/item_reminder_setting"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/support_layout"
+        app:layout_constraintTop_toBottomOf="@id/clear_progress_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginHorizontal="10dp" />

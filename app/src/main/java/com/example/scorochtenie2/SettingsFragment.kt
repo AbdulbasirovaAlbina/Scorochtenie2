@@ -10,10 +10,10 @@ import android.widget.LinearLayout
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
 
 class SettingsFragment : Fragment() {
@@ -25,8 +25,6 @@ class SettingsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
 
         setupThemeSwitch(view)
-        setupGoogleSignIn(view)
-        setupOtherSettings(view)
         setupClearProgress(view)
         setupReminderSettings(view)
 
@@ -54,24 +52,9 @@ class SettingsFragment : Fragment() {
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
-            
+
             // Перезапускаем активность для применения темы
             requireActivity().recreate()
-        }
-    }
-
-    private fun setupGoogleSignIn(view: View) {
-        val googleSignInButton = view.findViewById<LinearLayout>(R.id.google_signin_layout)
-        googleSignInButton.setOnClickListener {
-            Toast.makeText(context, "Вход через Google (в разработке)", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun setupOtherSettings(view: View) {
-        val supportLayout = view.findViewById<LinearLayout>(R.id.support_layout)
-
-        supportLayout.setOnClickListener {
-            Toast.makeText(context, "Поддержка", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -84,7 +67,7 @@ class SettingsFragment : Fragment() {
 
     private fun showClearProgressDialog() {
         context?.let { ctx ->
-            AlertDialog.Builder(ctx)
+            MaterialAlertDialogBuilder(ctx)
                 .setTitle("Очистить прогресс")
                 .setMessage("Вы уверены, что хотите удалить весь прогресс? Это действие нельзя отменить.")
                 .setPositiveButton("Очистить") { _, _ ->
@@ -101,18 +84,16 @@ class SettingsFragment : Fragment() {
     private fun clearAllProgress() {
         // Очищаем всю статистику и прогресс
         TestResultManager.clearAllProgress(requireContext())
-        
-        // Показываем подробное сообщение о том, что было очищено
+
+        // Показываем сообщение
         Toast.makeText(
-            context, 
-            "Весь прогресс очищен! Теперь вы можете начать заново.", 
-            Toast.LENGTH_LONG
+            context,
+            "Прогресс успешно очищен",
+            Toast.LENGTH_SHORT
         ).show()
-        
+
         // Обновляем UI для всех фрагментов
         val currentFragment = parentFragmentManager.findFragmentById(R.id.fragment_container)
-        
-        // Перезагружаем текущий фрагмент для обновления UI
         when (currentFragment) {
             is ProgressFragment -> {
                 parentFragmentManager.beginTransaction()
@@ -131,48 +112,48 @@ class SettingsFragment : Fragment() {
             }
         }
     }
-    
+
     private fun setupReminderSettings(view: View) {
         // Находим элементы в include layout
         val reminderSettingsView = view.findViewById<View>(R.id.reminder_settings)
         val reminderSwitch = reminderSettingsView.findViewById<SwitchCompat>(R.id.reminder_switch)
         val reminderTimeText = reminderSettingsView.findViewById<TextView>(R.id.reminder_time_text)
-        
+
         // Загружаем текущие настройки напоминаний
         val isEnabled = ReminderManager.isReminderEnabled(requireContext())
         reminderSwitch.isChecked = isEnabled
-        
+
         // Устанавливаем текущее время напоминания
         reminderTimeText.text = ReminderManager.getReminderTimeFormatted(requireContext())
-        
+
         // Обработчик переключателя
         reminderSwitch.setOnCheckedChangeListener { _, isChecked ->
             ReminderManager.setReminderEnabled(requireContext(), isChecked)
-            
+
             if (isChecked) {
                 Toast.makeText(context, "Напоминания включены", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "Напоминания отключены", Toast.LENGTH_SHORT).show()
             }
         }
-        
+
         // Обработчик выбора времени
         reminderTimeText.setOnClickListener {
             showTimePickerDialog(reminderTimeText)
         }
     }
-    
+
     private fun showTimePickerDialog(timeText: TextView) {
         val calendar = Calendar.getInstance()
         val currentHour = ReminderManager.getReminderHour(requireContext())
         val currentMinute = ReminderManager.getReminderMinute(requireContext())
-        
+
         val timePickerDialog = TimePickerDialog(
             requireContext(),
             { _, hourOfDay, minute ->
                 ReminderManager.setReminderTime(requireContext(), hourOfDay, minute)
                 timeText.text = ReminderManager.getReminderTimeFormatted(requireContext())
-                
+
                 Toast.makeText(
                     context,
                     "Время напоминания установлено на ${ReminderManager.getReminderTimeFormatted(requireContext())}",
@@ -183,7 +164,7 @@ class SettingsFragment : Fragment() {
             currentMinute,
             true // 24-часовой формат
         )
-        
+
         timePickerDialog.setTitle("Выберите время напоминания")
         timePickerDialog.show()
     }
