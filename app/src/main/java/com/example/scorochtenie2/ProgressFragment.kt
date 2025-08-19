@@ -1,6 +1,7 @@
 package com.example.scorochtenie2
 
 import android.app.AlertDialog
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -114,7 +115,9 @@ class ProgressFragment : Fragment() {
             set(Calendar.MILLISECOND, 0)
         }
         val endDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-            set(2025, Calendar.AUGUST, 18, 0, 0, 0)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
         }
         Log.d("ProgressFragment", "Date constraints: start=${dateFormat.format(startDate.time)} (${startDate.timeInMillis}), end=${dateFormat.format(endDate.time)} (${endDate.timeInMillis})")
@@ -184,7 +187,9 @@ class ProgressFragment : Fragment() {
                     set(Calendar.MILLISECOND, 0)
                 }
                 val currentDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-                    set(2025, Calendar.AUGUST, 18, 0, 0, 0)
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
                     set(Calendar.MILLISECOND, 0)
                 }
                 if (selectedCalendar.after(currentDate)) {
@@ -201,10 +206,16 @@ class ProgressFragment : Fragment() {
             .create()
 
         dialog.show()
-        // Принудительно сделать текст кнопок диалога белым в тёмной теме
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(resources.getColor(android.R.color.white, null))
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(resources.getColor(android.R.color.white, null))
-        Log.d("ProgressFragment", "CalendarView dialog shown")
+        // Устанавливаем цвет текста кнопок в зависимости от темы
+        val isDarkTheme = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+        val buttonColor = if (isDarkTheme) {
+            resources.getColor(android.R.color.white, requireContext().theme)
+        } else {
+            resources.getColor(android.R.color.black, requireContext().theme)
+        }
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(buttonColor)
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(buttonColor)
+        Log.d("ProgressFragment", "CalendarView dialog shown, isDarkTheme=$isDarkTheme")
     }
 
     private fun updatePeriodDisplay(startDate: Calendar?) {
