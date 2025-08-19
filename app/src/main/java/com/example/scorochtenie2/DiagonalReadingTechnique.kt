@@ -125,7 +125,8 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
 
         textView.text = ""
         clearHighlight(textView)
-        textView.text = fullText.substring(currentPosition)
+        val remainingText = fullText.substring(currentPosition)
+        textView.text = remainingText
 
         textView.post {
             if (!isAnimationActive) return@post
@@ -139,17 +140,13 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
                 return@post
             }
 
-            val visibleHeight = textView.height.toFloat()
+            val visibleHeight = (textView.height - textView.totalPaddingTop - textView.totalPaddingBottom).toFloat()
             val lineCount = layout.lineCount
-            val lineHeight = if (lineCount > 0) {
-                (layout.getLineBottom(0) - layout.getLineTop(0)).toFloat()
-            } else {
-                textView.textSize
-            }
-            Log.d("DiagonalReading", "Line count: $lineCount, Visible height: $visibleHeight, Line height: $lineHeight")
+            val contentHeight = if (lineCount > 0) layout.getLineBottom(lineCount - 1).toFloat() else 0f
+            Log.d("DiagonalReading", "Line count: $lineCount, Visible height: $visibleHeight, Content height: $contentHeight")
 
-            val maxVisibleLines = (visibleHeight / lineHeight).toInt().coerceAtLeast(1)
-            if (lineCount <= maxVisibleLines) {
+            // Если весь оставшийся текст помещается, показываем его целиком
+            if (contentHeight <= visibleHeight + 1f) {
                 val partText = fullText.substring(currentPosition).trim()
                 Log.d("DiagonalReading", "Text fits on one page, displaying: ${partText.take(50)}... (length: ${partText.length})")
                 textView.text = partText
@@ -169,34 +166,25 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
                 return@post
             }
 
-            // Находим последнюю видимую строку
-            var lastVisibleLine = 0
+            // Находим последнюю ПОЛНОСТЬЮ видимую строку (по нижней границе)
+            var lastVisibleLine = -1
             for (i in 0 until lineCount) {
-                if (layout.getLineTop(i) < visibleHeight) {
+                val lineBottom = layout.getLineBottom(i)
+                if (lineBottom <= visibleHeight) {
                     lastVisibleLine = i
                 } else {
                     break
                 }
             }
-            lastVisibleLine = if (lastVisibleLine > 0) lastVisibleLine else 0
+            // Если ни одна строка не поместилась полностью (редкий случай), возьмём первую
+            if (lastVisibleLine < 0) lastVisibleLine = 0
 
             // Вычисляем breakPosition
             var breakPosition = if (lineCount > 0) {
-                var endOffset = layout.getLineEnd(lastVisibleLine)
-                var adjustedEnd = endOffset
-                if (adjustedEnd < fullText.length) {
-                    // Корректируем до конца слова
-                    while (adjustedEnd < fullText.length && !fullText[adjustedEnd].isWhitespace()) {
-                        adjustedEnd++
-                    }
-                    // Проверяем, не достигнут ли конец текста
-                    if (adjustedEnd >= fullText.length) {
-                        adjustedEnd = fullText.length
-                    }
-                    // Удаляем условие, которое обрезает текст до конца, если остаток < 50
-                    // Это предотвращает пропуск текста
-                }
-                adjustedEnd.coerceAtMost(fullText.length - currentPosition)
+                val remainingLength = remainingText.length
+                val nextLineIndex = (lastVisibleLine + 1).coerceAtMost(lineCount - 1)
+                val startOfNextLine = layout.getLineStart(nextLineIndex)
+                startOfNextLine.coerceIn(0, remainingLength)
             } else {
                 fullText.length - currentPosition
             }
@@ -208,7 +196,7 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
                 breakPosition = fullText.length
             }
 
-            val partText = fullText.substring(currentPosition, breakPosition).trim()
+            val partText = fullText.substring(currentPosition, breakPosition)
             if (partText.isEmpty()) {
                 Log.d("DiagonalReading", "Empty part text, advancing position to: $breakPosition")
                 currentPosition = breakPosition
