@@ -271,9 +271,9 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
         val width = textView.width.toFloat()
         val visibleHeight = textView.height.toFloat()
         val totalLines = layout.lineCount
-        // Используем полную высоту TextView для анимации
-        val animationHeight = if (totalLines > 0) {
-            layout.getLineBottom(totalLines - 1).toFloat().coerceAtMost(visibleHeight)
+        // Исключаем последнюю строку из анимации
+        val animationHeight = if (totalLines > 1) {
+            layout.getLineTop(totalLines - 1).toFloat().coerceAtMost(visibleHeight)
         } else {
             visibleHeight
         }
@@ -324,9 +324,9 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
         val currentLine = layout.getLineForVertical(adjustedY.toInt())
 
         val totalLines = layout.lineCount
-        // Подсвечиваем даже последнюю строку
-        if (currentLine >= totalLines) {
-            return totalLines - 1
+        // Не подсвечиваем последнюю строку
+        if (currentLine == totalLines - 1 || currentLine <= lastLine) {
+            return currentLine
         }
 
         val diagonalSlope = visibleHeight / textView.width.toFloat()
@@ -369,7 +369,7 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
                 end
             )
             textView.text = spannable
-            Log.d("DiagonalReading", "Highlighted word: ${text.substring(start, end)}")
+            Log.d("DiagonalReading", "Highlighted word: ${text.substring(start, end)}, Span range: $start-$end")
         }
 
         return currentLine
