@@ -118,9 +118,15 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
             return
         }
 
-        // Устанавливаем полный текст временно, чтобы определить layout
+        if (currentPosition < 0) {
+            Log.e("DiagonalReading", "Invalid currentPosition: $currentPosition, resetting to 0")
+            currentPosition = 0
+        }
+
+        textView.text = ""
+        clearHighlight(textView)
         textView.text = fullText.substring(currentPosition)
-        // Ждём, пока layout станет доступен
+
         textView.post {
             if (!isAnimationActive) return@post
 
@@ -142,12 +148,10 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
             }
             Log.d("DiagonalReading", "Line count: $lineCount, Visible height: $visibleHeight, Line height: $lineHeight")
 
-            // Проверяем, помещается ли весь текст на одну страницу
             val maxVisibleLines = (visibleHeight / lineHeight).toInt().coerceAtLeast(1)
             if (lineCount <= maxVisibleLines) {
-                // Если весь текст помещается, отображаем его целиком
                 val partText = fullText.substring(currentPosition).trim()
-                Log.d("DiagonalReading", "Text fits on one page (lines: $lineCount, max: $maxVisibleLines), displaying: ${partText.take(50)}... (length: ${partText.length})")
+                Log.d("DiagonalReading", "Text fits on one page, displaying: ${partText.take(50)}... (length: ${partText.length})")
                 textView.text = partText
                 textView.visibility = View.VISIBLE
                 val parent = textView.parent as View
@@ -176,55 +180,45 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
             }
             lastVisibleLine = if (lastVisibleLine > 0) lastVisibleLine else 0
 
-            // Находим конец последней видимой строки
+            // Вычисляем breakPosition
             var breakPosition = if (lineCount > 0) {
                 var endOffset = layout.getLineEnd(lastVisibleLine)
-                // Корректируем до конца последнего слова на строке
                 var adjustedEnd = endOffset
                 if (adjustedEnd < fullText.length) {
-                    // Ищем конец слова
+                    // Корректируем до конца слова
                     while (adjustedEnd < fullText.length && !fullText[adjustedEnd].isWhitespace()) {
                         adjustedEnd++
                     }
-                    // Если достигли конца текста, включаем его
+                    // Проверяем, не достигнут ли конец текста
                     if (adjustedEnd >= fullText.length) {
                         adjustedEnd = fullText.length
-                    } else {
-                        // Проверяем, не слишком ли короткий остаток
-                        val remainingAfterAdjusted = fullText.length - (currentPosition + adjustedEnd)
-                        if (remainingAfterAdjusted <= 50) {
-                            adjustedEnd = fullText.length
-                        }
                     }
+                    // Удаляем условие, которое обрезает текст до конца, если остаток < 50
+                    // Это предотвращает пропуск текста
                 }
-                adjustedEnd.coerceAtMost(fullText.length)
+                adjustedEnd.coerceAtMost(fullText.length - currentPosition)
             } else {
-                fullText.length
+                fullText.length - currentPosition
             }
 
             // Корректируем breakPosition относительно currentPosition
             breakPosition = (currentPosition + breakPosition).coerceAtMost(fullText.length)
-            Log.d("DiagonalReading", "Current position: $currentPosition, Break position: $breakPosition, Last visible line: $lastVisibleLine")
+            if (breakPosition <= currentPosition) {
+                Log.e("DiagonalReading", "Invalid breakPosition: $breakPosition, currentPosition: $currentPosition")
+                breakPosition = fullText.length
+            }
 
             val partText = fullText.substring(currentPosition, breakPosition).trim()
             if (partText.isEmpty()) {
-                Log.d("DiagonalReading", "Empty part text, advancing position")
+                Log.d("DiagonalReading", "Empty part text, advancing position to: $breakPosition")
                 currentPosition = breakPosition
                 showNextTextPart(textView, guideView, wordDurationMs, onAnimationEnd)
                 return@post
             }
 
-            // Логируем текст последней видимой строки
-            val lastLineText = if (lineCount > 0) {
-                textView.text.subSequence(layout.getLineStart(lastVisibleLine), layout.getLineEnd(lastVisibleLine)).toString().trim()
-            } else {
-                "No lines"
-            }
-            Log.d("DiagonalReading", "Last visible line text: $lastLineText")
-
+            Log.d("DiagonalReading", "Displaying page: ${partText.take(50)}... (from $currentPosition to $breakPosition)")
             textView.text = partText
             textView.visibility = View.VISIBLE
-            Log.d("DiagonalReading", "Displaying partText: ${partText.take(50)}... (length: ${partText.length})")
 
             handler.post {
                 if (!isAnimationActive) return@post

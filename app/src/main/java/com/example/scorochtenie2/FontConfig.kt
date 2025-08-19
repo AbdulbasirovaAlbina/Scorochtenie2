@@ -7,7 +7,7 @@ object FontConfig {
         return when (fontSizeIndex) {
             0 -> 0.8f // Маленький
             1 -> 1.0f // Средний
-            2 -> 1.2f // Большой
+            2 -> 1.1f // Большой
             else -> 1.0f
         }
     }
