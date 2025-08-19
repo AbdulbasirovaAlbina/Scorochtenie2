@@ -26,6 +26,7 @@ class SettingsFragment : Fragment() {
 
         setupThemeSwitch(view)
         setupClearProgress(view)
+        setupHelpButton(view)
         setupReminderSettings(view)
 
         return view
@@ -62,6 +63,14 @@ class SettingsFragment : Fragment() {
         val clearProgressLayout = view.findViewById<LinearLayout>(R.id.clear_progress_layout)
         clearProgressLayout.setOnClickListener {
             showClearProgressDialog()
+        }
+    }
+
+    private fun setupHelpButton(view: View) {
+        val helpLayout = view.findViewById<LinearLayout>(R.id.help_layout)
+        helpLayout.setOnClickListener {
+            val intent = android.content.Intent(requireContext(), HelpActivity::class.java)
+            startActivity(intent)
         }
     }
 
