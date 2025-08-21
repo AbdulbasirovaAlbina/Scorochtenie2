@@ -43,7 +43,12 @@ class WordReverseActivity : AppCompatActivity() {
 
         // Получение параметров из Intent
         techniqueName = intent.getStringExtra("technique_name") ?: "Слова наоборот"
-        durationPerWord = SpeedConfig.getDurationPerWord(intent.getIntExtra("speed", 1))
+        // Используем индивидуальные скорости (слов в минуту) и переводим в длительность на слово (мс)
+        run {
+            val speedIndex = intent.getIntExtra("speed", 1)
+            val wpm = SpeedConfig.getWpmForTechnique(techniqueName, speedIndex)
+            durationPerWord = (60_000L / wpm).coerceAtLeast(50L)
+        }
         val textLength = intent.getStringExtra("text_length") ?: "Средний"
         
         // Проверяем, есть ли доступные тексты для выбранной длины

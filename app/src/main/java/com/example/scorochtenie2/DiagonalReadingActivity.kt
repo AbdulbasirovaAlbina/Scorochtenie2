@@ -44,7 +44,11 @@ class DiagonalReadingActivity : AppCompatActivity() {
 
         // Получение параметров из Intent
         techniqueName = intent.getStringExtra("technique_name") ?: "Чтение по диагонали"
-        durationPerWord = SpeedConfig.getDurationPerWord(intent.getIntExtra("speed", 1))
+        run {
+            val speedIndex = intent.getIntExtra("speed", 1)
+            val wpm = SpeedConfig.getWpmForTechnique(techniqueName, speedIndex)
+            durationPerWord = (60_000L / wpm).coerceAtLeast(50L)
+        }
         val textLength = intent.getStringExtra("text_length") ?: "Средний"
         
         // Проверяем, есть ли доступные тексты для выбранной длины
