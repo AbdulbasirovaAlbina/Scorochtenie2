@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="6dp"
+
                 android:layout_marginTop="5dp"
                 app:cardBackgroundColor="?attr/surfaceColor">
 
@@ -145,7 +145,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="110dp"
+                android:layout_height="100dp"
                 android:layout_marginBottom="10dp"
                 android:orientation="horizontal"
                 android:weightSum="2">
@@ -162,7 +162,7 @@
                     android:foreground="?android:attr/selectableItemBackground"
                     app:cardBackgroundColor="?attr/surfaceColor"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    >
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -201,8 +201,7 @@
                     android:layout_weight="1"
                     android:foreground="?android:attr/selectableItemBackground"
                     app:cardBackgroundColor="?attr/surfaceColor"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    app:cardCornerRadius="12dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -236,9 +235,9 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="5dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
+
                 app:cardBackgroundColor="?attr/surfaceColor">
 
                 <LinearLayout
