@@ -36,4 +36,8 @@
     <color name="selector_selected_border_light">#2196F3</color>
     <color name="selector_selected_bg_dark">#1A237E</color>
     <color name="selector_selected_border_dark">#64B5F6</color>
+    
+    <!-- Color selection border colors -->
+    <color name="selection_border_light">#000000</color>
+    <color name="selection_border_dark">#FFFFFF</color>
 </resources>

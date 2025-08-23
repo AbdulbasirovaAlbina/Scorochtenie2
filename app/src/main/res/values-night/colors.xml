@@ -7,4 +7,7 @@
     
     <!-- Text colors for dark theme -->
     <color name="text_color_secondary">#CCCCCC</color>
+    
+    <!-- Color selection border colors for dark theme -->
+    <color name="selection_border_light">#FFFFFF</color>
 </resources>

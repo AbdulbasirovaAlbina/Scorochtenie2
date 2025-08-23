@@ -2,17 +2,17 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
         <layer-list>
-            <!-- Белая граница для выбранного состояния -->
+            <!-- Граница для выбранного состояния - будет переопределена в values-night -->
             <item>
                 <shape android:shape="oval">
-                    <solid android:color="#FFFFFF" />
+                    <solid android:color="@color/selection_border_light" />
                     <size android:width="48dp" android:height="48dp" />
                 </shape>
             </item>
             <!-- Розовый круг внутри -->
             <item android:top="3dp" android:bottom="3dp" android:left="3dp" android:right="3dp">
                 <shape android:shape="oval">
-                    <solid android:color="#E91E63" />
+                    <solid android:color="#FFB6C1" />
                 </shape>
             </item>
         </layer-list>
@@ -20,7 +20,7 @@
     <item>
         <!-- Обычное состояние -->
         <shape android:shape="oval">
-            <solid android:color="#E91E63" />
+            <solid android:color="#FFB6C1" />
             <size android:width="42dp" android:height="42dp" />
         </shape>
     </item>
