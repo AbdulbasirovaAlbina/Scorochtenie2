@@ -5,143 +5,140 @@
     android:layout_height="match_parent"
     android:background="?attr/backgroundColor">
 
-    <!-- Modern Header with Pinterest-style design -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/header_section"
-        android:layout_width="match_parent"
-        android:layout_height="190dp"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="@android:color/transparent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="@drawable/home_header_gradient"
-            android:gravity="center"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:paddingTop="32dp"
-            android:paddingBottom="24dp">
-
-            <!-- Modern icon container with shadow -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-
-                app:cardCornerRadius="20dp"
-                app:cardElevation="8dp"
-                app:cardBackgroundColor="@android:color/white">
-
-                <ImageView
-                    android:layout_width="110dp"
-                    android:layout_height="110dp"
-                    android:src="@drawable/ic_launcher_foreground"
-                    android:layout_gravity="center"
-                    android:alpha="0.9" />
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Modern title with better typography -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Скорочтение"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/white"
-                android:gravity="center"
-                android:fontFamily="sans-serif-medium"
-                android:letterSpacing="0.05"
-                android:shadowColor="#40000000"
-                android:shadowDx="0"
-                android:shadowDy="2"
-                android:shadowRadius="4" />
-
-            <!-- Subtitle -->
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
     <!-- Scrollable content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="195dp"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:paddingBottom="32dp">
 
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/header_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp"
+                    android:layout_marginBottom="10dp"
+                    app:cardCornerRadius="24dp"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:layout_scrollFlags="scroll|enterAlways|snap">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:background="@drawable/home_header_gradient"
+                        android:gravity="center"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="24dp"
+                        android:paddingTop="32dp"
+                        android:paddingBottom="24dp">
+
+                        <!-- Modern icon container with shadow -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardElevation="8dp"
+                            app:cardBackgroundColor="@android:color/white">
+
+                            <ImageView
+                                android:layout_width="110dp"
+                                android:layout_height="110dp"
+                                android:src="@drawable/ic_launcher_foreground"
+                                android:layout_gravity="center"
+                                android:alpha="0.9" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Modern title with better typography -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Скорочтение"
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"
+                            android:gravity="center"
+                            android:fontFamily="sans-serif-medium"
+                            android:letterSpacing="0.05"
+                            android:shadowColor="#40000000"
+                            android:shadowDx="0"
+                            android:shadowDy="2"
+                            android:shadowRadius="4" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </com.google.android.material.appbar.AppBarLayout>
             <!-- Quote Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                app:cardCornerRadius="16dp"
-
                 android:layout_marginTop="5dp"
-                app:cardBackgroundColor="?attr/surfaceColor">
+                android:layout_marginBottom="15dp"
+                app:cardBackgroundColor="?attr/surfaceColor"
+                app:cardCornerRadius="16dp">
 
                 <LinearLayout
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-
                     android:padding="15dp">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
                         android:text="💡 Цитата дня"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
                         android:textColor="?attr/textColorSecondary"
-                        android:layout_marginBottom="12dp" />
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/quote_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="«Чтение — это окошко, через которое дети видят и познают мир и самих себя»"
-                        android:textSize="16sp"
-                        android:textStyle="italic"
-                        android:textColor="?attr/textColorPrimary"
+                        android:layout_marginBottom="8dp"
                         android:lineSpacingExtra="4dp"
-                        android:layout_marginBottom="8dp" />
+                        android:text="«Чтение — это окошко, через которое дети видят и познают мир и самих себя»"
+                        android:textColor="?attr/textColorPrimary"
+                        android:textSize="15sp"
+                        android:textStyle="italic" />
 
                     <TextView
                         android:id="@+id/quote_author"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="— В. А. Сухомлинский"
-                        android:textSize="13sp"
-                        android:textColor="?attr/textColorSecondary"
+                        android:layout_gravity="end"
                         android:gravity="end"
-                        android:layout_gravity="end" />
+                        android:text="— В. А. Сухомлинский"
+                        android:textColor="?attr/textColorSecondary"
+                        android:textSize="13sp" />
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Statistics Row removed by request -->
-
-            <!-- Quick Actions -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="7dp"
                 android:text="🚀 Быстрые действия"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 android:textColor="?attr/textColorPrimary"
-                android:layout_marginBottom="7dp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -161,8 +158,7 @@
                     android:layout_weight="1"
                     android:foreground="?android:attr/selectableItemBackground"
                     app:cardBackgroundColor="?attr/surfaceColor"
-                    app:cardCornerRadius="12dp"
-                    >
+                    app:cardCornerRadius="12dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -236,9 +232,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                app:cardCornerRadius="16dp"
-
-                app:cardBackgroundColor="?attr/surfaceColor">
+                app:cardBackgroundColor="?attr/surfaceColor"
+                app:cardCornerRadius="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -249,20 +244,20 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
                         android:text="💡 Совет дня"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
                         android:textColor="?attr/textColorSecondary"
-                        android:layout_marginBottom="12dp" />
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tip_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:lineSpacingExtra="2dp"
                         android:text="Начинайте тренировки с 10-15 минут в день. Регулярность важнее продолжительности!"
-                        android:textSize="14sp"
                         android:textColor="?attr/textColorPrimary"
-                        android:lineSpacingExtra="2dp" />
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
