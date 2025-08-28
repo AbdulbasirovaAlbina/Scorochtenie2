@@ -28,31 +28,7 @@ class BlockReadingTechnique : Technique("Чтение блоками", "Чтен
     private val handler = Handler(Looper.getMainLooper())
     private var isAnimationActive = false
 
-    override val description: SpannableString
-        get() {
-            val text = "Чтение \"блоками\" — это техника скорочтения, при которой текст воспринимается не по отдельным словам, а целыми смысловыми фрагментами. Такой подход помогает быстрее обрабатывать информацию и лучше удерживать общий контекст.\n" +
-                    "Сосредоточьтесь на восприятии сразу нескольких строк как единого блока — это развивает навык охватывать больше текста за раз и ускоряет чтение без потери понимания."
-            val spannable = SpannableString(text)
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                0,
-                name.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                text.indexOf("целыми смысловыми фрагментами"),
-                text.indexOf("целыми смысловыми фрагментами") + "целыми смысловыми фрагментами".length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                text.indexOf("сразу нескольких строк"),
-                text.indexOf("сразу нескольких строк") + "сразу нескольких строк".length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            return spannable
-        }
+    
 
     override fun startAnimation(
         textView: TextView,
@@ -149,7 +125,7 @@ class BlockReadingTechnique : Technique("Чтение блоками", "Чтен
         if (!isAnimationActive) return Triple(0, 0, 0)
 
         val spannable = SpannableString(currentPartText)
-        HighlightColorHelper.clearHighlights(spannable)
+        HighlightColorConfig.clearHighlights(spannable)
 
         val firstLineIndex = currentBlockIndex * 2
         val secondLineIndex = min(firstLineIndex + 1, lineCount - 1)
@@ -170,7 +146,7 @@ class BlockReadingTechnique : Technique("Чтение блоками", "Чтен
         val secondLineWordCount = secondLineText.split("\\s+".toRegex()).filter { it.isNotEmpty() }.size
 
         if (startIndex < spannable.length && endIndex <= spannable.length) {
-            HighlightColorHelper.applyHighlight(
+            HighlightColorConfig.applyHighlight(
                 textView.context,
                 spannable,
                 startIndex,

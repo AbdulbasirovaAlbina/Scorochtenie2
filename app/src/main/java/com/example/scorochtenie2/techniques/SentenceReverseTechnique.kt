@@ -25,32 +25,7 @@ class SentenceReverseTechnique : Technique("Предложения наобор�
     private val handler = Handler(Looper.getMainLooper())
     private var isAnimationActive = false
 
-    override val description: SpannableString
-        get() {
-            val text = "Предложения наоборот — это техника скорочтения, направленная на формирование навыка правильного чтения и профилактику «зеркального» чтения. Текст читается, начиная с последнего слова каждого предложения.\n" +
-                    "Для применения техники начинайте с последнего слова предложения и двигайтесь к первому.\n" +
-                    "Сосредоточьтесь на правильном порядке чтения слов, чтобы улучшить внимание и навыки чтения."
-            val spannable = SpannableString(text)
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                0,
-                name.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                text.indexOf("начинайте с последнего слова"),
-                text.indexOf("начинайте с последнего слова") + "начинайте с последнего слова".length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                text.indexOf("правильном порядке чтения"),
-                text.indexOf("правильном порядке чтения") + "правильном порядке чтения".length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            return spannable
-        }
+    
 
     override fun startAnimation(
         textView: TextView,
@@ -274,7 +249,7 @@ class SentenceReverseTechnique : Technique("Предложения наобор�
         if (!isAnimationActive) return
 
         val spannable = SpannableString(fullText)
-        HighlightColorHelper.clearHighlights(spannable)
+        HighlightColorConfig.clearHighlights(spannable)
 
         val currentSentence = sentences.getOrNull(currentSentenceIndex)
         if (currentSentence == null || currentSentence.isEmpty() || currentWordIndexInSentence < 0 || currentWordIndexInSentence >= currentSentence.size) {
@@ -293,7 +268,7 @@ class SentenceReverseTechnique : Technique("Предложения наобор�
         if (wordStartIndex >= 0 && wordStartIndex < fullText.length) {
             val endIndex = wordStartIndex + word.length
             if (endIndex <= fullText.length) {
-                HighlightColorHelper.applyHighlight(
+                HighlightColorConfig.applyHighlight(
                     textView.context,
                     spannable,
                     wordStartIndex,

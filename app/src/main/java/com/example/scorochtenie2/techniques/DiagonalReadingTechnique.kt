@@ -21,38 +21,7 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
     private val handler = Handler(Looper.getMainLooper())
     private var isAnimationActive = false
 
-    override val description: SpannableString
-        get() {
-            val text = "Чтение по диагонали — это способ быстрого ознакомления с текстом, при котором взгляд скользит сверху вниз по диагонали, захватывая общую структуру и главные элементы.\n" +
-                    "Вместо того чтобы читать каждое слово, вы охватываете страницу бегло, выхватывая смысловые опоры — такие как начальные и конечные слова абзацев, цифры или повторы.\n" +
-                    "Этот метод позволяет быстро получить общее представление о содержании и решить, стоит ли читать подробнее."
-            val spannable = SpannableString(text)
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                0,
-                name.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                text.indexOf("сверху вниз по диагонали"),
-                text.indexOf("сверху вниз по диагонали") + "сверху вниз по диагонали".length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                text.indexOf("смысловые опоры"),
-                text.indexOf("смысловые опоры") + "смысловые опоры".length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                text.indexOf("начальные и конечные"),
-                text.indexOf("начальные и конечные") + "начальные и конечные".length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            return spannable
-        }
+    
 
     override fun startAnimation(
         textView: TextView,
@@ -344,7 +313,7 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
             for (span in existingSpans) {
                 spannable.removeSpan(span)
             }
-            HighlightColorHelper.applyHighlight(
+            HighlightColorConfig.applyHighlight(
                 textView.context,
                 spannable,
                 start,

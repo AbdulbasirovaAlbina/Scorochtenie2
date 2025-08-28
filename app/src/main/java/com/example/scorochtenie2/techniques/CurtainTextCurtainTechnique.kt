@@ -7,7 +7,6 @@ import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
-import android.text.style.StyleSpan
 import android.util.Log
 import android.view.View
 import android.widget.ScrollView
@@ -25,17 +24,7 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
     private var lastScrollY: Int = 0
     private val handler = Handler(Looper.getMainLooper())
 
-    override val description: SpannableString
-        get() {
-            val text = "Зашумленный текст — техника, в которой поверх текста сверху вниз движутся полупрозрачные цветные полосы. Они ограничивают повторные возвраты взгляда и помогают удерживать ритм.\n" +
-                    "Сосредоточьтесь на чтении видимых областей и двигайтесь вперёд вместе с движением шторки."
-            return SpannableString(text).apply {
-                setSpan(StyleSpan(android.graphics.Typeface.BOLD), 0, name.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                val key1 = "полупрозрачные цветные полосы"
-                val i1 = text.indexOf(key1)
-                if (i1 >= 0) setSpan(StyleSpan(android.graphics.Typeface.BOLD), i1, i1 + key1.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-        }
+    
 
     override fun startAnimation(
         textView: TextView,
@@ -150,7 +139,7 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
         if (!isRunning) return
 
         val spannable = SpannableString(fullText)
-        HighlightColorHelper.clearHighlights(spannable)
+        HighlightColorConfig.clearHighlights(spannable)
 
         // Подсвечиваем текущее слово
         var startIndex = 0
@@ -160,7 +149,7 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
             if (wordCount == currentWordIndex) {
                 val endIndex = startIndex + word.length
                 if (startIndex < fullText.length && endIndex <= fullText.length) {
-                    HighlightColorHelper.applyHighlight(
+                    HighlightColorConfig.applyHighlight(
                         textView.context,
                         spannable,
                         startIndex,

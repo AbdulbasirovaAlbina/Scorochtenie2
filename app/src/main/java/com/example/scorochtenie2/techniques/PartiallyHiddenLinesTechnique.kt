@@ -25,32 +25,7 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
     private var isAnimationActive = false
     private var hiddenLinesView: PartiallyHiddenLinesView? = null
 
-    override val description: SpannableString
-        get() {
-            val text = "Техника \"Частично скрытые строки\" помогает развить навыки быстрого чтения путем постепенного скрытия нижней части текста. " +
-                    "Это заставляет глаза работать быстрее и эффективнее распознавать слова по их верхней части.\n" +
-                    "Сосредоточьтесь на чтении текста, когда видна только верхняя часть строк - это тренирует периферическое зрение и ускоряет процесс распознавания слов."
-            val spannable = SpannableString(text)
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                0,
-                name.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                text.indexOf("верхней части строк"),
-                text.indexOf("верхней части строк") + "верхней части строк".length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                text.indexOf("периферическое зрение"),
-                text.indexOf("периферическое зрение") + "периферическое зрение".length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            return spannable
-        }
+    
 
     override fun startAnimation(
         textView: TextView,
@@ -165,7 +140,7 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
         }
 
         val spannable = SpannableString(currentPartText)
-        HighlightColorHelper.clearHighlights(spannable)
+        HighlightColorConfig.clearHighlights(spannable)
 
         var startIndex = 0
         var wordCount = 0
@@ -173,7 +148,7 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
         currentPartWords.forEach { word ->
             if (wordCount == currentWordIndex) {
                 val endIndex = startIndex + word.length
-                HighlightColorHelper.applyHighlight(
+                HighlightColorConfig.applyHighlight(
                     textView.context,
                     spannable,
                     startIndex,

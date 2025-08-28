@@ -19,13 +19,13 @@ class PracticeActivity : AppCompatActivity() {
         }
 
         val techniques = listOf(
-            TechniqueItem("Чтение блоками", R.drawable.ic_block_reading),
-            TechniqueItem("Чтение по диагонали", R.drawable.ic_diagonal_reading),
-            TechniqueItem("Метод указки", R.drawable.ic_pointer_method),
-            TechniqueItem("Предложения наоборот", R.drawable.ic_sentence_reverse),
-            TechniqueItem("Слова наоборот", R.drawable.ic_word_reverse),
-            TechniqueItem("Зашумленный текст", R.drawable.ic_noisy_text),
-            TechniqueItem("Частично скрытые строки", R.drawable.ic_partially_hidden_lines)
+            ModernTechniqueItem(title = "Чтение блоками", iconResId = R.drawable.ic_block_reading),
+            ModernTechniqueItem(title = "Чтение по диагонали", iconResId = R.drawable.ic_diagonal_reading),
+            ModernTechniqueItem(title = "Метод указки", iconResId = R.drawable.ic_pointer_method),
+            ModernTechniqueItem(title = "Предложения наоборот", iconResId = R.drawable.ic_sentence_reverse),
+            ModernTechniqueItem(title = "Слова наоборот", iconResId = R.drawable.ic_word_reverse),
+            ModernTechniqueItem(title = "Зашумленный текст", iconResId = R.drawable.ic_noisy_text),
+            ModernTechniqueItem(title = "Частично скрытые строки", iconResId = R.drawable.ic_partially_hidden_lines)
         )
 
         // Прогресс теперь основан только на реальных результатах пользователя
@@ -33,7 +33,7 @@ class PracticeActivity : AppCompatActivity() {
         // Настройка сетки техник
         val recyclerView = findViewById<RecyclerView>(R.id.techniques_grid)
         recyclerView.layoutManager = GridLayoutManager(this, 2)
-        recyclerView.adapter = TechniqueAdapter(techniques)
+        recyclerView.adapter = ModernTechniqueAdapter(techniques)
     }
     
     private fun addTestDataIfEmpty() {

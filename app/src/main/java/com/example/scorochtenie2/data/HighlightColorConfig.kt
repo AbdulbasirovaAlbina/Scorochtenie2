@@ -2,44 +2,89 @@ package com.example.scorochtenie2
 
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.Color
 import android.text.Spannable
 import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 
-object HighlightColorHelper {
+object HighlightColorConfig {
     
-    /**
-     * Получает цвет фона для выделения на основе настроек пользователя и темы
-     */
+    data class HighlightColor(
+        val name: String,
+        val lightBackgroundColor: Int,
+        val darkBackgroundColor: Int,
+        val textColor: Int = Color.BLACK
+    )
+    
+    val colors = listOf(
+        HighlightColor(
+            name = "Желтый",
+            lightBackgroundColor = Color.YELLOW,
+            darkBackgroundColor = Color.parseColor("#FFD700"),
+            textColor = Color.BLACK
+        ),
+        HighlightColor(
+            name = "Зеленый",
+            lightBackgroundColor = Color.parseColor("#90EE90"),
+            darkBackgroundColor = Color.parseColor("#32CD32"),
+            textColor = Color.BLACK
+        ),
+        HighlightColor(
+            name = "Голубой",
+            lightBackgroundColor = Color.parseColor("#87CEEB"),
+            darkBackgroundColor = Color.parseColor("#00BFFF"),
+            textColor = Color.BLACK
+        ),
+        HighlightColor(
+            name = "Розовый",
+            lightBackgroundColor = Color.parseColor("#FFB6C1"),
+            darkBackgroundColor = Color.parseColor("#FF69B4"),
+            textColor = Color.BLACK
+        ),
+        HighlightColor(
+            name = "Оранжевый",
+            lightBackgroundColor = Color.parseColor("#FFA500"),
+            darkBackgroundColor = Color.parseColor("#FF8C00"),
+            textColor = Color.BLACK
+        )
+    )
+    
+    val colorLabels = colors.map { it.name }
+    
+    fun getBackgroundColor(colorIndex: Int, isDarkTheme: Boolean): Int {
+        if (colorIndex < 0 || colorIndex >= colors.size) return colors[0].lightBackgroundColor
+        return if (isDarkTheme) colors[colorIndex].darkBackgroundColor else colors[colorIndex].lightBackgroundColor
+    }
+    
+    fun getTextColor(colorIndex: Int): Int {
+        if (colorIndex < 0 || colorIndex >= colors.size) return colors[0].textColor
+        return colors[colorIndex].textColor
+    }
+    
+    fun getColorIndex(colorName: String): Int {
+        return colors.indexOfFirst { it.name == colorName }.takeIf { it != -1 } ?: 0
+    }
+
+    // Merged helper API
     fun getHighlightBackgroundColor(context: Context): Int {
         val sharedPreferences = context.getSharedPreferences("technique_settings", Context.MODE_PRIVATE)
         val colorIndex = sharedPreferences.getInt("highlight_color_index", 0)
-        
         val isDarkTheme = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-        
-        return HighlightColorConfig.getBackgroundColor(colorIndex, isDarkTheme)
+        return getBackgroundColor(colorIndex, isDarkTheme)
     }
-    
-    /**
-     * Получает цвет текста для выделения на основе настроек пользователя
-     */
+
     fun getHighlightTextColor(context: Context): Int {
         val sharedPreferences = context.getSharedPreferences("technique_settings", Context.MODE_PRIVATE)
         val colorIndex = sharedPreferences.getInt("highlight_color_index", 0)
-        
-        return HighlightColorConfig.getTextColor(colorIndex)
+        return getTextColor(colorIndex)
     }
-    
-    /**
-     * Применяет выделение к spannable тексту с учетом настроек пользователя
-     */
+
     fun applyHighlight(
         context: Context,
         spannable: android.text.SpannableString,
         startIndex: Int,
         endIndex: Int
     ) {
-        // Удаляем старые spans в указанном диапазоне
         val existingBackgroundSpans = spannable.getSpans(startIndex, endIndex, BackgroundColorSpan::class.java)
         for (span in existingBackgroundSpans) {
             spannable.removeSpan(span)
@@ -48,18 +93,16 @@ object HighlightColorHelper {
         for (span in existingForegroundSpans) {
             spannable.removeSpan(span)
         }
-        
-        // Применяем новое выделение
+
         val backgroundColor = getHighlightBackgroundColor(context)
         val textColor = getHighlightTextColor(context)
-        
+
         spannable.setSpan(
             BackgroundColorSpan(backgroundColor),
             startIndex,
             endIndex,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        
         spannable.setSpan(
             ForegroundColorSpan(textColor),
             startIndex,
@@ -67,10 +110,7 @@ object HighlightColorHelper {
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
     }
-    
-    /**
-     * Удаляет все выделения из spannable текста
-     */
+
     fun clearHighlights(spannable: android.text.SpannableString) {
         val backgroundSpans = spannable.getSpans(0, spannable.length, BackgroundColorSpan::class.java)
         for (span in backgroundSpans) {

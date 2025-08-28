@@ -29,17 +29,7 @@ class PointerMethodTechnique : Technique("PointerMethodTechnique", "Метод �
     private var highlightColorIndex = 0
     private var textView: TextView? = null
 
-    override val description: SpannableString
-        get() {
-            val text = "Метод \"указки\" — это техника скорочтения, в которой используется визуальное сопровождение текста для направления внимания. Вместо пальца или ручки, в приложении слова подсвечиваются по очереди, помогая глазам двигаться по строкам без остановок и возвратов.\n" +
-                    "Такая подача помогает удерживать ритм чтения и повышает концентрацию на ключевых фразах.\n" +
-                    "Следите за подсвеченными словами и старайтесь воспринимать информацию с их скоростью — это способствует более быстрому и осознанному чтению."
-            val spannable = SpannableString(text)
-            spannable.setSpan(StyleSpan(android.graphics.Typeface.BOLD), 0, name.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannable.setSpan(StyleSpan(android.graphics.Typeface.BOLD), text.indexOf("визуальное сопровождение текста"), text.indexOf("визуальное сопровождение текста") + "визуальное сопровождение текста".length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannable.setSpan(StyleSpan(android.graphics.Typeface.BOLD), text.indexOf("за подсвеченными словами"), text.indexOf("за подсвеченными словами") + "за подсвеченными словами".length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            return spannable
-        }
+    
 
     override fun startAnimation(
         textView: TextView,
@@ -127,7 +117,7 @@ class PointerMethodTechnique : Technique("PointerMethodTechnique", "Метод �
         if (!isAnimationActive) return
 
         val spannable = SpannableString(currentPartText)
-        HighlightColorHelper.clearHighlights(spannable)
+        HighlightColorConfig.clearHighlights(spannable)
 
         var startIndex = 0
         var wordCount = 0
@@ -135,7 +125,7 @@ class PointerMethodTechnique : Technique("PointerMethodTechnique", "Метод �
         currentPartWords.forEach { word ->
             if (wordCount == currentWordIndex) {
                 val endIndex = startIndex + word.length
-                HighlightColorHelper.applyHighlight(
+                HighlightColorConfig.applyHighlight(
                     textView.context,
                     spannable,
                     startIndex,

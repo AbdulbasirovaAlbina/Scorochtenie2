@@ -24,32 +24,7 @@ class WordReverseTechnique : Technique("Слова наоборот", "Слов�
     private val handler = Handler(Looper.getMainLooper())
     private var isAnimationActive = false
 
-    override val description: SpannableString
-        get() {
-            val text = "Слова наоборот — это техника скорочтения, при которой буквы в словах читаются справа налево, но предложения — слева направо. Метод тренирует внимание и произвольность движения глаз.\n" +
-                    "Для применения техники читайте предложения слева направо, переворачивая буквы каждого слова в уме.\n" +
-                    "Сосредоточьтесь на разбиении слов на буквы и их правильной сборке, чтобы улучшить навыки чтения."
-            val spannable = SpannableString(text)
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                0,
-                name.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                text.indexOf("читайте предложения слева направо"),
-                text.indexOf("читайте предложения слева направо") + "читайте предложения слева направо".length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannable.setSpan(
-                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                text.indexOf("переворачивая буквы"),
-                text.indexOf("переворачивая буквы") + "переворачивая буквы".length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            return spannable
-        }
+    
 
     override fun startAnimation(
         textView: TextView,
@@ -179,13 +154,13 @@ class WordReverseTechnique : Technique("Слова наоборот", "Слов�
         if (!isAnimationActive) return
 
         val spannable = SpannableString(currentPartText)
-        HighlightColorHelper.clearHighlights(spannable)
+        HighlightColorConfig.clearHighlights(spannable)
 
         val (startIndex, word) = getWordPosition(currentWordIndex)
         if (startIndex >= 0 && startIndex < currentPartText.length) {
             val endIndex = startIndex + word.length
             if (endIndex <= currentPartText.length) {
-                HighlightColorHelper.applyHighlight(
+                HighlightColorConfig.applyHighlight(
                     textView.context,
                     spannable,
                     startIndex,
