@@ -56,7 +56,7 @@ class PointerMethodTechnique : Technique("PointerMethodTechnique", "Метод �
         fullText = if (selectedTextIndex == -1) {
             TextResources.getDemoTextForTechnique(displayName)
         } else {
-            TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
+            TextResources.getTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
         }.replace("\n", " ")
         currentWordIndex = 0
         lastScrollY = 0

@@ -39,7 +39,7 @@ class WordReverseTechnique : Technique("Слова наоборот", "Слов�
             val originalText = if (selectedTextIndex == -1) {
                 TextResources.getDemoTextForTechnique(displayName)
             } else {
-                TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
+                TextResources.getTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
             }.replace("\n", " ")
             fullText = reverseWords(originalText).replace("\n", " ")
             if (fullText.isEmpty()) {

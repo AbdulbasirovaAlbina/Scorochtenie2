@@ -40,7 +40,7 @@ class SentenceReverseTechnique : Technique("Предложения наобор�
             val originalText = if (selectedTextIndex == -1) {
                 TextResources.getDemoTextForTechnique(displayName)
             } else {
-                TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
+                TextResources.getTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
             }.replace("\n", " ")
             fullText = reverseSentences(originalText)
             if (fullText.isEmpty()) {

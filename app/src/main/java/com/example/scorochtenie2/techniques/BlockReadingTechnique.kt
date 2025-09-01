@@ -27,7 +27,6 @@ class BlockReadingTechnique : Technique("Чтение блоками", "Чтен
     private var lastScrollY: Int = 0
     private val handler = Handler(Looper.getMainLooper())
     private var isAnimationActive = false
-
     
 
     override fun startAnimation(
@@ -43,7 +42,7 @@ class BlockReadingTechnique : Technique("Чтение блоками", "Чтен
             fullText = if (selectedTextIndex == -1) {
                 TextResources.getDemoTextForTechnique(displayName)
             } else {
-                TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
+                TextResources.getTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
             }.replace("\n", " ")
             if (fullText.isEmpty()) {
                 textView.text = "Текст недоступен"

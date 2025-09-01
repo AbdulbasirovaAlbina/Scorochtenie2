@@ -40,7 +40,7 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
         fullText = if (selectedTextIndex == -1) {
             TextResources.getDemoTextForTechnique(displayName)
         } else {
-            TextResources.getOtherTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
+            TextResources.getTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
         }.replace("\n", " ")
         if (fullText.isEmpty()) {
             Log.e("CurtainText", "Text is empty for index $selectedTextIndex")

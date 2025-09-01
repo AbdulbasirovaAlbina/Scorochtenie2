@@ -10,17 +10,11 @@ data class TextData(
     val questionsAndAnswers: List<Pair<String, List<String>>>
 )
 
-data class DiagonalTextData(
-    val text: String,
-    val breakWords: List<String>,
-    val questionsAndAnswers: List<Pair<String, List<String>>>
-)
+
 
 
 object TextResources {
-    private var diagonalTexts: List<DiagonalTextData> = emptyList()
-
-    private var otherTexts: Map<String, List<TextData>> = emptyMap()
+    private var texts: Map<String, List<TextData>> = emptyMap()
     private var demoText: TextData? = null
     private var isInitialized = false
 
@@ -32,8 +26,7 @@ object TextResources {
         
         try {
             Log.d("TextResources", "Initializing TextResources...")
-            val diagonalList = mutableListOf<DiagonalTextData>()
-            val otherMap = mutableMapOf<String, MutableList<TextData>>()
+            val textsMap = mutableMapOf<String, MutableList<TextData>>()
 
             // Mapping technique names to XML resource IDs
             val techniqueFiles = mapOf(
@@ -50,7 +43,7 @@ object TextResources {
             for ((techniqueName, xmlResourceId) in techniqueFiles) {
                 try {
                     val parser = context.resources.getXml(xmlResourceId)
-                    loadTechniqueFromParser(parser, techniqueName, diagonalList, otherMap)
+                    loadTechniqueFromParser(parser, techniqueName, textsMap)
                     Log.d("TextResources", "Successfully loaded technique: $techniqueName")
                 } catch (e: Exception) {
                     Log.e("TextResources", "Error loading technique $techniqueName", e)
@@ -66,20 +59,17 @@ object TextResources {
                 Log.e("TextResources", "Error loading demo text", e)
             }
 
-            diagonalTexts = diagonalList
-            otherTexts = otherMap
+            texts = textsMap
             
             Log.d("TextResources", "Initialization complete:")
-            Log.d("TextResources", "Diagonal texts: ${diagonalTexts.size}")
-            Log.d("TextResources", "Other texts: ${otherTexts.size}")
-            Log.d("TextResources", "Other texts keys: ${otherTexts.keys}")
+            Log.d("TextResources", "Texts: ${texts.size}")
+            Log.d("TextResources", "Texts keys: ${texts.keys}")
             
             isInitialized = true
         } catch (e: Exception) {
             Log.e("TextResources", "Error initializing TextResources", e)
             e.printStackTrace()
-            diagonalTexts = emptyList()
-            otherTexts = emptyMap()
+            texts = emptyMap()
             isInitialized = false
         }
     }
@@ -87,18 +77,15 @@ object TextResources {
     private fun loadTechniqueFromParser(
         parser: XmlPullParser,
         techniqueName: String,
-        diagonalList: MutableList<DiagonalTextData>,
-        otherMap: MutableMap<String, MutableList<TextData>>
+        textsMap: MutableMap<String, MutableList<TextData>>
     ) {
         var currentText: StringBuilder? = null
-        var currentBreakWords: MutableList<String>? = null
-        var currentKeyWords: MutableList<String>? = null
         var currentQuestions: MutableList<Pair<String, List<String>>>? = null
         var currentQuestionText: StringBuilder? = null
         var currentAnswers: MutableList<String>? = null
 
-        if (!otherMap.containsKey(techniqueName)) {
-            otherMap[techniqueName] = mutableListOf()
+        if (!textsMap.containsKey(techniqueName)) {
+            textsMap[techniqueName] = mutableListOf()
         }
 
         var eventType = parser.eventType
@@ -108,20 +95,10 @@ object TextResources {
                     when (parser.name) {
                         "text" -> {
                             currentText = StringBuilder()
-                            currentBreakWords = mutableListOf()
-                            currentKeyWords = mutableListOf()
                             currentQuestions = mutableListOf()
                         }
                         "content" -> {
                             currentText?.append(parser.nextText().trim())
-                        }
-                        "breakWords" -> {
-                            currentBreakWords = mutableListOf()
-                        }
-                        "word" -> {
-                            val word = parser.nextText().trim()
-                            currentBreakWords?.add(word)
-                            currentKeyWords?.add(word)
                         }
                         "questions" -> {
                             currentQuestions = mutableListOf()
@@ -140,31 +117,15 @@ object TextResources {
                     when (parser.name) {
                         "text" -> {
                             if (currentText != null && currentQuestions != null) {
-                                when (techniqueName) {
-                                    "Чтение по диагонали" -> {
-                                        diagonalList.add(
-                                            DiagonalTextData(
-                                                text = currentText.toString(),
-                                                breakWords = currentBreakWords ?: emptyList(),
-                                                questionsAndAnswers = currentQuestions.toList()
-                                            )
-                                        )
-                                        Log.d("TextResources", "Added diagonal text with ${currentQuestions.size} questions")
-                                    }
-                                    else -> {
-                                        otherMap[techniqueName]?.add(
-                                            TextData(
-                                                text = currentText.toString(),
-                                                questionsAndAnswers = currentQuestions.toList()
-                                            )
-                                        )
-                                        Log.d("TextResources", "Added text for '$techniqueName' with ${currentQuestions.size} questions")
-                                    }
-                                }
+                                textsMap[techniqueName]?.add(
+                                    TextData(
+                                        text = currentText.toString(),
+                                        questionsAndAnswers = currentQuestions.toList()
+                                    )
+                                )
+                                Log.d("TextResources", "Added text for '$techniqueName' with ${currentQuestions.size} questions")
                             }
                             currentText = null
-                            currentBreakWords = null
-                            currentKeyWords = null
                             currentQuestions = null
                         }
                         "question" -> {
@@ -241,8 +202,7 @@ object TextResources {
         return null
     }
 
-    fun getDiagonalTexts(): List<DiagonalTextData> = diagonalTexts
-    fun getOtherTexts(): Map<String, List<TextData>> = otherTexts
+    fun getTexts(): Map<String, List<TextData>> = texts
     fun getDemoText(): TextData? = demoText
     
     // Специальная функция для демонстрации техник
@@ -252,8 +212,7 @@ object TextResources {
     
     fun reset() {
         isInitialized = false
-        diagonalTexts = emptyList()
-        otherTexts = emptyMap()
+        texts = emptyMap()
         demoText = null
         Log.d("TextResources", "Reset TextResources")
     }

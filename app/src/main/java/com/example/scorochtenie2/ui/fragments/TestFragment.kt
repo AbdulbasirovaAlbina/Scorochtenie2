@@ -119,40 +119,41 @@ class TestFragment : Fragment() {
         
         val result = when (techniqueName) {
             "Чтение по диагонали" -> {
-                val diagonalTexts = TextResources.getDiagonalTexts()
-                Log.d("TestFragment", "Diagonal texts size: ${diagonalTexts.size}")
-                diagonalTexts.getOrNull(textIndex)?.questionsAndAnswers
+                val texts = TextResources.getTexts()
+                Log.d("TestFragment", "Texts keys: ${texts.keys}")
+                Log.d("TestFragment", "Looking for 'Чтение по диагонали' in texts")
+                texts["Чтение по диагонали"]?.getOrNull(textIndex)?.questionsAndAnswers
             }
             "Чтение блоками" -> {
-                val otherTexts = TextResources.getOtherTexts()
-                Log.d("TestFragment", "Other texts keys: ${otherTexts.keys}")
-                Log.d("TestFragment", "Looking for 'Чтение блоками' in otherTexts")
-                otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
+                val texts = TextResources.getTexts()
+                Log.d("TestFragment", "Texts keys: ${texts.keys}")
+                Log.d("TestFragment", "Looking for 'Чтение блоками' in texts")
+                texts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
             }
             "Метод указки" -> {
-                val otherTexts = TextResources.getOtherTexts()
-                Log.d("TestFragment", "Looking for 'Метод указки' in otherTexts")
-                otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
+                val texts = TextResources.getTexts()
+                Log.d("TestFragment", "Looking for 'Метод указки' in texts")
+                texts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
             }
             "Предложения наоборот" -> {
-                val otherTexts = TextResources.getOtherTexts()
-                Log.d("TestFragment", "Looking for 'Предложения наоборот' in otherTexts")
-                otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
+                val texts = TextResources.getTexts()
+                Log.d("TestFragment", "Looking for 'Предложения наоборот' in texts")
+                texts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
             }
             "Слова наоборот" -> {
-                val otherTexts = TextResources.getOtherTexts()
-                Log.d("TestFragment", "Looking for 'Слова наоборот' in otherTexts")
-                otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
+                val texts = TextResources.getTexts()
+                Log.d("TestFragment", "Looking for 'Слова наоборот' in texts")
+                texts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
             }
             "Зашумленный текст" -> {
-                val otherTexts = TextResources.getOtherTexts()
-                Log.d("TestFragment", "Looking for 'Зашумленный текст' in otherTexts")
-                otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
+                val texts = TextResources.getTexts()
+                Log.d("TestFragment", "Looking for 'Зашумленный текст' in texts")
+                texts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
             }
             "Частично скрытые строки" -> {
-                val otherTexts = TextResources.getOtherTexts()
-                Log.d("TestFragment", "Looking for 'Частично скрытые строки' in otherTexts")
-                otherTexts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
+                val texts = TextResources.getTexts()
+                Log.d("TestFragment", "Looking for 'Частично скрытые строки' in texts")
+                texts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
             }
             else -> {
                 Log.d("TestFragment", "Technique '$techniqueName' not found, using default questions")

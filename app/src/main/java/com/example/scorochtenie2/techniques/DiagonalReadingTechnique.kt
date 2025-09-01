@@ -36,7 +36,7 @@ class DiagonalReadingTechnique : Technique("Чтение по диагонали
             fullText = if (selectedTextIndex == -1) {
                 TextResources.getDemoTextForTechnique(displayName)
             } else {
-                TextResources.getDiagonalTexts().getOrNull(selectedTextIndex)?.text ?: ""
+                TextResources.getTexts()["Чтение по диагонали"]?.getOrNull(selectedTextIndex)?.text ?: ""
             }.replace("\n", " ")
             if (fullText.isEmpty()) {
                 textView.text = "Текст недоступен"
