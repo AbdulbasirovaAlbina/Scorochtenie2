@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,7 +28,7 @@ class ReminderSettingsActivity : AppCompatActivity() {
             reminderSwitch.isChecked = false
             ReminderManager.setReminderEnabled(this, false)
             Toast.makeText(this, "Разрешение на уведомления отклонено", Toast.LENGTH_SHORT).show()
-            Log.d(TAG, "Notification permission denied")
+
         }
     }
 
@@ -41,10 +40,8 @@ class ReminderSettingsActivity : AppCompatActivity() {
         reminderTimeText = findViewById(R.id.reminder_time_text)
 
         loadSettings()
-        Log.d(TAG, "onCreate: reminderSwitch=${reminderSwitch.isChecked}, time=${reminderTimeText.text}")
 
         reminderSwitch.setOnCheckedChangeListener { _, isChecked ->
-            Log.d(TAG, "reminderSwitch changed: $isChecked")
             if (isChecked) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -66,7 +63,7 @@ class ReminderSettingsActivity : AppCompatActivity() {
             TimePickerDialog(this, { _, selectedHour, selectedMinute ->
                 ReminderManager.setReminderTime(this, selectedHour, selectedMinute)
                 reminderTimeText.text = ReminderManager.getReminderTimeString(this)
-                Log.d(TAG, "Time selected: $selectedHour:$selectedMinute")
+
             }, hour, minute, true).show()
         }
     }
@@ -97,6 +94,5 @@ class ReminderSettingsActivity : AppCompatActivity() {
     private fun updateReminderSettings() {
         ReminderManager.setReminderEnabled(this, reminderSwitch.isChecked)
         reminderTimeText.text = ReminderManager.getReminderTimeString(this)
-        Log.d(TAG, "updateReminderSettings: reminderSwitch=${reminderSwitch.isChecked}, time=${reminderTimeText.text}")
     }
 }

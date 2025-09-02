@@ -52,7 +52,6 @@ class PointerMethodTechnique : Technique("PointerMethodTechnique", "Метод �
         this.selectedTextIndex = selectedTextIndex
         this.highlightColorIndex = highlightColorIndex
         this.textView = textView
-        // В демонстрационном режиме (selectedTextIndex = -1) используем демонстрационный текст
         fullText = if (selectedTextIndex == -1) {
             TextResources.getDemoTextForTechnique(displayName)
         } else {

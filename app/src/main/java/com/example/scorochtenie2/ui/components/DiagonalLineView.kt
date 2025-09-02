@@ -5,7 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
+
 import android.view.View
 import android.widget.TextView
 
@@ -17,10 +17,10 @@ class DiagonalLineView @JvmOverloads constructor(
 
     private val paint = Paint().apply {
         color = Color.RED
-        strokeWidth = 6f * resources.displayMetrics.density // шире
+        strokeWidth = 6f * resources.displayMetrics.density
         style = Paint.Style.STROKE
         isAntiAlias = true
-        alpha = (255 * 0.5f).toInt() // полупрозрачная
+        alpha = (255 * 0.5f).toInt()
     }
 
     private var textView: TextView? = null
@@ -29,34 +29,34 @@ class DiagonalLineView @JvmOverloads constructor(
         textView = (parent as? View)?.findViewById<TextView>(R.id.diagonal_text_view)
         val textView = textView
         if (textView == null) {
-            Log.w("DiagonalLineView", "TextView not found, using default measurements")
+
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             return
         }
 
-        // Ждём, пока TextView будет измерен
+
         textView.post {
             val layout = textView.layout
             if (layout != null) {
-                // Получаем ширину текста из layout
+
                 val textWidth = layout.width.toFloat()
                 val textHeight = textView.measuredHeight
-                // Учитываем отступы TextView
+
                 val totalWidth = (textWidth + textView.paddingLeft + textView.paddingRight).toInt()
                 setMeasuredDimension(totalWidth, textHeight)
-                Log.d("DiagonalLineView", "Measured size: ${totalWidth}x${textHeight}, Text width: $textWidth")
+
                 invalidate()
             } else {
-                Log.w("DiagonalLineView", "TextView layout is null, using TextView measured size")
+
                 val width = textView.measuredWidth + textView.paddingLeft + textView.paddingRight
                 val height = textView.measuredHeight
                 setMeasuredDimension(width, height)
-                Log.d("DiagonalLineView", "Measured size: ${width}x${height}")
+
                 invalidate()
             }
         }
 
-        // Временные размеры, пока TextView не измерен
+
         val defaultWidth = textView.measuredWidth + textView.paddingLeft + textView.paddingRight
         val defaultHeight = textView.measuredHeight
         setMeasuredDimension(defaultWidth, defaultHeight)
@@ -67,7 +67,7 @@ class DiagonalLineView @JvmOverloads constructor(
         val textWidth = textView?.layout?.width?.toFloat() ?: width.toFloat()
         val drawWidth = textWidth + (textView?.paddingLeft ?: 0) + (textView?.paddingRight ?: 0)
         canvas.drawLine(0f, 0f, drawWidth, height.toFloat(), paint)
-        Log.d("DiagonalLineView", "Drawing line with size: ${drawWidth}x${height}")
+
     }
 
     override fun onAttachedToWindow() {
@@ -75,7 +75,7 @@ class DiagonalLineView @JvmOverloads constructor(
         textView = (parent as? View)?.findViewById<TextView>(R.id.diagonal_text_view)
         textView?.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             if (textView?.measuredHeight != measuredHeight || textView?.layout?.width != measuredWidth) {
-                Log.d("DiagonalLineView", "TextView layout changed, requesting layout")
+
                 requestLayout()
                 invalidate()
             }

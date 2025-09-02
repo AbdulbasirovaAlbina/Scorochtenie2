@@ -7,7 +7,6 @@ import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
-import android.util.Log
 import android.view.View
 import android.widget.ScrollView
 import android.widget.TextView
@@ -36,43 +35,37 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
         isRunning = true
         currentWordIndex = 0
 
-        // Загружаем текст
         fullText = if (selectedTextIndex == -1) {
             TextResources.getDemoTextForTechnique(displayName)
         } else {
             TextResources.getTexts()[displayName]?.getOrNull(selectedTextIndex)?.text ?: ""
         }.replace("\n", " ")
         if (fullText.isEmpty()) {
-            Log.e("CurtainText", "Text is empty for index $selectedTextIndex")
             textView.text = "Текст недоступен"
             onAnimationEnd()
             return
         }
 
         currentWords = fullText.split("\\s+".toRegex()).filter { it.isNotEmpty() }
-        Log.d("CurtainText", "Total words: ${currentWords.size}")
 
-        // Настройка TextView
         textView.gravity = android.view.Gravity.TOP
         textView.isSingleLine = false
         textView.maxLines = Int.MAX_VALUE
         textView.text = fullText
 
-        // Находим ScrollView
         scrollView = textView.parent as? ScrollView
         lastScrollY = 0
 
         if (guideView is CurtainOverlayView) {
             guideView.visibility = View.VISIBLE
-            // Запускаем подсветку слов
+
             startWordHighlighting(textView, durationPerWord, onAnimationEnd)
-            // Запускаем анимацию шторки
+
             guideView.start(durationPerWord, currentWords.size) {
-                // Не вызываем onAnimationEnd здесь, так как подсветка слов управляет завершением
-                Log.d("CurtainText", "Curtain animation completed")
+
             }
         } else {
-            Log.e("CurtainText", "guideView is not CurtainOverlayView")
+
             onAnimationEnd()
         }
     }
@@ -101,32 +94,31 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
         if (!isRunning) return
 
         if (currentWordIndex >= currentWords.size) {
-            textView.text = fullText // Убираем подсветку
+            textView.text = fullText
             if (isRunning) {
-                Log.d("CurtainText", "Word highlighting completed at index $currentWordIndex")
                 isRunning = false
                 onAnimationEnd()
             }
             return
         }
 
-        // Проверяем layout
+
         val layout = textView.layout
         if (layout == null) {
-            Log.w("CurtainText", "Layout not ready, retrying")
+
             handler.postDelayed({
                 if (isRunning) highlightNextWord(textView, wordDurationMs, onAnimationEnd)
             }, 200)
             return
         }
 
-        // Подсвечиваем текущее слово
+
         highlightCurrentWord(textView)
 
-        // Прокрутка ScrollView
+
         scrollToCurrentWord(textView, wordDurationMs)
 
-        // Переходим к следующему слову
+
         handler.postDelayed({
             if (isRunning) {
                 currentWordIndex++
@@ -141,7 +133,7 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
         val spannable = SpannableString(fullText)
         HighlightColorConfig.clearHighlights(spannable)
 
-        // Подсвечиваем текущее слово
+
         var startIndex = 0
         var wordCount = 0
 
@@ -155,7 +147,6 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
                         startIndex,
                         endIndex
                     )
-                    Log.d("CurtainText", "Highlighted word at index: $currentWordIndex, word: '$word'")
                 }
             }
             startIndex += word.length
@@ -174,7 +165,6 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
         val layout = textView.layout ?: return
         val wordStartIndex = getWordStartIndex(currentWordIndex, fullText)
         if (wordStartIndex < 0 || wordStartIndex >= fullText.length) {
-            Log.w("CurtainText", "Invalid word start index: $wordStartIndex")
             return
         }
 
@@ -202,7 +192,6 @@ class CurtainTextCurtainTechnique : Technique("Зашумленный текст
                             addListener(
                                 onEnd = {
                                     lastScrollY = targetScrollY
-                                    Log.d("CurtainText", "Scrolled to Y: $targetScrollY")
                                 }
                             )
                             start()

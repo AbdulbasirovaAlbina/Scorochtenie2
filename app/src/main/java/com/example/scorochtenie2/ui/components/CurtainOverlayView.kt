@@ -22,17 +22,16 @@ class CurtainOverlayView @JvmOverloads constructor(
     private var animator: ValueAnimator? = null
     private var offsetPx: Float = 0f
 
-    // Visual params - уменьшены на 20% (еще на 20% тоньше)
     private val barHeightPx: Float get() = (24f * 0.8f * 0.8f) * resources.displayMetrics.density
     private val gapHeightPx: Float get() = (20f * 0.8f * 0.8f) * resources.displayMetrics.density
     private val patternHeightPx: Float get() = barHeightPx + gapHeightPx
 
-    // Colors for stripes (semi-transparent) - убрали прозрачность на 10%
+
     private val colors: IntArray = intArrayOf(
-        0x66FF5252, // red 40% alpha (было 30%)
-        0x664CAF50, // green 40% alpha (было 30%)
-        0x664285F4, // blue 40% alpha (было 30%)
-        0x66FFC107  // amber 40% alpha (было 30%)
+        0x66FF5252,
+        0x664CAF50,
+        0x664285F4,
+        0x66FFC107
     )
 
     override fun onDraw(canvas: Canvas) {
@@ -43,7 +42,7 @@ class CurtainOverlayView @JvmOverloads constructor(
         var y = -offsetPx
         var index = 0
 
-        // Draw repeating colored bars from top to bottom
+
         while (y < height) {
             paint.color = colors[index % colors.size]
             val top = y
@@ -59,7 +58,7 @@ class CurtainOverlayView @JvmOverloads constructor(
     fun start(speedMsPerWord: Long, totalWords: Int, onEnd: (() -> Unit)? = null) {
         stop()
         
-        // Total duration proportional to words count
+
         val perWordMs = (60_000L / speedMsPerWord).coerceAtLeast(50L)
         val totalDuration = (totalWords * perWordMs).coerceAtLeast(1_000L)
 
@@ -68,8 +67,7 @@ class CurtainOverlayView @JvmOverloads constructor(
             interpolator = LinearInterpolator()
             addUpdateListener { animation ->
                 val fraction = animation.animatedFraction
-                // Move a few patterns across the view during the whole duration
-                // Увеличиваем количество циклов для более плавного движения
+
                 val cycles = 8f
                 offsetPx = (fraction * cycles * patternHeightPx) % patternHeightPx
                 invalidate()

@@ -35,26 +35,24 @@ class SettingsFragment : Fragment() {
     private fun setupThemeSwitch(view: View) {
         val themeSwitch = view.findViewById<Switch>(R.id.theme_switch)
 
-        // Загружаем текущую тему
+
         val sharedPref = requireActivity().getSharedPreferences("app_settings", Context.MODE_PRIVATE)
         val isDarkTheme = sharedPref.getBoolean("dark_theme", false)
         themeSwitch.isChecked = isDarkTheme
 
         themeSwitch.setOnCheckedChangeListener { _, isChecked ->
-            // Сохраняем настройку темы
+
             with(sharedPref.edit()) {
                 putBoolean("dark_theme", isChecked)
                 apply()
             }
 
-            // Применяем тему
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
 
-            // Перезапускаем активность для применения темы
             requireActivity().recreate()
         }
     }
@@ -91,17 +89,17 @@ class SettingsFragment : Fragment() {
     }
 
     private fun clearAllProgress() {
-        // Очищаем всю статистику и прогресс
+
         TestResultManager.clearAllProgress(requireContext())
 
-        // Показываем сообщение
+
         Toast.makeText(
             context,
             "Прогресс успешно очищен",
             Toast.LENGTH_SHORT
         ).show()
 
-        // Обновляем UI для всех фрагментов
+
         val currentFragment = parentFragmentManager.findFragmentById(R.id.fragment_container)
         when (currentFragment) {
             is ProgressFragment -> {
@@ -123,19 +121,17 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupReminderSettings(view: View) {
-        // Находим элементы в include layout
+
         val reminderSettingsView = view.findViewById<View>(R.id.reminder_settings)
         val reminderSwitch = reminderSettingsView.findViewById<SwitchCompat>(R.id.reminder_switch)
         val reminderTimeText = reminderSettingsView.findViewById<TextView>(R.id.reminder_time_text)
 
-        // Загружаем текущие настройки напоминаний
         val isEnabled = ReminderManager.isReminderEnabled(requireContext())
         reminderSwitch.isChecked = isEnabled
 
-        // Устанавливаем текущее время напоминания
         reminderTimeText.text = ReminderManager.getReminderTimeFormatted(requireContext())
 
-        // Обработчик переключателя
+
         reminderSwitch.setOnCheckedChangeListener { _, isChecked ->
             ReminderManager.setReminderEnabled(requireContext(), isChecked)
 
@@ -146,7 +142,7 @@ class SettingsFragment : Fragment() {
             }
         }
 
-        // Обработчик выбора времени
+
         reminderTimeText.setOnClickListener {
             showTimePickerDialog(reminderTimeText)
         }
@@ -171,7 +167,7 @@ class SettingsFragment : Fragment() {
             },
             currentHour,
             currentMinute,
-            true // 24-часовой формат
+            true
         )
 
         timePickerDialog.setTitle("Выберите время напоминания")

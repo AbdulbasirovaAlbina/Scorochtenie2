@@ -2,7 +2,6 @@ package com.example.scorochtenie2
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import android.widget.Toast
 
 object ReminderManager {
@@ -22,14 +21,12 @@ object ReminderManager {
         if (!isInitialized) {
             ReminderService.initialize(context)
             isInitialized = true
-            Log.d(TAG, "ReminderManager initialized")
         }
     }
 
     fun isReminderEnabled(context: Context): Boolean {
         initialize(context)
         val enabled = getSharedPreferences(context).getBoolean(KEY_REMINDER_ENABLED, false)
-        Log.d(TAG, "isReminderEnabled: $enabled")
         return enabled
     }
 
@@ -38,7 +35,6 @@ object ReminderManager {
         val editor = getSharedPreferences(context).edit().putBoolean(KEY_REMINDER_ENABLED, enabled)
         val success = editor.commit()
         val savedValue = getSharedPreferences(context).getBoolean(KEY_REMINDER_ENABLED, false)
-        Log.d(TAG, "setReminderEnabled: set=$enabled, saved=$savedValue, success=$success")
         if (!success) {
             Toast.makeText(context, "Ошибка сохранения настройки напоминаний", Toast.LENGTH_SHORT).show()
         }
@@ -55,14 +51,12 @@ object ReminderManager {
     fun getReminderHour(context: Context): Int {
         initialize(context)
         val hour = getSharedPreferences(context).getInt(KEY_REMINDER_HOUR, 9)
-        Log.d(TAG, "getReminderHour: $hour")
         return hour
     }
 
     fun getReminderMinute(context: Context): Int {
         initialize(context)
         val minute = getSharedPreferences(context).getInt(KEY_REMINDER_MINUTE, 0)
-        Log.d(TAG, "getReminderMinute: $minute")
         return minute
     }
 
@@ -74,7 +68,6 @@ object ReminderManager {
         val success = editor.commit()
         val savedHour = getSharedPreferences(context).getInt(KEY_REMINDER_HOUR, 9)
         val savedMinute = getSharedPreferences(context).getInt(KEY_REMINDER_MINUTE, 0)
-        Log.d(TAG, "setReminderTime: set=$hour:$minute, saved=$savedHour:$savedMinute, success=$success")
         if (!success) {
             Toast.makeText(context, "Ошибка сохранения времени напоминания", Toast.LENGTH_SHORT).show()
         }
@@ -91,19 +84,16 @@ object ReminderManager {
         val hour = getReminderHour(context)
         val minute = getReminderMinute(context)
         val timeString = String.format("%02d:%02d", hour, minute)
-        Log.d(TAG, "getReminderTimeString: $timeString")
         return timeString
     }
 
     fun getReminderTimeFormatted(context: Context): String {
         initialize(context)
         val timeString = getReminderTimeString(context)
-        Log.d(TAG, "getReminderTimeFormatted: $timeString")
         return timeString
     }
 }
 
-// Merged: Keep BroadcastReceiver in the same file to consolidate reminder logic without breaking APIs
 class ReminderService : android.content.BroadcastReceiver() {
 
     companion object {
@@ -130,7 +120,6 @@ class ReminderService : android.content.BroadcastReceiver() {
             )
 
             alarmManager.cancel(pendingIntent)
-            android.util.Log.d(TAG, "Scheduling reminder for $hour:$minute")
 
             val calendar = java.util.Calendar.getInstance().apply {
                 set(java.util.Calendar.HOUR_OF_DAY, hour)
@@ -144,7 +133,6 @@ class ReminderService : android.content.BroadcastReceiver() {
             }
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-                android.util.Log.w(TAG, "Cannot schedule exact alarms. Permission denied.")
                 return
             }
 
@@ -153,7 +141,6 @@ class ReminderService : android.content.BroadcastReceiver() {
                 calendar.timeInMillis,
                 pendingIntent
             )
-            android.util.Log.d(TAG, "Reminder scheduled at ${calendar.time}")
         }
 
         fun cancelReminder(context: android.content.Context) {
@@ -170,7 +157,6 @@ class ReminderService : android.content.BroadcastReceiver() {
             )
 
             alarmManager.cancel(pendingIntent)
-            android.util.Log.d(TAG, "Reminder cancelled")
         }
 
         private fun createNotificationChannel(context: android.content.Context) {
@@ -186,15 +172,12 @@ class ReminderService : android.content.BroadcastReceiver() {
                     }
 
                     notificationManager.createNotificationChannel(channel)
-                    android.util.Log.d(TAG, "Notification channel created")
                 } else {
-                    android.util.Log.d(TAG, "Notification channel already exists")
                 }
             }
         }
 
         fun sendTestNotification(context: android.content.Context) {
-            android.util.Log.d(TAG, "sendTestNotification called")
             val service = ReminderService()
             service.showReminderNotification(context.applicationContext)
         }

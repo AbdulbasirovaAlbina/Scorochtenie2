@@ -39,10 +39,10 @@ class BlockReadingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_technique)
 
-        // Инициализация TextResources
+
         TextResources.initialize(this)
 
-        // Получение параметров из Intent
+
         techniqueName = intent.getStringExtra("technique_name") ?: "Чтение блоками"
         run {
             val speedIndex = intent.getIntExtra("speed", 1)
@@ -51,27 +51,27 @@ class BlockReadingActivity : AppCompatActivity() {
         }
         val textLength = intent.getStringExtra("text_length") ?: "Средний"
         
-        // Проверяем, есть ли доступные тексты для выбранной длины
+
         val availableTexts = TestResultManager.getAvailableTextsByLength(this, techniqueName, textLength)
         
         if (availableTexts.isEmpty()) {
-            // Все тексты данной длины завершены
+
             showCompletionDialog(textLength)
             return
         }
         
-        // Выбираем случайный доступный текст
+
         selectedTextIndex = availableTexts.random()
         val fontSizeMultiplier = FontConfig.getFontSizeMultiplier(intent.getIntExtra("font_size", 1))
 
-        // Инициализация UI
+
         findViewById<TextView>(R.id.toolbar_title).text = techniqueName
         textView = findViewById(R.id.text_view)
         guideView = findViewById(R.id.guide_view)
         timerView = findViewById(R.id.timer_view)
         textView.textSize = FontConfig.BASE_TEXT_SIZE * fontSizeMultiplier
 
-        // Переключаем видимость контейнеров
+
         findViewById<View>(R.id.diagonal_container).visibility = View.GONE
         findViewById<View>(R.id.scroll_container).visibility = View.VISIBLE
 
@@ -82,7 +82,7 @@ class BlockReadingActivity : AppCompatActivity() {
             finish()
         }
 
-        // Запуск анимации и таймера
+
         startTimer()
         technique.startAnimation(
             textView = textView,
@@ -92,7 +92,7 @@ class BlockReadingActivity : AppCompatActivity() {
             onAnimationEnd = {
                 stopTimer()
                 saveTime(techniqueName, System.currentTimeMillis() - startTime)
-                // Запускаем тест после завершения анимации
+
                 showTestFragment()
             }
         )
@@ -124,12 +124,11 @@ class BlockReadingActivity : AppCompatActivity() {
     }
 
     private fun showTestFragment() {
-        // Скрываем контейнеры с текстом и показываем контейнер для теста
+
         findViewById<View>(R.id.scroll_container).visibility = View.GONE
         findViewById<View>(R.id.diagonal_container).visibility = View.GONE
         findViewById<View>(R.id.test_fragment_container).visibility = View.VISIBLE
 
-        // Запускаем тест
         val testFragment = TestFragment.newInstance(selectedTextIndex, techniqueName, durationPerWord)
         supportFragmentManager.beginTransaction()
             .replace(R.id.test_fragment_container, testFragment)
@@ -142,7 +141,7 @@ class BlockReadingActivity : AppCompatActivity() {
             .setTitle("Все тексты завершены")
             .setMessage(message)
             .setPositiveButton("ОК") { _, _ ->
-                // Закрываем текущую активность
+
                 finish()
             }
             .create()

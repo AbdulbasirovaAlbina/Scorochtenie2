@@ -60,30 +60,30 @@ class HomeFragment : Fragment() {
     }
     
     private fun setupQuoteAndTip() {
-        // Устанавливаем случайную цитату
+
         val randomQuote = quotes[Random.nextInt(quotes.size)]
         quoteText.text = randomQuote.first
         quoteAuthor.text = randomQuote.second
         
-        // Устанавливаем случайный совет
+
         val randomTip = tips[Random.nextInt(tips.size)]
         tipText.text = randomTip
     }
     
-    // Статистика сессий и времени скрыта по требованию
+
     
     private fun setupQuickActions(view: View) {
         val practiceCard = view.findViewById<CardView>(R.id.quick_practice_card)
         val learningCard = view.findViewById<CardView>(R.id.quick_learning_card)
         
         practiceCard.setOnClickListener {
-            // Переходим на вкладку практики
-            (activity as? MainActivity)?.switchToTab(2) // Практика - индекс 2
+
+            (activity as? MainActivity)?.switchToTab(2)
         }
         
         learningCard.setOnClickListener {
-            // Переходим на вкладку обучения
-            (activity as? MainActivity)?.switchToTab(1) // Обучение - индекс 1
+
+            (activity as? MainActivity)?.switchToTab(1)
         }
     }
 }

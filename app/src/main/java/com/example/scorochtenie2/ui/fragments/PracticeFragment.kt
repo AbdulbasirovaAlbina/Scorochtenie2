@@ -48,9 +48,7 @@ class PracticeFragment : Fragment() {
             )
         )
 
-        // Прогресс теперь основан только на реальных результатах пользователя
 
-        // Настройка сетки техник
         val recyclerView = view.findViewById<RecyclerView>(R.id.techniques_grid)
         recyclerView.layoutManager = GridLayoutManager(context, 2)
         recyclerView.adapter = ModernTechniqueAdapter(techniques)
@@ -59,7 +57,5 @@ class PracticeFragment : Fragment() {
     }
     
     private fun addTestDataIfEmpty() {
-        // Убираем автоматическое добавление тестовых данных
-        // Теперь прогресс будет только от реальных результатов пользователя
     }
 }

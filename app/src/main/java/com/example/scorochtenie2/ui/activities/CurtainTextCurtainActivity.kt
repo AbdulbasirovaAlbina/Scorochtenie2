@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ScrollView
@@ -42,10 +41,10 @@ class CurtainTextCurtainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_curtain_text)
 
-        // Инициализация TextResources
+
         TextResources.initialize(this)
 
-        // Получение параметров из Intent
+
         techniqueName = intent.getStringExtra("technique_name") ?: "Зашумленный текст"
         run {
             val speedIndex = intent.getIntExtra("speed", 1)
@@ -54,22 +53,22 @@ class CurtainTextCurtainActivity : AppCompatActivity() {
         }
         val textLength = intent.getStringExtra("text_length") ?: "Средний"
 
-        // Проверяем доступные тексты
+
         val availableTexts = TestResultManager.getAvailableTextsByLength(this, techniqueName, textLength)
 
         if (availableTexts.isEmpty()) {
-            Log.w("CurtainTextActivity", "No available texts for length: $textLength")
+
             showCompletionDialog(textLength)
             return
         }
 
-        // Выбираем случайный текст
+
         selectedTextIndex = availableTexts.random()
-        Log.d("CurtainTextActivity", "Selected text index: $selectedTextIndex, length: $textLength")
+
 
         val fontSizeMultiplier = FontConfig.getFontSizeMultiplier(intent.getIntExtra("font_size", 1))
 
-        // Инициализация UI
+
         findViewById<TextView>(R.id.toolbar_title).text = techniqueName
         textView = findViewById(R.id.text_view)
         guideView = findViewById(R.id.guide_view)
@@ -86,7 +85,7 @@ class CurtainTextCurtainActivity : AppCompatActivity() {
 
         startTimer()
 
-        // Запускаем анимацию после инициализации layout
+
         textView.post {
             technique.startAnimation(
                 textView = textView,

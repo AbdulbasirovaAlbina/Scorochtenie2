@@ -17,7 +17,7 @@ class LearningFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_learning, container, false)
 
         val learningTechniques = listOf(
-            // Сложность 1 - Самые легкие
+
             LearningTechniqueItem(
                 title = "Метод указки",
                 category = "Концентрация",
@@ -27,7 +27,7 @@ class LearningFragment : Fragment() {
                 iconResId = R.drawable.ic_pointer_method,
                 practiceClass = PointerMethodActivity::class.java
             ),
-            // Сложность 2
+
             LearningTechniqueItem(
                 title = "Чтение по диагонали",
                 category = "Сканирование",
@@ -46,7 +46,7 @@ class LearningFragment : Fragment() {
                 iconResId = R.drawable.ic_noisy_text,
                 practiceClass = CurtainTextCurtainActivity::class.java
             ),
-            // Сложность 3
+
             LearningTechniqueItem(
                 title = "Чтение блоками",
                 category = "Структурирование",
@@ -74,7 +74,7 @@ class LearningFragment : Fragment() {
                 iconResId = R.drawable.ic_partially_hidden_lines,
                 practiceClass = PartiallyHiddenLinesActivity::class.java
             ),
-            // Сложность 4 - Самые сложные
+
             LearningTechniqueItem(
                 title = "Предложения наоборот",
                 category = "Гибкость мышления",

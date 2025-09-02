@@ -30,7 +30,7 @@ class PointerMethodActivity : AppCompatActivity() {
                 val minutes = TimeUnit.MILLISECONDS.toMinutes(elapsedMillis)
                 val seconds = TimeUnit.MILLISECONDS.toSeconds(elapsedMillis) % 60
                 timerView.text = String.format("%02d:%02d", minutes, seconds)
-                handler.postDelayed(this, 1000) // Обновление каждую секунду
+                handler.postDelayed(this, 1000)
             }
         }
     }
@@ -39,10 +39,9 @@ class PointerMethodActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_technique)
 
-        // Инициализация TextResources
         TextResources.initialize(this)
 
-        // Получение параметров из Intent
+
         techniqueName = intent.getStringExtra("technique_name") ?: "Метод указки"
         run {
             val speedIndex = intent.getIntExtra("speed", 1)
@@ -51,28 +50,24 @@ class PointerMethodActivity : AppCompatActivity() {
         }
         val textLength = intent.getStringExtra("text_length") ?: "Средний"
         val highlightColorIndex = intent.getIntExtra("highlight_color_index", 0)
-        
-        // Проверяем, есть ли доступные тексты для выбранной длины
+
         val availableTexts = TestResultManager.getAvailableTextsByLength(this, techniqueName, textLength)
         
         if (availableTexts.isEmpty()) {
-            // Все тексты данной длины завершены
+
             showCompletionDialog(textLength)
             return
         }
-        
-        // Выбираем случайный доступный текст
+
         selectedTextIndex = availableTexts.random()
         val fontSizeMultiplier = FontConfig.getFontSizeMultiplier(intent.getIntExtra("font_size", 1))
 
-        // Инициализация UI
         findViewById<TextView>(R.id.toolbar_title).text = techniqueName
         textView = findViewById(R.id.text_view)
         guideView = findViewById(R.id.guide_view)
         timerView = findViewById(R.id.timer_view)
         textView.textSize = FontConfig.BASE_TEXT_SIZE * fontSizeMultiplier
 
-        // Переключаем видимость контейнеров
         findViewById<View>(R.id.diagonal_container).visibility = View.GONE
         findViewById<View>(R.id.scroll_container).visibility = View.VISIBLE
 
@@ -83,7 +78,6 @@ class PointerMethodActivity : AppCompatActivity() {
             finish()
         }
 
-        // Запуск анимации и таймера
         startTimer()
         (technique as? PointerMethodTechnique)?.startAnimation(
             textView = textView,
@@ -94,7 +88,7 @@ class PointerMethodActivity : AppCompatActivity() {
             onAnimationEnd = {
                 stopTimer()
                 saveTime(techniqueName, System.currentTimeMillis() - startTime)
-                // Запускаем тест после завершения анимации
+
                 showTestFragment()
             }
         ) ?: technique.startAnimation(
@@ -136,12 +130,12 @@ class PointerMethodActivity : AppCompatActivity() {
     }
 
     private fun showTestFragment() {
-        // Скрываем контейнеры с текстом и показываем контейнер для теста
+
         findViewById<View>(R.id.scroll_container).visibility = View.GONE
         findViewById<View>(R.id.diagonal_container).visibility = View.GONE
         findViewById<View>(R.id.test_fragment_container).visibility = View.VISIBLE
 
-        // Запускаем тест
+
         val testFragment = TestFragment.newInstance(selectedTextIndex, techniqueName, durationPerWord)
         supportFragmentManager.beginTransaction()
             .replace(R.id.test_fragment_container, testFragment)
@@ -154,7 +148,7 @@ class PointerMethodActivity : AppCompatActivity() {
             .setTitle("Все тексты завершены")
             .setMessage(message)
             .setPositiveButton("ОК") { _, _ ->
-                // Закрываем текущую активность
+
                 finish()
             }
             .create()
