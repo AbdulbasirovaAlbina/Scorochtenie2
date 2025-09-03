@@ -80,7 +80,7 @@ object TestResultManager {
                 avgComprehension = 0,
                 totalReadingTimeSeconds = 0,
                 avgReadingTimeSeconds = 0,
-                dailyComprehension = List(7) { 0 }
+                dailyComprehension = getDailyComprehension(results, startDate)
             )
         }
 
@@ -92,7 +92,7 @@ object TestResultManager {
         val avgComprehension = filteredResults.map { it.comprehension }.average().toInt()
         val totalReadingTimeSeconds = filteredResults.sumOf { it.readingTimeSeconds }
         val avgReadingTimeSeconds = if (usesCount > 0) totalReadingTimeSeconds / usesCount else 0
-        val dailyComprehension = getDailyComprehension(filteredResults, startDate)
+        val dailyComprehension = getDailyComprehension(results, startDate)
 
         return TechniqueStats(
             usesCount = usesCount,
@@ -115,7 +115,7 @@ object TestResultManager {
                 avgComprehension = 0,
                 totalReadingTimeSeconds = 0,
                 avgReadingTimeSeconds = 0,
-                dailyComprehension = List(7) { 0 }
+                dailyComprehension = getDailyComprehension(allResults, startDate)
             )
         }
 
@@ -124,7 +124,7 @@ object TestResultManager {
         val avgComprehension = filteredResults.map { it.comprehension }.average().toInt()
         val totalReadingTimeSeconds = filteredResults.sumOf { it.readingTimeSeconds }
         val avgReadingTimeSeconds = if (usesCount > 0) totalReadingTimeSeconds / usesCount else 0
-        val dailyComprehension = getDailyComprehension(filteredResults, startDate)
+        val dailyComprehension = getDailyComprehension(allResults, startDate)
 
         return TechniqueStats(
             usesCount = usesCount,
@@ -137,47 +137,25 @@ object TestResultManager {
     }
 
     private fun filterResultsByPeriod(results: List<TestResult>, startDate: Calendar?): List<TestResult> {
-        val calendar = Calendar.getInstance()
-        val start: Long
-        val end: Long
-
         if (startDate == null) {
-            val currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-            val daysFromMonday = when (currentDayOfWeek) {
-                Calendar.SUNDAY -> 6
-                Calendar.MONDAY -> 0
-                Calendar.TUESDAY -> 1
-                Calendar.WEDNESDAY -> 2
-                Calendar.THURSDAY -> 3
-                Calendar.FRIDAY -> 4
-                Calendar.SATURDAY -> 5
-                else -> 0
-            }
-            calendar.set(Calendar.HOUR_OF_DAY, 0)
-            calendar.set(Calendar.MINUTE, 0)
-            calendar.set(Calendar.SECOND, 0)
-            calendar.set(Calendar.MILLISECOND, 0)
-            calendar.add(Calendar.DAY_OF_YEAR, -daysFromMonday)
-            start = calendar.timeInMillis
-            calendar.timeInMillis = System.currentTimeMillis()
-            end = calendar.timeInMillis
-        } else {
-            calendar.timeInMillis = startDate.timeInMillis
-            calendar.set(Calendar.HOUR_OF_DAY, 0)
-            calendar.set(Calendar.MINUTE, 0)
-            calendar.set(Calendar.SECOND, 0)
-            calendar.set(Calendar.MILLISECOND, 0)
-            start = calendar.timeInMillis
-            calendar.add(Calendar.DAY_OF_YEAR, 6)
-            calendar.set(Calendar.HOUR_OF_DAY, 23)
-            calendar.set(Calendar.MINUTE, 59)
-            calendar.set(Calendar.SECOND, 59)
-            calendar.set(Calendar.MILLISECOND, 999)
-            end = calendar.timeInMillis
+            return results // Возвращаем все результаты без фильтрации
         }
 
-        val filtered = results.filter { it.timestamp in start..end }
-        return filtered
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = startDate.timeInMillis
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        val start = calendar.timeInMillis
+        calendar.add(Calendar.DAY_OF_YEAR, 6)
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        calendar.set(Calendar.MINUTE, 59)
+        calendar.set(Calendar.SECOND, 59)
+        calendar.set(Calendar.MILLISECOND, 999)
+        val end = calendar.timeInMillis
+
+        return results.filter { it.timestamp in start..end }
     }
 
     private fun getDailyComprehension(results: List<TestResult>, startDate: Calendar?): List<Int> {

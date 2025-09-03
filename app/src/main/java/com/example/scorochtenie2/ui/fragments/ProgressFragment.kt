@@ -50,7 +50,6 @@ class ProgressFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         val view = inflater.inflate(R.layout.fragment_progress, container, false)
 
         initViews(view)
@@ -63,13 +62,11 @@ class ProgressFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
         loadTechniqueProgress(selectedTechnique)
         techniqueSelectorAdapter.notifyDataSetChanged()
     }
 
     private fun initViews(view: View) {
-
         techniqueSelector = view.findViewById(R.id.technique_selector)
         progressContainer = view.findViewById(R.id.progress_container)
 
@@ -87,7 +84,6 @@ class ProgressFragment : Fragment() {
     }
 
     private fun setupTechniqueSelector() {
-
         techniqueSelectorAdapter = TechniqueSelectorAdapter(techniques) { technique ->
             selectedTechnique = technique.title
             loadTechniqueProgress(technique.title)
@@ -97,18 +93,13 @@ class ProgressFragment : Fragment() {
     }
 
     private fun setupPeriodSelector() {
-
         selectPeriodButton.setOnClickListener {
-
             showDatePicker()
         }
         updatePeriodDisplay(null)
     }
 
     private fun showDatePicker() {
-
-
-
         val startDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
             set(2025, Calendar.JANUARY, 1, 0, 0, 0)
             set(Calendar.MILLISECOND, 0)
@@ -126,9 +117,7 @@ class ProgressFragment : Fragment() {
             setDate(selectedStartDate?.timeInMillis ?: endDate.timeInMillis, false, true)
         }
 
-
         var selectedDateMillis: Long = selectedStartDate?.timeInMillis ?: endDate.timeInMillis
-
 
         val rangeTextView = TextView(requireContext()).apply {
             val initialDate = selectedStartDate?.time ?: endDate.time
@@ -141,7 +130,6 @@ class ProgressFragment : Fragment() {
             textSize = 16f
         }
 
-
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val selectedCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
                 set(year, month, dayOfMonth, 0, 0, 0)
@@ -153,9 +141,7 @@ class ProgressFragment : Fragment() {
                 add(Calendar.DAY_OF_YEAR, 6)
             }
             rangeTextView.text = "Диапазон: ${dateFormat.format(selectedCalendar.time)} - ${dateFormat.format(rangeEnd.time)}"
-
         }
-
 
         val titleTextView = TextView(requireContext()).apply {
             text = "Укажите дату начала"
@@ -163,7 +149,6 @@ class ProgressFragment : Fragment() {
             setPadding(16, 50, 16, 0)
             gravity = Gravity.CENTER
         }
-
 
         val container = LinearLayout(requireContext()).apply {
             orientation = LinearLayout.VERTICAL
@@ -190,13 +175,11 @@ class ProgressFragment : Fragment() {
                 }
                 if (selectedCalendar.after(currentDate)) {
                     Toast.makeText(requireContext(), "Нельзя выбирать даты после текущей даты!", Toast.LENGTH_SHORT).show()
-
                     return@setPositiveButton
                 }
                 selectedStartDate = selectedCalendar
                 updatePeriodDisplay(selectedCalendar)
                 loadTechniqueProgress(selectedTechnique)
-
             }
             .setNegativeButton("Отмена", null)
             .create()
@@ -211,12 +194,11 @@ class ProgressFragment : Fragment() {
         }
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(buttonColor)
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(buttonColor)
-
     }
 
     private fun updatePeriodDisplay(startDate: Calendar?) {
         if (startDate == null) {
-            selectedPeriodText.text = "Текущая неделя"
+            selectedPeriodText.text = "Всё время"
         } else {
             val endDate = Calendar.getInstance().apply {
                 timeInMillis = startDate.timeInMillis
@@ -256,11 +238,9 @@ class ProgressFragment : Fragment() {
     private fun updateDaysProgress(dailyComprehension: List<Int>) {
         daysProgressContainer.removeAllViews()
 
-
         val dayNames = mutableListOf<String>()
         val calendar = Calendar.getInstance()
         val baseDayNames = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
-
 
         val dayDates = mutableListOf<String>()
         val dayDateFormat = SimpleDateFormat("dd.MM", Locale.getDefault())
@@ -297,10 +277,8 @@ class ProgressFragment : Fragment() {
         }
 
         if (selectedStartDate == null) {
-
             dayNames.addAll(baseDayNames)
         } else {
-
             calendar.timeInMillis = selectedStartDate!!.timeInMillis
             for (i in 0..6) {
                 val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
