@@ -7,7 +7,6 @@ import android.text.Spannable
 import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 
-// Consolidated user settings: FontConfig, SpeedConfig, HighlightColorConfig
 
 object FontConfig {
     val fontSizeLabels = arrayOf("Маленький", "Средний", "Большой")

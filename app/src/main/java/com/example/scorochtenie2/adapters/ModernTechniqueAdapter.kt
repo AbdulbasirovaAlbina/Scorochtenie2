@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 data class ModernTechniqueItem(
     val title: String,
     val iconResId: Int,
-    val progress: Int = 0 // Не используется, оставлено для совместимости
+    val progress: Int = 0
 )
 
 class ModernTechniqueAdapter(private val techniques: List<ModernTechniqueItem>) :
@@ -37,23 +37,18 @@ class ModernTechniqueAdapter(private val techniques: List<ModernTechniqueItem>) 
         val technique = techniques[position]
         holder.icon.setImageResource(technique.iconResId)
 
-        // Разбиваем название на слова
         val words = technique.title.split(" ")
-        // Если ровно два слова, добавляем перенос строки, иначе оставляем как есть
         holder.title.text = if (words.size == 2) {
             words.joinToString("\n")
         } else {
             technique.title
         }
 
-        // Получаем количество завершённых текстов (без фильтрации по периоду)
         val completedTexts = TestResultManager.getCompletedTextsCount(context, technique.title)
-        val totalTexts = 9 // У каждой техники 9 текстов
+        val totalTexts = 9
 
-        // Показываем прогресс: количество пройденных текстов из 9
         holder.progressText.text = "$completedTexts/$totalTexts"
 
-        // Обновляем шкалу прогресса (максимум 9 текстов)
         val progressPercent = (completedTexts.toFloat() / totalTexts).coerceAtMost(1.0f)
         holder.progressBar.post {
             val width = (holder.progressBar.parent as View).width
@@ -63,16 +58,13 @@ class ModernTechniqueAdapter(private val techniques: List<ModernTechniqueItem>) 
         }
 
         holder.itemView.setOnClickListener {
-            // Проверяем, завершена ли техника полностью (9/9)
             if (TestResultManager.isTechniqueFullyCompleted(context, technique.title)) {
-                // Техника полностью завершена - показываем тост
                 android.widget.Toast.makeText(
                     context,
                     "🎉 Техника \"${technique.title}\" полностью освоена! Все тексты пройдены на 100%",
                     android.widget.Toast.LENGTH_LONG
                 ).show()
             } else {
-                // Техника не завершена - переходим в настройки
                 val intent = Intent(context, TechniqueSettingsActivity::class.java)
                 intent.putExtra("technique_name", technique.title)
                 context.startActivity(intent)

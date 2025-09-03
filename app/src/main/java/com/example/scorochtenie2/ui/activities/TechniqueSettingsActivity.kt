@@ -21,8 +21,7 @@ class TechniqueSettingsActivity : AppCompatActivity() {
     private lateinit var mediumTextBtn: Button
     private lateinit var longTextBtn: Button
     private lateinit var startBtn: Button
-    
-    // Кнопки выбора цвета
+
     private lateinit var colorYellowBtn: ImageButton
     private lateinit var colorGreenBtn: ImageButton
     private lateinit var colorBlueBtn: ImageButton
@@ -71,7 +70,7 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         longTextBtn = findViewById(R.id.btn_long_text)
         startBtn = findViewById(R.id.btn_start)
         
-        // Цветовые кнопки
+
         colorYellowBtn = findViewById(R.id.btn_color_yellow)
         colorGreenBtn = findViewById(R.id.btn_color_green)
         colorBlueBtn = findViewById(R.id.btn_color_blue)
@@ -117,7 +116,6 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         val buttons = listOf(shortTextBtn, mediumTextBtn, longTextBtn)
         val texts = listOf("Короткий", "Средний", "Длинный")
 
-        // Устанавливаем средний размер текста по умолчанию
         selectTextLengthButton(mediumTextBtn, "Средний")
 
         buttons.forEachIndexed { index, button ->
@@ -148,15 +146,14 @@ class TechniqueSettingsActivity : AppCompatActivity() {
 
     private fun setupColorButtons() {
         val colorButtons = listOf(colorYellowBtn, colorGreenBtn, colorBlueBtn, colorPinkBtn, colorOrangeBtn)
-        
-        // Получаем сохраненный цвет или устанавливаем желтый по умолчанию
+
         val savedColorIndex = sharedPreferences.getInt("highlight_color_index", 0)
         selectColorButton(colorButtons[savedColorIndex], savedColorIndex)
         
         colorButtons.forEachIndexed { index, button ->
             button.setOnClickListener {
                 selectColorButton(button, index)
-                // Сохраняем выбранный цвет
+
                 sharedPreferences.edit().putInt("highlight_color_index", index).apply()
             }
         }
@@ -166,7 +163,7 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         val colorButtons = listOf(colorYellowBtn, colorGreenBtn, colorBlueBtn, colorPinkBtn, colorOrangeBtn)
         
         colorButtons.forEach { button ->
-            // ImageButton использует drawable селектор для отображения выбранного состояния
+
             button.isSelected = (button == selectedButton)
         }
     }

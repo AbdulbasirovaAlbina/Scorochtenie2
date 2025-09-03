@@ -131,7 +131,7 @@ class ProgressGraphView @JvmOverloads constructor(
             canvas.drawCircle(x, y, 6f, paint)
         }
 
-        // Рисуем подписи осей
+
         val dayCount = if (dataPoints.size == 1) 1 else dataPoints.size
         if (startDate == null) {
             canvas.drawText("День 1", padding, height - 10f, textPaint)

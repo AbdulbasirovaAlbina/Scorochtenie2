@@ -1,7 +1,6 @@
 package com.example.scorochtenie2
 
 import android.content.Context
-import android.util.Log
 import com.example.scorochtenie2.R
 import org.xmlpull.v1.XmlPullParser
 
@@ -10,9 +9,6 @@ data class TextData(
     val questionsAndAnswers: List<Pair<String, List<String>>>
 )
 
-
-
-
 object TextResources {
     private var texts: Map<String, List<TextData>> = emptyMap()
     private var demoText: TextData? = null
@@ -20,15 +16,12 @@ object TextResources {
 
     fun initialize(context: Context) {
         if (isInitialized) {
-            Log.d("TextResources", "Already initialized, skipping...")
             return
         }
         
         try {
-            Log.d("TextResources", "Initializing TextResources...")
             val textsMap = mutableMapOf<String, MutableList<TextData>>()
 
-            // Mapping technique names to XML resource IDs
             val techniqueFiles = mapOf(
                 "Чтение по диагонали" to R.xml.diagonal_reading,
                 "Чтение блоками" to R.xml.block_reading,
@@ -39,35 +32,25 @@ object TextResources {
                 "Зашумленный текст" to R.xml.noisy_text
             )
 
-            // Load each technique from its separate XML file
             for ((techniqueName, xmlResourceId) in techniqueFiles) {
                 try {
                     val parser = context.resources.getXml(xmlResourceId)
                     loadTechniqueFromParser(parser, techniqueName, textsMap)
-                    Log.d("TextResources", "Successfully loaded technique: $techniqueName")
                 } catch (e: Exception) {
-                    Log.e("TextResources", "Error loading technique $techniqueName", e)
                 }
             }
 
-            // Load demo text for learning/demonstration
             try {
                 val demoParser = context.resources.getXml(R.xml.demo_text)
                 demoText = loadDemoText(demoParser)
-                Log.d("TextResources", "Successfully loaded demo text")
             } catch (e: Exception) {
-                Log.e("TextResources", "Error loading demo text", e)
             }
 
             texts = textsMap
-            
-            Log.d("TextResources", "Initialization complete:")
-            Log.d("TextResources", "Texts: ${texts.size}")
-            Log.d("TextResources", "Texts keys: ${texts.keys}")
+
             
             isInitialized = true
         } catch (e: Exception) {
-            Log.e("TextResources", "Error initializing TextResources", e)
             e.printStackTrace()
             texts = emptyMap()
             isInitialized = false
@@ -123,7 +106,6 @@ object TextResources {
                                         questionsAndAnswers = currentQuestions.toList()
                                     )
                                 )
-                                Log.d("TextResources", "Added text for '$techniqueName' with ${currentQuestions.size} questions")
                             }
                             currentText = null
                             currentQuestions = null
@@ -204,8 +186,7 @@ object TextResources {
 
     fun getTexts(): Map<String, List<TextData>> = texts
     fun getDemoText(): TextData? = demoText
-    
-    // Специальная функция для демонстрации техник
+
     fun getDemoTextForTechnique(techniqueName: String): String {
         return demoText?.text ?: "Демонстрационный текст недоступен"
     }
@@ -214,6 +195,5 @@ object TextResources {
         isInitialized = false
         texts = emptyMap()
         demoText = null
-        Log.d("TextResources", "Reset TextResources")
     }
 }

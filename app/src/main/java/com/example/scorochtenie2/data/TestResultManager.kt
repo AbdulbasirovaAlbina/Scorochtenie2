@@ -1,7 +1,6 @@
 package com.example.scorochtenie2
 
 import android.content.Context
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
@@ -46,7 +45,6 @@ object TestResultManager {
         )
 
         currentResults.add(newResult)
-        Log.d("TestResultManager", "Saving result: $newResult")
 
         val json = gson.toJson(currentResults)
         editor.putString(KEY_RESULTS, json)
@@ -58,27 +56,22 @@ object TestResultManager {
         val json = sharedPreferences.getString(KEY_RESULTS, "[]")
         val type = object : TypeToken<List<TestResult>>() {}.type
         val results = gson.fromJson<List<TestResult>>(json, type) ?: emptyList()
-        Log.d("TestResultManager", "Loaded ${results.size} results: $results")
         return results
     }
 
     fun getTechniqueResults(context: Context, techniqueName: String): List<TestResult> {
         val results = getTestResults(context).filter { it.techniqueName == techniqueName }
-        Log.d("TestResultManager", "Filtered $techniqueName results: ${results.size}")
         return results
     }
 
-    // Новый метод для получения всех результатов без фильтрации по периоду
     fun getAllTechniqueResults(context: Context, techniqueName: String): List<TestResult> {
         val results = getTestResults(context).filter { it.techniqueName == techniqueName }
-        Log.d("TestResultManager", "All $techniqueName results (no period filter): ${results.size}")
         return results
     }
 
     fun getTechniqueStats(context: Context, techniqueName: String, startDate: Calendar? = null): TechniqueStats {
         val results = getTechniqueResults(context, techniqueName)
         val filteredResults = filterResultsByPeriod(results, startDate)
-        Log.d("TestResultManager", "Technique $techniqueName, filtered ${filteredResults.size} results for startDate=$startDate")
 
         if (filteredResults.isEmpty()) {
             return TechniqueStats(
@@ -114,7 +107,6 @@ object TestResultManager {
     fun getAllTechniquesStats(context: Context, startDate: Calendar? = null): TechniqueStats {
         val allResults = getTestResults(context)
         val filteredResults = filterResultsByPeriod(allResults, startDate)
-        Log.d("TestResultManager", "All techniques, filtered ${filteredResults.size} results for startDate=$startDate")
 
         if (filteredResults.isEmpty()) {
             return TechniqueStats(
@@ -150,7 +142,6 @@ object TestResultManager {
         val end: Long
 
         if (startDate == null) {
-            // Текущая неделя: от понедельника до конца текущего дня
             val currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
             val daysFromMonday = when (currentDayOfWeek) {
                 Calendar.SUNDAY -> 6
@@ -162,18 +153,15 @@ object TestResultManager {
                 Calendar.SATURDAY -> 5
                 else -> 0
             }
-            // Устанавливаем начало недели (понедельник, 00:00:00)
             calendar.set(Calendar.HOUR_OF_DAY, 0)
             calendar.set(Calendar.MINUTE, 0)
             calendar.set(Calendar.SECOND, 0)
             calendar.set(Calendar.MILLISECOND, 0)
             calendar.add(Calendar.DAY_OF_YEAR, -daysFromMonday)
             start = calendar.timeInMillis
-            // Конец недели: текущий момент
             calendar.timeInMillis = System.currentTimeMillis()
             end = calendar.timeInMillis
         } else {
-            // Выбранный период: от startDate до startDate + 6 дней
             calendar.timeInMillis = startDate.timeInMillis
             calendar.set(Calendar.HOUR_OF_DAY, 0)
             calendar.set(Calendar.MINUTE, 0)
@@ -189,7 +177,6 @@ object TestResultManager {
         }
 
         val filtered = results.filter { it.timestamp in start..end }
-        Log.d("TestResultManager", "Filtering period: start=$start (${dateFormat.format(Date(start))}), end=$end (${dateFormat.format(Date(end))}), results=${filtered.size}")
         return filtered
     }
 
@@ -198,7 +185,6 @@ object TestResultManager {
         val calendar = Calendar.getInstance()
 
         if (startDate == null) {
-            // Текущая неделя: от понедельника до текущего дня
             val currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
             val daysFromMonday = when (currentDayOfWeek) {
                 Calendar.SUNDAY -> 6
@@ -226,7 +212,7 @@ object TestResultManager {
         for (i in 0..6) {
             val dayStart = calendar.timeInMillis
             calendar.add(Calendar.DAY_OF_YEAR, 1)
-            val dayEnd = calendar.timeInMillis - 1 // До конца предыдущего дня
+            val dayEnd = calendar.timeInMillis - 1
             val dayResults = results.filter { it.timestamp in dayStart..dayEnd }
             val dayAvg = if (dayResults.isNotEmpty()) {
                 dayResults.map { it.comprehension }.average().toInt()
@@ -234,7 +220,6 @@ object TestResultManager {
                 0
             }
             dailyComprehension.add(dayAvg)
-            Log.d("TestResultManager", "Day $i: ${dateFormat.format(Date(dayStart))} - results=${dayResults.size}, avg=$dayAvg")
         }
 
         return dailyComprehension
@@ -246,7 +231,6 @@ object TestResultManager {
             .map { it.textIndex }
             .distinct()
             .size
-        Log.d("TestResultManager", "Completed texts count for $techniqueName: $count")
         return count
     }
 
@@ -255,14 +239,12 @@ object TestResultManager {
         val completedTexts = results.filter { it.comprehension == 100 }
             .map { it.textIndex }
             .distinct()
-        Log.d("TestResultManager", "Completed texts for $techniqueName: $completedTexts")
         return completedTexts
     }
 
     fun isTextCompleted(context: Context, techniqueName: String, textIndex: Int): Boolean {
         val results = getAllTechniqueResults(context, techniqueName)
         val isCompleted = results.any { it.textIndex == textIndex && it.comprehension == 100 }
-        Log.d("TestResultManager", "Is text $textIndex completed for $techniqueName: $isCompleted")
         return isCompleted
     }
 
@@ -275,19 +257,16 @@ object TestResultManager {
             else -> 3..5
         }
         val availableTexts = availableRange.filter { !completedTexts.contains(it) }
-        Log.d("TestResultManager", "Available texts for $techniqueName ($textLength): $availableTexts")
         return availableTexts
     }
 
     fun hasAvailableTexts(context: Context, techniqueName: String, textLength: String): Boolean {
         val hasAvailable = getAvailableTextsByLength(context, techniqueName, textLength).isNotEmpty()
-        Log.d("TestResultManager", "Has available texts for $techniqueName ($textLength): $hasAvailable")
         return hasAvailable
     }
 
     fun isTechniqueFullyCompleted(context: Context, techniqueName: String): Boolean {
         val isFullyCompleted = getCompletedTextsCount(context, techniqueName) >= 9
-        Log.d("TestResultManager", "Is $techniqueName fully completed: $isFullyCompleted")
         return isFullyCompleted
     }
 
@@ -307,6 +286,5 @@ object TestResultManager {
                 apply()
             }
         }
-        Log.d("TestResultManager", "All progress cleared")
     }
 }

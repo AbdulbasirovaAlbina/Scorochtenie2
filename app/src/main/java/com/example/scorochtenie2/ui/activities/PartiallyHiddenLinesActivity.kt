@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
@@ -40,10 +39,10 @@ class PartiallyHiddenLinesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_partially_hidden_lines)
 
-        // Инициализация TextResources
+
         TextResources.initialize(this)
 
-        // Получение параметров из Intent
+
         techniqueName = intent.getStringExtra("technique_name") ?: "Частично скрытые строки"
         run {
             val speedIndex = intent.getIntExtra("speed", 1)
@@ -52,27 +51,27 @@ class PartiallyHiddenLinesActivity : AppCompatActivity() {
         }
         val textLength = intent.getStringExtra("text_length") ?: "Средний"
         
-        // Проверяем, есть ли доступные тексты для выбранной длины
+
         val availableTexts = TestResultManager.getAvailableTextsByLength(this, techniqueName, textLength)
         
         if (availableTexts.isEmpty()) {
-            // Все тексты данной длины завершены
+
             showCompletionDialog(textLength)
             return
         }
         
-        // Выбираем случайный доступный текст
+
         selectedTextIndex = availableTexts.random()
         val fontSizeMultiplier = FontConfig.getFontSizeMultiplier(intent.getIntExtra("font_size", 1))
 
-        // Инициализация UI
+
         findViewById<TextView>(R.id.toolbar_title).text = techniqueName
         textView = findViewById(R.id.text_view)
         guideView = findViewById(R.id.guide_view)
         timerView = findViewById(R.id.timer_view)
         textView.textSize = FontConfig.BASE_TEXT_SIZE * fontSizeMultiplier
 
-        // Для нашего layout специальной настройки контейнеров не требуется
+
 
         findViewById<ImageButton>(R.id.btn_back).setOnClickListener {
             technique.cancelAnimation()
@@ -81,7 +80,7 @@ class PartiallyHiddenLinesActivity : AppCompatActivity() {
             finish()
         }
 
-        // Запуск анимации и таймера
+
         startTimer()
         technique.startAnimation(
             textView = textView,
@@ -91,7 +90,7 @@ class PartiallyHiddenLinesActivity : AppCompatActivity() {
             onAnimationEnd = {
                 stopTimer()
                 saveTime(techniqueName, System.currentTimeMillis() - startTime)
-                // Запускаем тест после завершения анимации
+
                 showTestFragment()
             }
         )
@@ -102,11 +101,11 @@ class PartiallyHiddenLinesActivity : AppCompatActivity() {
         technique.cancelAnimation()
         stopTimer()
         saveTime(techniqueName, System.currentTimeMillis() - startTime)
-        // Скрываем маску при завершении активности
+
         if (guideView is PartiallyHiddenLinesView) {
             (guideView as PartiallyHiddenLinesView).hideMask()
         }
-        Log.d("PartiallyHiddenLines", "Activity destroyed, mask hidden")
+
     }
 
     private fun startTimer() {
@@ -128,12 +127,11 @@ class PartiallyHiddenLinesActivity : AppCompatActivity() {
     }
 
     private fun showTestFragment() {
-        // Скрываем текст и маску, показываем контейнер для теста
+
         findViewById<View>(R.id.scroll_view).visibility = View.GONE
         findViewById<View>(R.id.guide_view).visibility = View.GONE
         findViewById<View>(R.id.test_fragment_container).visibility = View.VISIBLE
 
-        // Запускаем тест
         val testFragment = TestFragment.newInstance(selectedTextIndex, techniqueName, durationPerWord)
         supportFragmentManager.beginTransaction()
             .replace(R.id.test_fragment_container, testFragment)
@@ -146,7 +144,7 @@ class PartiallyHiddenLinesActivity : AppCompatActivity() {
             .setTitle("Все тексты завершены")
             .setMessage(message)
             .setPositiveButton("ОК") { _, _ ->
-                // Закрываем текущую активность
+
                 finish()
             }
             .create()

@@ -12,7 +12,7 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.util.Log
+
 
 class TestFragment : Fragment() {
     
@@ -53,7 +53,7 @@ class TestFragment : Fragment() {
         techniqueName = arguments?.getString(ARG_TECHNIQUE_NAME) ?: ""
         durationPerWord = arguments?.getLong(ARG_DURATION_PER_WORD) ?: 400L
 
-        // Инициализируем TextResources
+
         TextResources.initialize(requireContext())
         
         displayQuestion(0)
@@ -65,15 +65,13 @@ class TestFragment : Fragment() {
         val radioGroup = view?.findViewById<RadioGroup>(R.id.radioGroup)
         val submitButton = view?.findViewById<Button>(R.id.btnSubmit)
 
-        Log.d("TestFragment", "Displaying question for technique: '$techniqueName', index: $index, textIndex: $currentTextIndex")
 
-        // Получаем вопросы для выбранной техники из XML
         val questions = getQuestionsForTechnique(techniqueName, currentTextIndex)
 
-        Log.d("TestFragment", "Questions result: ${questions?.size ?: 0} questions")
+
 
         if (questions.isNullOrEmpty()) {
-            Log.e("TestFragment", "No questions found for technique: '$techniqueName'")
+
             questionHeader?.visibility = View.GONE
             questionText?.text = "Ошибка: вопросы для этой техники недоступны."
             radioGroup?.visibility = View.GONE
@@ -95,7 +93,7 @@ class TestFragment : Fragment() {
                     text = option
                     id = View.generateViewId()
                     textSize = 16f
-                    // Используем цвет из темы для поддержки темной темы
+
                     val textColor = if (context?.resources?.configuration?.uiMode?.and(android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES) {
                         android.graphics.Color.WHITE
                     } else {
@@ -115,54 +113,49 @@ class TestFragment : Fragment() {
     }
 
     private fun getQuestionsForTechnique(techniqueName: String, textIndex: Int): List<Pair<String, List<String>>>? {
-        Log.d("TestFragment", "Getting questions for technique: '$techniqueName', textIndex: $textIndex")
-        
+
         val result = when (techniqueName) {
             "Чтение по диагонали" -> {
                 val texts = TextResources.getTexts()
-                Log.d("TestFragment", "Texts keys: ${texts.keys}")
-                Log.d("TestFragment", "Looking for 'Чтение по диагонали' in texts")
+
                 texts["Чтение по диагонали"]?.getOrNull(textIndex)?.questionsAndAnswers
             }
             "Чтение блоками" -> {
                 val texts = TextResources.getTexts()
-                Log.d("TestFragment", "Texts keys: ${texts.keys}")
-                Log.d("TestFragment", "Looking for 'Чтение блоками' in texts")
+
                 texts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
             }
             "Метод указки" -> {
                 val texts = TextResources.getTexts()
-                Log.d("TestFragment", "Looking for 'Метод указки' in texts")
+
                 texts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
             }
             "Предложения наоборот" -> {
                 val texts = TextResources.getTexts()
-                Log.d("TestFragment", "Looking for 'Предложения наоборот' in texts")
+
                 texts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
             }
             "Слова наоборот" -> {
                 val texts = TextResources.getTexts()
-                Log.d("TestFragment", "Looking for 'Слова наоборот' in texts")
+
                 texts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
             }
             "Зашумленный текст" -> {
                 val texts = TextResources.getTexts()
-                Log.d("TestFragment", "Looking for 'Зашумленный текст' in texts")
+
                 texts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
             }
             "Частично скрытые строки" -> {
                 val texts = TextResources.getTexts()
-                Log.d("TestFragment", "Looking for 'Частично скрытые строки' in texts")
                 texts[techniqueName]?.getOrNull(textIndex)?.questionsAndAnswers
             }
             else -> {
-                Log.d("TestFragment", "Technique '$techniqueName' not found, using default questions")
-                // Для техник, которых нет в XML, используем дефолтные вопросы
+
                 getDefaultQuestions(textIndex)
             }
         }
         
-        Log.d("TestFragment", "Result questions size: ${result?.size ?: 0}")
+
         return result
     }
 
@@ -217,46 +210,45 @@ class TestFragment : Fragment() {
             0
         }
 
-        // Скрываем элементы вопросов
+
         questionHeader?.visibility = View.GONE
         questionText?.visibility = View.GONE
         radioGroup?.visibility = View.GONE
         submitButton?.visibility = View.GONE
 
-        // Настраиваем экран результатов
+
         tvResultTitle?.text = "Тест завершён!"
         tvResultPercent?.text = "$comprehensionPercentage%"
         progressComprehension?.progress = 0
         tvResultDetails?.text = "Верно $score из $totalQuestions"
 
-        // Получаем время чтения (для сохранения в статистику)
+
         val sharedPreferences = requireContext().getSharedPreferences("TechniqueTimes", Context.MODE_PRIVATE)
         val readingTimeMillis = sharedPreferences.getLong(techniqueName, 0L)
         val readingTimeSeconds = (readingTimeMillis / 1000).toInt()
 
-        // Анимация появления
         resultContainer?.alpha = 0f
         resultContainer?.visibility = View.VISIBLE
         resultContainer?.animate()?.alpha(1f)?.setDuration(250)?.start()
 
-        // Анимация прогресса
+
         progressComprehension?.animate()?.setDuration(600)?.withStartAction {
             progressComprehension.progress = 0
         }?.withEndAction {
-            // no-op
+
         }?.start()
         progressComprehension?.postDelayed({
             progressComprehension.progress = comprehensionPercentage
         }, 100)
 
-        // Сохраняем результат с индексом текста
+
         TestResultManager.saveTestResult(requireContext(), techniqueName, comprehensionPercentage, readingTimeSeconds, currentTextIndex)
 
         btnDone?.setOnClickListener {
-            // Открываем главную и переключаемся на вкладку Практика
+
             val intent = Intent(requireContext(), MainActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                putExtra("tab", 2) // Практика
+                putExtra("tab", 2)
             }
             startActivity(intent)
             activity?.finish()

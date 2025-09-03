@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
@@ -42,7 +41,7 @@ class DiagonalReadingActivity : AppCompatActivity() {
 
         TextResources.initialize(this)
 
-        // Получение параметров из Intent
+
         techniqueName = intent.getStringExtra("technique_name") ?: "Чтение по диагонали"
         run {
             val speedIndex = intent.getIntExtra("speed", 1)
@@ -51,16 +50,15 @@ class DiagonalReadingActivity : AppCompatActivity() {
         }
         val textLength = intent.getStringExtra("text_length") ?: "Средний"
         
-        // Проверяем, есть ли доступные тексты для выбранной длины
+
         val availableTexts = TestResultManager.getAvailableTextsByLength(this, techniqueName, textLength)
         
         if (availableTexts.isEmpty()) {
-            // Все тексты данной длины завершены
+
             showCompletionDialog(textLength)
             return
         }
-        
-        // Выбираем случайный доступный текст
+
         selectedTextIndex = availableTexts.random()
         val fontSizeMultiplier = FontConfig.getFontSizeMultiplier(intent.getIntExtra("font_size", 1))
 
@@ -70,7 +68,6 @@ class DiagonalReadingActivity : AppCompatActivity() {
         timerView = findViewById(R.id.timer_view)
         textView.textSize = FontConfig.BASE_TEXT_SIZE * fontSizeMultiplier
 
-        // Переключаем видимость контейнеров
         findViewById<View>(R.id.scroll_container).visibility = View.GONE
         findViewById<View>(R.id.diagonal_container).visibility = View.VISIBLE
         val diagonalLineView = findViewById<DiagonalLineView>(R.id.diagonal_line_view)
@@ -78,9 +75,8 @@ class DiagonalReadingActivity : AppCompatActivity() {
         diagonalLineView?.requestLayout()
         diagonalLineView?.invalidate()
 
-        // Логируем высоту TextView и контейнера
+
         textView.post {
-            Log.d("DiagonalReadingActivity", "TextView height: ${textView.height}, Container height: ${findViewById<View>(R.id.diagonal_container).height}")
         }
 
         findViewById<ImageButton>(R.id.btn_back).setOnClickListener {
@@ -99,7 +95,6 @@ class DiagonalReadingActivity : AppCompatActivity() {
             onAnimationEnd = {
                 stopTimer()
                 saveTime(techniqueName, System.currentTimeMillis() - startTime)
-                // Запускаем тест после завершения анимации
                 showTestFragment()
             }
         )
@@ -131,12 +126,12 @@ class DiagonalReadingActivity : AppCompatActivity() {
     }
 
     private fun showTestFragment() {
-        // Скрываем контейнеры с текстом и показываем контейнер для теста
+
         findViewById<View>(R.id.scroll_container).visibility = View.GONE
         findViewById<View>(R.id.diagonal_container).visibility = View.GONE
         findViewById<View>(R.id.test_fragment_container).visibility = View.VISIBLE
 
-        // Запускаем тест
+
         val testFragment = TestFragment.newInstance(selectedTextIndex, techniqueName, durationPerWord)
         supportFragmentManager.beginTransaction()
             .replace(R.id.test_fragment_container, testFragment)
@@ -149,7 +144,7 @@ class DiagonalReadingActivity : AppCompatActivity() {
             .setTitle("Все тексты завершены")
             .setMessage(message)
             .setPositiveButton("ОК") { _, _ ->
-                // Закрываем текущую активность
+
                 finish()
             }
             .create()

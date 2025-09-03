@@ -14,7 +14,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Применяем сохраненную тему до создания UI
         applyTheme()
 
         enableEdgeToEdge()
@@ -25,21 +24,21 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // Инициализируем TextResources и ReminderManager
+
         TextResources.initialize(this)
         ReminderManager.initialize(this)
 
-        // Настраиваем нижнюю навигацию
+
         setupBottomNavigation()
         setupWindowInsets()
 
-        // Загружаем стартовый фрагмент
+
         if (savedInstanceState == null) {
             val tabFromIntent = intent?.getIntExtra("tab", -1) ?: -1
             if (tabFromIntent in 0..4) {
                 switchToTab(tabFromIntent)
             } else {
-                // По умолчанию Домой
+
                 switchToTab(0)
             }
         }

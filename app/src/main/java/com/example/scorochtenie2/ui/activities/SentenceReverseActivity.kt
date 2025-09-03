@@ -41,7 +41,6 @@ class SentenceReverseActivity : AppCompatActivity() {
 
         TextResources.initialize(this)
 
-        // Получение параметров из Intent
         techniqueName = intent.getStringExtra("technique_name") ?: "Предложения наоборот"
         run {
             val speedIndex = intent.getIntExtra("speed", 1)
@@ -50,16 +49,15 @@ class SentenceReverseActivity : AppCompatActivity() {
         }
         val textLength = intent.getStringExtra("text_length") ?: "Средний"
         
-        // Проверяем, есть ли доступные тексты для выбранной длины
+
         val availableTexts = TestResultManager.getAvailableTextsByLength(this, techniqueName, textLength)
         
         if (availableTexts.isEmpty()) {
-            // Все тексты данной длины завершены
+
             showCompletionDialog(textLength)
             return
         }
-        
-        // Выбираем случайный доступный текст
+
         selectedTextIndex = availableTexts.random()
         val fontSizeMultiplier = FontConfig.getFontSizeMultiplier(intent.getIntExtra("font_size", 1))
 
@@ -69,7 +67,7 @@ class SentenceReverseActivity : AppCompatActivity() {
         timerView = findViewById(R.id.timer_view)
         textView.textSize = FontConfig.BASE_TEXT_SIZE * fontSizeMultiplier
 
-        // Переключаем видимость контейнеров
+
         findViewById<View>(R.id.diagonal_container).visibility = View.GONE
         findViewById<View>(R.id.scroll_container).visibility = View.VISIBLE
 
@@ -89,7 +87,7 @@ class SentenceReverseActivity : AppCompatActivity() {
             onAnimationEnd = {
                 stopTimer()
                 saveTime(techniqueName, System.currentTimeMillis() - startTime)
-                // Запускаем тест после завершения анимации
+
                 showTestFragment()
             }
         )
@@ -121,12 +119,11 @@ class SentenceReverseActivity : AppCompatActivity() {
     }
 
     private fun showTestFragment() {
-        // Скрываем контейнеры с текстом и показываем контейнер для теста
+
         findViewById<View>(R.id.scroll_container).visibility = View.GONE
         findViewById<View>(R.id.diagonal_container).visibility = View.GONE
         findViewById<View>(R.id.test_fragment_container).visibility = View.VISIBLE
 
-        // Запускаем тест
         val testFragment = TestFragment.newInstance(selectedTextIndex, techniqueName, durationPerWord)
         supportFragmentManager.beginTransaction()
             .replace(R.id.test_fragment_container, testFragment)
@@ -139,7 +136,7 @@ class SentenceReverseActivity : AppCompatActivity() {
             .setTitle("Все тексты завершены")
             .setMessage(message)
             .setPositiveButton("ОК") { _, _ ->
-                // Закрываем текущую активность
+
                 finish()
             }
             .create()

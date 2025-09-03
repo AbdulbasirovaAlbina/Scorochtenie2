@@ -3,7 +3,6 @@ package com.example.scorochtenie2
 import android.app.AlertDialog
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -51,7 +50,7 @@ class ProgressFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("ProgressFragment", "onCreateView called")
+
         val view = inflater.inflate(R.layout.fragment_progress, container, false)
 
         initViews(view)
@@ -64,13 +63,13 @@ class ProgressFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        Log.d("ProgressFragment", "onResume called")
+
         loadTechniqueProgress(selectedTechnique)
         techniqueSelectorAdapter.notifyDataSetChanged()
     }
 
     private fun initViews(view: View) {
-        Log.d("ProgressFragment", "initViews called")
+
         techniqueSelector = view.findViewById(R.id.technique_selector)
         progressContainer = view.findViewById(R.id.progress_container)
 
@@ -88,7 +87,7 @@ class ProgressFragment : Fragment() {
     }
 
     private fun setupTechniqueSelector() {
-        Log.d("ProgressFragment", "setupTechniqueSelector called")
+
         techniqueSelectorAdapter = TechniqueSelectorAdapter(techniques) { technique ->
             selectedTechnique = technique.title
             loadTechniqueProgress(technique.title)
@@ -98,18 +97,18 @@ class ProgressFragment : Fragment() {
     }
 
     private fun setupPeriodSelector() {
-        Log.d("ProgressFragment", "setupPeriodSelector called")
+
         selectPeriodButton.setOnClickListener {
-            Log.d("ProgressFragment", "select_period_button clicked")
+
             showDatePicker()
         }
         updatePeriodDisplay(null)
     }
 
     private fun showDatePicker() {
-        Log.d("ProgressFragment", "showDatePicker called")
 
-        // Ограничение: даты от 1 января 2025 до конца текущего дня
+
+
         val startDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
             set(2025, Calendar.JANUARY, 1, 0, 0, 0)
             set(Calendar.MILLISECOND, 0)
@@ -120,19 +119,17 @@ class ProgressFragment : Fragment() {
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
         }
-        Log.d("ProgressFragment", "Date constraints: start=${dateFormat.format(startDate.time)} (${startDate.timeInMillis}), end=${dateFormat.format(endDate.time)} (${endDate.timeInMillis})")
 
-        // Создаём CalendarView
         val calendarView = CalendarView(requireContext()).apply {
             minDate = startDate.timeInMillis
             maxDate = endDate.timeInMillis
             setDate(selectedStartDate?.timeInMillis ?: endDate.timeInMillis, false, true)
         }
 
-        // Переменная для хранения выбранной даты
+
         var selectedDateMillis: Long = selectedStartDate?.timeInMillis ?: endDate.timeInMillis
 
-        // TextView для отображения диапазона дат
+
         val rangeTextView = TextView(requireContext()).apply {
             val initialDate = selectedStartDate?.time ?: endDate.time
             val rangeEnd = Calendar.getInstance().apply {
@@ -144,7 +141,7 @@ class ProgressFragment : Fragment() {
             textSize = 16f
         }
 
-        // Обработчик выбора даты
+
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val selectedCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
                 set(year, month, dayOfMonth, 0, 0, 0)
@@ -156,10 +153,10 @@ class ProgressFragment : Fragment() {
                 add(Calendar.DAY_OF_YEAR, 6)
             }
             rangeTextView.text = "Диапазон: ${dateFormat.format(selectedCalendar.time)} - ${dateFormat.format(rangeEnd.time)}"
-            Log.d("ProgressFragment", "Date selected in CalendarView: ${dateFormat.format(selectedCalendar.time)} (${selectedDateMillis})")
+
         }
 
-        // Создаём кастомный заголовок
+
         val titleTextView = TextView(requireContext()).apply {
             text = "Укажите дату начала"
             textSize = 20f
@@ -167,14 +164,13 @@ class ProgressFragment : Fragment() {
             gravity = Gravity.CENTER
         }
 
-        // Создаём кастомный макет для диалога
+
         val container = LinearLayout(requireContext()).apply {
             orientation = LinearLayout.VERTICAL
             addView(calendarView)
             addView(rangeTextView)
         }
 
-        // Создаём диалог
         val dialog = AlertDialog.Builder(requireContext())
             .setCustomTitle(titleTextView)
             .setView(container)
@@ -194,19 +190,19 @@ class ProgressFragment : Fragment() {
                 }
                 if (selectedCalendar.after(currentDate)) {
                     Toast.makeText(requireContext(), "Нельзя выбирать даты после текущей даты!", Toast.LENGTH_SHORT).show()
-                    Log.d("ProgressFragment", "Rejected date: ${dateFormat.format(selectedCalendar.time)} is after ${dateFormat.format(currentDate.time)}")
+
                     return@setPositiveButton
                 }
                 selectedStartDate = selectedCalendar
                 updatePeriodDisplay(selectedCalendar)
                 loadTechniqueProgress(selectedTechnique)
-                Log.d("ProgressFragment", "Confirmed date: ${dateFormat.format(selectedCalendar.time)} (${selectedDateMillis})")
+
             }
             .setNegativeButton("Отмена", null)
             .create()
 
         dialog.show()
-        // Устанавливаем цвет текста кнопок в зависимости от темы
+
         val isDarkTheme = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
         val buttonColor = if (isDarkTheme) {
             resources.getColor(android.R.color.white, requireContext().theme)
@@ -215,7 +211,7 @@ class ProgressFragment : Fragment() {
         }
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(buttonColor)
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(buttonColor)
-        Log.d("ProgressFragment", "CalendarView dialog shown, isDarkTheme=$isDarkTheme")
+
     }
 
     private fun updatePeriodDisplay(startDate: Calendar?) {
@@ -260,12 +256,12 @@ class ProgressFragment : Fragment() {
     private fun updateDaysProgress(dailyComprehension: List<Int>) {
         daysProgressContainer.removeAllViews()
 
-        // Генерация списка дней недели
+
         val dayNames = mutableListOf<String>()
         val calendar = Calendar.getInstance()
         val baseDayNames = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
 
-        // Генерация дат (dd.MM) для каждого дня периода
+
         val dayDates = mutableListOf<String>()
         val dayDateFormat = SimpleDateFormat("dd.MM", Locale.getDefault())
         val dateCalendar = Calendar.getInstance()
@@ -301,10 +297,10 @@ class ProgressFragment : Fragment() {
         }
 
         if (selectedStartDate == null) {
-            // Текущая неделя: начинается с понедельника
+
             dayNames.addAll(baseDayNames)
         } else {
-            // Выбранный период: начинаем с дня недели selectedStartDate
+
             calendar.timeInMillis = selectedStartDate!!.timeInMillis
             for (i in 0..6) {
                 val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
@@ -323,7 +319,6 @@ class ProgressFragment : Fragment() {
             }
         }
 
-        // Определяем текущий день для выделения (только для текущей недели)
         val currentDayIndex = if (selectedStartDate == null) {
             val currentDayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
             when (currentDayOfWeek) {
@@ -337,7 +332,7 @@ class ProgressFragment : Fragment() {
                 else -> 0
             }
         } else {
-            -1 // Не выделяем текущий день для выбранного периода
+            -1
         }
 
         dailyComprehension.forEachIndexed { index, comprehension ->

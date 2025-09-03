@@ -36,7 +36,6 @@ class SentenceReverseTechnique : Technique("Предложения наобор�
     ) {
         try {
             this.selectedTextIndex = selectedTextIndex
-            // В демонстрационном режиме (selectedTextIndex = -1) используем демонстрационный текст
             val originalText = if (selectedTextIndex == -1) {
                 TextResources.getDemoTextForTechnique(displayName)
             } else {
@@ -60,7 +59,7 @@ class SentenceReverseTechnique : Technique("Предложения наобор�
             textView.gravity = android.view.Gravity.TOP
             textView.isSingleLine = false
             textView.maxLines = Int.MAX_VALUE
-            guideView.visibility = View.INVISIBLE // Скрываем guideView
+            guideView.visibility = View.INVISIBLE
             handler.post {
                 if (isAnimationActive) {
                     showText(textView, guideView, wordDurationMs, onAnimationEnd)

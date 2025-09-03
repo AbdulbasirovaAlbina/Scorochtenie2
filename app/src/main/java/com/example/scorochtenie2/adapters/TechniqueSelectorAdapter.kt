@@ -34,17 +34,14 @@ class TechniqueSelectorAdapter(
         holder.icon.setImageResource(technique.iconResId)
         holder.title.text = technique.title
 
-        // Специальная обработка для иконки "Все техники"
         if (technique.title == "Все техники") {
             holder.icon.setColorFilter(android.graphics.Color.WHITE)
-            // Устанавливаем специальный background для иконки "Все техники"
             holder.iconContainer.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.technique_icon_all_techniques_bg)
         } else {
             holder.icon.clearColorFilter()
             holder.iconContainer.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.technique_icon_modern_bg)
         }
 
-        // Обновляем внешний вид в зависимости от выбора
         val currentPosition = holder.getAdapterPosition()
         holder.card.isSelected = (currentPosition == selectedPosition)
         if (currentPosition == selectedPosition) {
@@ -52,7 +49,6 @@ class TechniqueSelectorAdapter(
             holder.title.setTextColor(ResourcesCompat.getColor(holder.itemView.context.resources, R.color.primary_color, holder.itemView.context.theme))
         } else {
             holder.card.elevation = 4f
-            // Используем цвет, который автоматически адаптируется к теме
             holder.title.setTextColor(ResourcesCompat.getColor(holder.itemView.context.resources, R.color.text_color_secondary, holder.itemView.context.theme))
         }
 

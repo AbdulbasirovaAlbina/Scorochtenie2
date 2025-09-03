@@ -7,7 +7,7 @@ import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
-import android.util.Log
+
 import android.view.View
 import android.widget.ScrollView
 import android.widget.TextView
@@ -34,9 +34,8 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
         selectedTextIndex: Int,
         onAnimationEnd: () -> Unit
     ) {
-        Log.d("PartiallyHiddenLines", "startAnimation called with textView: $textView, guideView: $guideView, duration: $durationPerWord, textIndex: $selectedTextIndex")
         this.selectedTextIndex = selectedTextIndex
-        // В демонстрационном режиме (selectedTextIndex = -1) используем демонстрационный текст
+
         fullText = if (selectedTextIndex == -1) {
             TextResources.getDemoTextForTechnique(displayName)
         } else {
@@ -52,32 +51,30 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
         scrollView = textView.parent as? ScrollView
         scrollView?.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             hiddenLinesView?.invalidate()
-            Log.d("PartiallyHiddenLines", "ScrollView scrolled to: $scrollY")
         }
 
         textView.gravity = android.view.Gravity.TOP
         textView.isSingleLine = false
         textView.maxLines = Int.MAX_VALUE
 
-        // Настраиваем маску
+
         if (guideView is PartiallyHiddenLinesView) {
             hiddenLinesView = guideView
             guideView.setTextView(textView)
-            Log.d("PartiallyHiddenLines", "guideView set as PartiallyHiddenLinesView")
+
         } else {
-            Log.w("PartiallyHiddenLines", "guideView is not PartiallyHiddenLinesView, type: ${guideView.javaClass.simpleName}")
+
         }
 
-        // Принудительно запрашиваем layout
         textView.requestLayout()
-        Log.d("PartiallyHiddenLines", "Requesting layout for textView")
+
 
         handler.post {
             if (isAnimationActive) {
-                Log.d("PartiallyHiddenLines", "Posting showNextTextPart, isAnimationActive: $isAnimationActive")
+
                 showNextTextPart(textView, guideView, wordDurationMs, onAnimationEnd)
             } else {
-                Log.w("PartiallyHiddenLines", "Animation not started, isAnimationActive is false")
+
             }
         }
     }
@@ -89,7 +86,7 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
         onAnimationEnd: () -> Unit
     ) {
         if (!isAnimationActive) {
-            Log.w("PartiallyHiddenLines", "showNextTextPart skipped, isAnimationActive is false")
+
             return
         }
 
@@ -98,15 +95,14 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
         currentWordIndex = 0
 
         textView.text = currentPartText
-        Log.d("PartiallyHiddenLines", "Text set: $currentPartText")
 
         // Показываем маску сразу после установки текста
         if (isAnimationActive && guideView is PartiallyHiddenLinesView) {
-            Log.d("PartiallyHiddenLines", "Showing mask immediately")
+
             guideView.showMask()
             animateNextWord(textView, guideView, wordDurationMs, onAnimationEnd)
         } else {
-            Log.w("PartiallyHiddenLines", "Mask not shown, isAnimationActive: $isAnimationActive, guideView type: ${guideView.javaClass.simpleName}")
+
         }
     }
 
@@ -117,7 +113,7 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
         onAnimationEnd: () -> Unit
     ) {
         if (!isAnimationActive) {
-            Log.w("PartiallyHiddenLines", "animateNextWord skipped, isAnimationActive is false")
+
             return
         }
 
@@ -125,7 +121,7 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
             animator?.cancel()
             textView.text = currentPartText
             if (isAnimationActive) onAnimationEnd()
-            Log.d("PartiallyHiddenLines", "Animation ended, wordIndex: $currentWordIndex")
+
             return
         }
 
@@ -135,7 +131,7 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
 
     private fun highlightWord(textView: TextView) {
         if (!isAnimationActive) {
-            Log.w("PartiallyHiddenLines", "highlightWord skipped, isAnimationActive is false")
+
             return
         }
 
@@ -163,7 +159,7 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
         }
 
         textView.text = spannable
-        Log.d("PartiallyHiddenLines", "Highlighted word at index: $currentWordIndex")
+
     }
 
     private fun startWordAnimation(
@@ -173,7 +169,7 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
         onAnimationEnd: () -> Unit
     ) {
         if (!isAnimationActive) {
-            Log.w("PartiallyHiddenLines", "startWordAnimation skipped, isAnimationActive is false")
+
             return
         }
 
@@ -181,7 +177,7 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
 
         val layout = textView.layout
         if (layout == null) {
-            Log.w("PartiallyHiddenLines", "TextView layout is null, retrying after 200ms")
+
             handler.postDelayed({
                 if (isAnimationActive) animateNextWord(textView, guideView, wordDurationMs, onAnimationEnd)
             }, 200)
@@ -194,7 +190,7 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
         if (wordStartIndex < 0 || wordStartIndex >= currentPartText.length) {
             currentWordIndex++
             animateNextWord(textView, guideView, wordDurationMs, onAnimationEnd)
-            Log.w("PartiallyHiddenLines", "Invalid wordStartIndex: $wordStartIndex, moving to next word")
+
             return
         }
 
@@ -202,7 +198,7 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
         val lineTopPosition = layout.getLineTop(startLine)
         val lineBottomPosition = layout.getLineBottom(startLine)
 
-        // Авто-скролл для следования за словами
+
         scrollView?.let { sv ->
             handler.post {
                 if (!isAnimationActive) return@post
@@ -224,13 +220,13 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
                             start()
                         }
                         lastScrollY = targetScrollY
-                        Log.d("PartiallyHiddenLines", "Scrolled to: $targetScrollY")
+
                     }
                 }
             }
         }
 
-        // Простая анимация перехода к следующему слову
+
         handler.postDelayed({
             if (isAnimationActive) {
                 currentWordIndex++
@@ -259,7 +255,5 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
         isAnimationActive = false
         animator?.cancel()
         handler.removeCallbacksAndMessages(null)
-        Log.d("PartiallyHiddenLines", "Animation cancelled, mask remains visible")
-        // Не скрываем маску при отмене анимации
     }
 }

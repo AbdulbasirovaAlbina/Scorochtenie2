@@ -10,7 +10,6 @@ class HelpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_help)
 
-        // Setup back button
         findViewById<ImageButton>(R.id.btn_back).setOnClickListener {
             finish()
         }

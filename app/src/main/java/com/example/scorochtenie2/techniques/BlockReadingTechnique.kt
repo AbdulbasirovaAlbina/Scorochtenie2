@@ -38,7 +38,6 @@ class BlockReadingTechnique : Technique("Чтение блоками", "Чтен
     ) {
         try {
             this.selectedTextIndex = selectedTextIndex
-            // В демонстрационном режиме (selectedTextIndex = -1) используем демонстрационный текст
             fullText = if (selectedTextIndex == -1) {
                 TextResources.getDemoTextForTechnique(displayName)
             } else {
@@ -60,7 +59,7 @@ class BlockReadingTechnique : Technique("Чтение блоками", "Чтен
             textView.gravity = android.view.Gravity.TOP
             textView.isSingleLine = false
             textView.maxLines = Int.MAX_VALUE
-            guideView.visibility = View.INVISIBLE // Устанавливаем guideView невидимым
+            guideView.visibility = View.INVISIBLE
             handler.post {
                 if (isAnimationActive) {
                     showNextTextPart(textView, guideView, wordDurationMs, onAnimationEnd)

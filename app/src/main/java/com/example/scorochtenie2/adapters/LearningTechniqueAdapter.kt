@@ -16,7 +16,7 @@ data class LearningTechniqueItem(
     val category: String,
     val description: String,
     val benefits: String,
-    val difficulty: Int, // 1-5 stars
+    val difficulty: Int,
     val iconResId: Int,
     val practiceClass: Class<*>
 )
@@ -49,10 +49,8 @@ class LearningTechniqueAdapter(private val techniques: List<LearningTechniqueIte
         holder.benefits.text = technique.benefits
         holder.icon.setImageResource(technique.iconResId)
 
-        // Clear existing stars
         holder.difficultyStars.removeAllViews()
-        
-        // Add difficulty stars
+
         for (i in 1..5) {
             val star = ImageView(holder.itemView.context)
             val size = (16 * holder.itemView.context.resources.displayMetrics.density).toInt()
