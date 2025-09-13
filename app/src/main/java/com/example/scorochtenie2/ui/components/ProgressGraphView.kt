@@ -142,7 +142,6 @@ class ProgressGraphView @JvmOverloads constructor(
             calendar.add(Calendar.DAY_OF_YEAR, dayCount - 1)
             canvas.drawText(dateFormat.format(calendar.time), width - padding - 40f, height - 10f, textPaint)
         }
-
         val yLabelCount = 3
         for (i in 0..yLabelCount) {
             val yValue = normalizedMinValue + (normalizedMaxValue - normalizedMinValue) * i / yLabelCount

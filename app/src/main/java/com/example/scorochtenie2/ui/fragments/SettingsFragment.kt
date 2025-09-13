@@ -128,9 +128,7 @@ class SettingsFragment : Fragment() {
 
         val isEnabled = ReminderManager.isReminderEnabled(requireContext())
         reminderSwitch.isChecked = isEnabled
-
         reminderTimeText.text = ReminderManager.getReminderTimeFormatted(requireContext())
-
 
         reminderSwitch.setOnCheckedChangeListener { _, isChecked ->
             ReminderManager.setReminderEnabled(requireContext(), isChecked)
@@ -141,7 +139,6 @@ class SettingsFragment : Fragment() {
                 Toast.makeText(context, "Напоминания отключены", Toast.LENGTH_SHORT).show()
             }
         }
-
 
         reminderTimeText.setOnClickListener {
             showTimePickerDialog(reminderTimeText)

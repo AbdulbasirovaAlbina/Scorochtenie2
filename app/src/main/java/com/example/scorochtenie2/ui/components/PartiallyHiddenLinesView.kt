@@ -26,28 +26,17 @@ class PartiallyHiddenLinesView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
         if (!shouldDrawMask) return
-
         val tv = textView ?: return
         val layout = tv.layout ?: return
-
-
         maskPaint.color = getBackgroundColor()
-
-
         val totalLineCount = layout.lineCount
         val scrollView = tv.parent as? View
         val scrollY = (scrollView as? android.widget.ScrollView)?.scrollY?.toFloat() ?: 0f
-
-
-
         val leftPadding = tv.paddingLeft.toFloat()
         val topPadding = tv.paddingTop.toFloat()
         val rightPadding = tv.paddingRight.toFloat()
         val textWidth = tv.width - tv.paddingLeft - tv.paddingRight
-
-
         for (i in 0 until totalLineCount) {
             val lineTop = layout.getLineTop(i).toFloat() + topPadding - scrollY
             val lineBottom = layout.getLineBottom(i).toFloat() + topPadding - scrollY
@@ -129,7 +118,6 @@ class PartiallyHiddenLinesView @JvmOverloads constructor(
 
     fun hideMask() {
         shouldDrawMask = false
-
         invalidate()
     }
 

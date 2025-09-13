@@ -55,7 +55,6 @@ class PracticeFragment : Fragment() {
 
         return view
     }
-    
     private fun addTestDataIfEmpty() {
     }
 }

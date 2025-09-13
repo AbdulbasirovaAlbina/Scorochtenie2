@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import android.widget.Toast
 
 class TechniqueSettingsActivity : AppCompatActivity() {
-
     private lateinit var techniqueTitle: TextView
     private lateinit var techniqueDescription: TextView
     private lateinit var speedSlider: SeekBar
