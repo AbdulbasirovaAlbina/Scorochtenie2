@@ -48,13 +48,9 @@ class PracticeFragment : Fragment() {
             )
         )
 
-
         val recyclerView = view.findViewById<RecyclerView>(R.id.techniques_grid)
         recyclerView.layoutManager = GridLayoutManager(context, 2)
         recyclerView.adapter = ModernTechniqueAdapter(techniques)
-
         return view
-    }
-    private fun addTestDataIfEmpty() {
     }
 }
