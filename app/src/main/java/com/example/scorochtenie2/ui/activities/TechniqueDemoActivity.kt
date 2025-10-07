@@ -20,33 +20,21 @@ class TechniqueDemoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_technique)
-
-
         TextResources.initialize(this)
-
         val techniqueName = intent.getStringExtra("technique_name") ?: "Неизвестная техника"
-
-
         findViewById<TextView>(R.id.toolbar_title).text = "Демонстрация: $techniqueName"
         findViewById<TextView>(R.id.timer_view).visibility = View.GONE
-
         textView = findViewById(R.id.text_view)
         guideView = findViewById(R.id.guide_view)
         curtainView = findViewById(R.id.curtain_view)
         diagonalTextView = findViewById(R.id.diagonal_text_view)
         diagonalLineView = findViewById(R.id.diagonal_line_view)
-
-
-
         technique = createTechnique(techniqueName)
-
         findViewById<ImageButton>(R.id.btn_back).setOnClickListener {
             technique.cancelAnimation()
             finish()
         }
-
         setupContainers(techniqueName)
-
         startDemo()
     }
 
@@ -76,17 +64,14 @@ class TechniqueDemoActivity : AppCompatActivity() {
                 diagonalLineView.bringToFront()
                 diagonalLineView.requestLayout()
                 diagonalLineView.invalidate()
-
             }
             "Зашумленный текст" -> {
                 findViewById<View>(R.id.scroll_container).visibility = View.VISIBLE
                 findViewById<View>(R.id.diagonal_container).visibility = View.GONE
                 findViewById<View>(R.id.test_fragment_container).visibility = View.GONE
-
                 findViewById<View>(R.id.guide_view).visibility = View.GONE
                 curtainView.visibility = View.VISIBLE
                 guideView = curtainView
-
             }
             else -> {
                 findViewById<View>(R.id.scroll_container).visibility = View.VISIBLE
@@ -98,11 +83,7 @@ class TechniqueDemoActivity : AppCompatActivity() {
     }
 
     private fun startDemo() {
-
         textView.requestLayout()
-
-
-
         val speedForTechnique: Long = when (technique) {
             is DiagonalReadingTechnique -> 165L
             is WordReverseTechnique -> 70L
@@ -110,7 +91,6 @@ class TechniqueDemoActivity : AppCompatActivity() {
         }
 
         if (technique is DiagonalReadingTechnique) {
-
             diagonalTextView.requestLayout()
             technique.startAnimation(
                 textView = diagonalTextView,
@@ -118,31 +98,24 @@ class TechniqueDemoActivity : AppCompatActivity() {
                 durationPerWord = speedForTechnique,
                 selectedTextIndex = selectedTextIndex,
                 onAnimationEnd = {
-
                     finish()
                 }
             )
         } else {
-
             technique.startAnimation(
                 textView = textView,
                 guideView = guideView,
                 durationPerWord = speedForTechnique,
                 selectedTextIndex = selectedTextIndex,
                 onAnimationEnd = {
-
                     finish()
                 }
             )
-
             if (guideView is PartiallyHiddenLinesView) {
-
                 (guideView as PartiallyHiddenLinesView).setTextView(textView)
                 guideView.invalidate()
             } else if (guideView is CurtainOverlayView) {
-
             } else {
-
             }
         }
     }

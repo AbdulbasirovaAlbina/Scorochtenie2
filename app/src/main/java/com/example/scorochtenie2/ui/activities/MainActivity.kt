@@ -1,4 +1,3 @@
-package com.example.scorochtenie2
 
 import android.content.Intent
 import android.os.Bundle
@@ -24,14 +23,11 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-
         TextResources.initialize(this)
         ReminderManager.initialize(this)
 
-
         setupBottomNavigation()
         setupWindowInsets()
-
 
         if (savedInstanceState == null) {
             val tabFromIntent = intent?.getIntExtra("tab", -1) ?: -1

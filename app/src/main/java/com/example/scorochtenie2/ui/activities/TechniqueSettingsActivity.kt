@@ -68,7 +68,6 @@ class TechniqueSettingsActivity : AppCompatActivity() {
         mediumTextBtn = findViewById(R.id.btn_medium_text)
         longTextBtn = findViewById(R.id.btn_long_text)
         startBtn = findViewById(R.id.btn_start)
-        
 
         colorYellowBtn = findViewById(R.id.btn_color_yellow)
         colorGreenBtn = findViewById(R.id.btn_color_green)
