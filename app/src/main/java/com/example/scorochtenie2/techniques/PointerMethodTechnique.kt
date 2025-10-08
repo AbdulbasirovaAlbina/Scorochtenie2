@@ -161,7 +161,6 @@ class PointerMethodTechnique : Technique("PointerMethodTechnique", "Метод �
         }
 
         val startLine = layout.getLineForOffset(wordStartIndex)
-        val endLine = layout.getLineForOffset(wordEndIndex)
         val startX = layout.getPrimaryHorizontal(wordStartIndex)
         var endX = layout.getPrimaryHorizontal(wordEndIndex)
         if (endX == startX) {

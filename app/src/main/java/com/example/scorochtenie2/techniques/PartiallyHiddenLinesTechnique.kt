@@ -96,7 +96,6 @@ class PartiallyHiddenLinesTechnique : Technique("Частично скрытые
 
         textView.text = currentPartText
 
-        // Показываем маску сразу после установки текста
         if (isAnimationActive && guideView is PartiallyHiddenLinesView) {
 
             guideView.showMask()

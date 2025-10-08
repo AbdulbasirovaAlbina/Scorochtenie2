@@ -221,8 +221,6 @@ class WordReverseTechnique : Technique("Слова наоборот", "Слов�
         }
 
         val startLine = layout.getLineForOffset(wordStartIndex)
-        val lineTop = layout.getLineTop(startLine).toFloat()
-        val lineBottom = layout.getLineBottom(startLine).toFloat()
 
         scrollView?.let { sv ->
             handler.post {
