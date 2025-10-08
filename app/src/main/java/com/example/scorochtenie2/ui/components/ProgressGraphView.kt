@@ -10,143 +10,143 @@ import android.view.View
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ProgressGraphView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : View(context, attrs, defStyleAttr) {
-
-    private val paint = Paint().apply {
-        isAntiAlias = true
-        style = Paint.Style.STROKE
-        strokeWidth = 4f
-        color = Color.parseColor("#2196F3")
-    }
-
-    private val fillPaint = Paint().apply {
-        isAntiAlias = true
-        style = Paint.Style.FILL
-        color = Color.parseColor("#802196F3")
-    }
-
-    private val textPaint = Paint().apply {
-        isAntiAlias = true
-        textSize = 12f
-        color = getTextColor()
-    }
-
-    private var dataPoints: List<Int> = emptyList()
-    private var startDate: Calendar? = null
-    private val dateFormat = SimpleDateFormat("dd.MM", Locale.getDefault())
-
-    private fun getTextColor(): Int {
-        val typedValue = android.util.TypedValue()
-        context.theme.resolveAttribute(android.R.attr.textColorSecondary, typedValue, true)
-        return if (typedValue.resourceId != 0) {
-            context.getColor(typedValue.resourceId)
-        } else {
-            Color.GRAY
-        }
-    }
-
-    fun setData(points: List<Int>, startDate: Calendar? = null) {
-        this.dataPoints = points
-        this.startDate = startDate
-        invalidate()
-    }
-
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-
-        if (dataPoints.isEmpty()) {
-            val centerX = width / 2f
-            val centerY = height / 2f
-            canvas.drawText("График прогресса", centerX - 50f, centerY, textPaint)
-            return
-        }
-
-        val padding = 40f
-        val graphWidth = width - 2 * padding
-        val graphHeight = height - 2 * padding
-
-        if (graphWidth <= 0 || graphHeight <= 0) return
-
-        val maxValue = dataPoints.maxOrNull() ?: 100
-        val minValue = dataPoints.minOrNull() ?: 0
-        val valueRange = (maxValue - minValue).toFloat()
-        val normalizedMaxValue = if (valueRange > 0) maxValue.toFloat() else 100f
-        val normalizedMinValue = if (valueRange > 0) minValue.toFloat() else 0f
-
-        val path = Path()
-        val fillPath = Path()
-
-        dataPoints.forEachIndexed { index, value ->
-            val x = if (dataPoints.size == 1) {
-                padding + graphWidth / 2f
-            } else {
-                padding + (index.toFloat() / (dataPoints.size - 1)) * graphWidth
-            }
-            val normalizedValue = if (normalizedMaxValue > normalizedMinValue) {
-                (value - normalizedMinValue) / (normalizedMaxValue - normalizedMinValue)
-            } else {
-                0.5f
-            }
-            val y = height - padding - normalizedValue * graphHeight
-
-            if (index == 0) {
-                path.moveTo(x, y)
-                fillPath.moveTo(x, height - padding)
-                fillPath.lineTo(x, y)
-            } else {
-                path.lineTo(x, y)
-                fillPath.lineTo(x, y)
-            }
-        }
-
-        if (dataPoints.isNotEmpty()) {
-            val lastX = if (dataPoints.size == 1) {
-                padding + graphWidth / 2f
-            } else {
-                width - padding
-            }
-            fillPath.lineTo(lastX, height - padding)
-            fillPath.close()
-        }
-
-        canvas.drawPath(fillPath, fillPaint)
-        canvas.drawPath(path, paint)
-
-        dataPoints.forEachIndexed { index, value ->
-            val x = if (dataPoints.size == 1) {
-                padding + graphWidth / 2f
-            } else {
-                padding + (index.toFloat() / (dataPoints.size - 1)) * graphWidth
-            }
-            val normalizedValue = if (normalizedMaxValue > normalizedMinValue) {
-                (value - normalizedMinValue) / (normalizedMaxValue - normalizedMinValue)
-            } else {
-                0.5f
-            }
-            val y = height - padding - normalizedValue * graphHeight
-            canvas.drawCircle(x, y, 6f, paint)
-        }
-
-
-        val dayCount = if (dataPoints.size == 1) 1 else dataPoints.size
-        if (startDate == null) {
-            canvas.drawText("День 1", padding, height - 10f, textPaint)
-            canvas.drawText("День $dayCount", width - padding - 40f, height - 10f, textPaint)
-        } else {
-            val calendar = Calendar.getInstance().apply { timeInMillis = startDate!!.timeInMillis }
-            canvas.drawText(dateFormat.format(calendar.time), padding, height - 10f, textPaint)
-            calendar.add(Calendar.DAY_OF_YEAR, dayCount - 1)
-            canvas.drawText(dateFormat.format(calendar.time), width - padding - 40f, height - 10f, textPaint)
-        }
-        val yLabelCount = 3
-        for (i in 0..yLabelCount) {
-            val yValue = normalizedMinValue + (normalizedMaxValue - normalizedMinValue) * i / yLabelCount
-            val y = height - padding - (i.toFloat() / yLabelCount) * graphHeight
-            canvas.drawText("${yValue.toInt()}", 5f, y + 4f, textPaint)
-        }
-    }
-}
+//class ProgressGraphView @JvmOverloads constructor(
+//    context: Context,
+//    attrs: AttributeSet? = null,
+//    defStyleAttr: Int = 0
+//) : View(context, attrs, defStyleAttr) {
+//
+//    private val paint = Paint().apply {
+//        isAntiAlias = true
+//        style = Paint.Style.STROKE
+//        strokeWidth = 4f
+//        color = Color.parseColor("#2196F3")
+//    }
+//
+//    private val fillPaint = Paint().apply {
+//        isAntiAlias = true
+//        style = Paint.Style.FILL
+//        color = Color.parseColor("#802196F3")
+//    }
+//
+//    private val textPaint = Paint().apply {
+//        isAntiAlias = true
+//        textSize = 12f
+//        color = getTextColor()
+//    }
+//
+//    private var dataPoints: List<Int> = emptyList()
+//    private var startDate: Calendar? = null
+//    private val dateFormat = SimpleDateFormat("dd.MM", Locale.getDefault())
+//
+//    private fun getTextColor(): Int {
+//        val typedValue = android.util.TypedValue()
+//        context.theme.resolveAttribute(android.R.attr.textColorSecondary, typedValue, true)
+//        return if (typedValue.resourceId != 0) {
+//            context.getColor(typedValue.resourceId)
+//        } else {
+//            Color.GRAY
+//        }
+//    }
+//
+//    fun setData(points: List<Int>, startDate: Calendar? = null) {
+//        this.dataPoints = points
+//        this.startDate = startDate
+//        invalidate()
+//    }
+//
+//    override fun onDraw(canvas: Canvas) {
+//        super.onDraw(canvas)
+//
+//        if (dataPoints.isEmpty()) {
+//            val centerX = width / 2f
+//            val centerY = height / 2f
+//            canvas.drawText("График прогресса", centerX - 50f, centerY, textPaint)
+//            return
+//        }
+//
+//        val padding = 40f
+//        val graphWidth = width - 2 * padding
+//        val graphHeight = height - 2 * padding
+//
+//        if (graphWidth <= 0 || graphHeight <= 0) return
+//
+//        val maxValue = dataPoints.maxOrNull() ?: 100
+//        val minValue = dataPoints.minOrNull() ?: 0
+//        val valueRange = (maxValue - minValue).toFloat()
+//        val normalizedMaxValue = if (valueRange > 0) maxValue.toFloat() else 100f
+//        val normalizedMinValue = if (valueRange > 0) minValue.toFloat() else 0f
+//
+//        val path = Path()
+//        val fillPath = Path()
+//
+//        dataPoints.forEachIndexed { index, value ->
+//            val x = if (dataPoints.size == 1) {
+//                padding + graphWidth / 2f
+//            } else {
+//                padding + (index.toFloat() / (dataPoints.size - 1)) * graphWidth
+//            }
+//            val normalizedValue = if (normalizedMaxValue > normalizedMinValue) {
+//                (value - normalizedMinValue) / (normalizedMaxValue - normalizedMinValue)
+//            } else {
+//                0.5f
+//            }
+//            val y = height - padding - normalizedValue * graphHeight
+//
+//            if (index == 0) {
+//                path.moveTo(x, y)
+//                fillPath.moveTo(x, height - padding)
+//                fillPath.lineTo(x, y)
+//            } else {
+//                path.lineTo(x, y)
+//                fillPath.lineTo(x, y)
+//            }
+//        }
+//
+//        if (dataPoints.isNotEmpty()) {
+//            val lastX = if (dataPoints.size == 1) {
+//                padding + graphWidth / 2f
+//            } else {
+//                width - padding
+//            }
+//            fillPath.lineTo(lastX, height - padding)
+//            fillPath.close()
+//        }
+//
+//        canvas.drawPath(fillPath, fillPaint)
+//        canvas.drawPath(path, paint)
+//
+//        dataPoints.forEachIndexed { index, value ->
+//            val x = if (dataPoints.size == 1) {
+//                padding + graphWidth / 2f
+//            } else {
+//                padding + (index.toFloat() / (dataPoints.size - 1)) * graphWidth
+//            }
+//            val normalizedValue = if (normalizedMaxValue > normalizedMinValue) {
+//                (value - normalizedMinValue) / (normalizedMaxValue - normalizedMinValue)
+//            } else {
+//                0.5f
+//            }
+//            val y = height - padding - normalizedValue * graphHeight
+//            canvas.drawCircle(x, y, 6f, paint)
+//        }
+//
+//
+//        val dayCount = if (dataPoints.size == 1) 1 else dataPoints.size
+//        if (startDate == null) {
+//            canvas.drawText("День 1", padding, height - 10f, textPaint)
+//            canvas.drawText("День $dayCount", width - padding - 40f, height - 10f, textPaint)
+//        } else {
+//            val calendar = Calendar.getInstance().apply { timeInMillis = startDate!!.timeInMillis }
+//            canvas.drawText(dateFormat.format(calendar.time), padding, height - 10f, textPaint)
+//            calendar.add(Calendar.DAY_OF_YEAR, dayCount - 1)
+//            canvas.drawText(dateFormat.format(calendar.time), width - padding - 40f, height - 10f, textPaint)
+//        }
+//        val yLabelCount = 3
+//        for (i in 0..yLabelCount) {
+//            val yValue = normalizedMinValue + (normalizedMaxValue - normalizedMinValue) * i / yLabelCount
+//            val y = height - padding - (i.toFloat() / yLabelCount) * graphHeight
+//            canvas.drawText("${yValue.toInt()}", 5f, y + 4f, textPaint)
+//        }
+//    }
+//}

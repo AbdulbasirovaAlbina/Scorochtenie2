@@ -1,6 +1,6 @@
 package com.example.scorochtenie2
 
-import MainActivity
+import com.example.scorochtenie2.MainActivity
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
