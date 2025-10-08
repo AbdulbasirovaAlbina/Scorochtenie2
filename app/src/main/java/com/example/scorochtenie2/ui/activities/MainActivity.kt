@@ -7,6 +7,14 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.example.scorochtenie2.HomeFragment
+import com.example.scorochtenie2.LearningFragment
+import com.example.scorochtenie2.PracticeFragment
+import com.example.scorochtenie2.ProgressFragment
+import com.example.scorochtenie2.R
+import com.example.scorochtenie2.ReminderManager
+import com.example.scorochtenie2.SettingsFragment
+import com.example.scorochtenie2.TextResources
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {

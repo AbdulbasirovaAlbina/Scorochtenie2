@@ -1,15 +1,8 @@
 package com.example.scorochtenie2
-
 import android.animation.ValueAnimator
-import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
-import android.text.Spannable
 import android.text.SpannableString
-import android.text.style.BackgroundColorSpan
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ScrollView
 import android.widget.TextView
@@ -28,8 +21,6 @@ class PointerMethodTechnique : Technique("PointerMethodTechnique", "Метод �
     private var isAnimationActive = false
     private var highlightColorIndex = 0
     private var textView: TextView? = null
-
-    
 
     override fun startAnimation(
         textView: TextView,

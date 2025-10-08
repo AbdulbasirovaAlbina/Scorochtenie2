@@ -1,14 +1,9 @@
 package com.example.scorochtenie2
 
 import android.animation.ValueAnimator
-import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
-import android.text.Spannable
 import android.text.SpannableString
-import android.text.style.BackgroundColorSpan
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.ScrollView
 import android.widget.TextView

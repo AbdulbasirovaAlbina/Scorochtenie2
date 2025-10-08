@@ -1,7 +1,6 @@
 package com.example.scorochtenie2
 
 import android.content.Context
-import com.example.scorochtenie2.R
 import org.xmlpull.v1.XmlPullParser
 
 data class TextData(
@@ -185,15 +184,8 @@ object TextResources {
     }
 
     fun getTexts(): Map<String, List<TextData>> = texts
-    fun getDemoText(): TextData? = demoText
 
     fun getDemoTextForTechnique(techniqueName: String): String {
         return demoText?.text ?: "Демонстрационный текст недоступен"
-    }
-    
-    fun reset() {
-        isInitialized = false
-        texts = emptyMap()
-        demoText = null
     }
 }

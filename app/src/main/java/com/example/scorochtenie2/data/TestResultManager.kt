@@ -220,12 +220,6 @@ object TestResultManager {
         return completedTexts
     }
 
-    fun isTextCompleted(context: Context, techniqueName: String, textIndex: Int): Boolean {
-        val results = getAllTechniqueResults(context, techniqueName)
-        val isCompleted = results.any { it.textIndex == textIndex && it.comprehension == 100 }
-        return isCompleted
-    }
-
     fun getAvailableTextsByLength(context: Context, techniqueName: String, textLength: String): List<Int> {
         val completedTexts = getCompletedTexts(context, techniqueName)
         val availableRange = when (textLength) {
@@ -236,11 +230,6 @@ object TestResultManager {
         }
         val availableTexts = availableRange.filter { !completedTexts.contains(it) }
         return availableTexts
-    }
-
-    fun hasAvailableTexts(context: Context, techniqueName: String, textLength: String): Boolean {
-        val hasAvailable = getAvailableTextsByLength(context, techniqueName, textLength).isNotEmpty()
-        return hasAvailable
     }
 
     fun isTechniqueFullyCompleted(context: Context, techniqueName: String): Boolean {

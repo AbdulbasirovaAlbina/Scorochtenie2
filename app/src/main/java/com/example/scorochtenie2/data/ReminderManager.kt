@@ -1,5 +1,6 @@
 package com.example.scorochtenie2
 
+import MainActivity
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
@@ -9,7 +10,6 @@ object ReminderManager {
     private const val KEY_REMINDER_ENABLED = "reminder_enabled"
     private const val KEY_REMINDER_HOUR = "reminder_hour"
     private const val KEY_REMINDER_MINUTE = "reminder_minute"
-    private const val TAG = "ReminderManager"
 
     private var isInitialized = false
 
@@ -34,7 +34,6 @@ object ReminderManager {
         initialize(context)
         val editor = getSharedPreferences(context).edit().putBoolean(KEY_REMINDER_ENABLED, enabled)
         val success = editor.commit()
-        val savedValue = getSharedPreferences(context).getBoolean(KEY_REMINDER_ENABLED, false)
         if (!success) {
             Toast.makeText(context, "Ошибка сохранения настройки напоминаний", Toast.LENGTH_SHORT).show()
         }
@@ -66,8 +65,6 @@ object ReminderManager {
             .putInt(KEY_REMINDER_HOUR, hour)
             .putInt(KEY_REMINDER_MINUTE, minute)
         val success = editor.commit()
-        val savedHour = getSharedPreferences(context).getInt(KEY_REMINDER_HOUR, 9)
-        val savedMinute = getSharedPreferences(context).getInt(KEY_REMINDER_MINUTE, 0)
         if (!success) {
             Toast.makeText(context, "Ошибка сохранения времени напоминания", Toast.LENGTH_SHORT).show()
         }
@@ -76,8 +73,6 @@ object ReminderManager {
             ReminderService.scheduleReminder(context, hour, minute)
         }
     }
-
-
 
     fun getReminderTimeString(context: Context): String {
         initialize(context)
@@ -100,7 +95,6 @@ class ReminderService : android.content.BroadcastReceiver() {
         const val CHANNEL_ID = "reading_reminder_channel_v2"
         const val NOTIFICATION_ID = 1001
         const val ACTION_SHOW_REMINDER = "show_reminder"
-        private const val TAG = "ReminderService"
 
         fun initialize(context: android.content.Context) {
             createNotificationChannel(context)
@@ -177,10 +171,6 @@ class ReminderService : android.content.BroadcastReceiver() {
             }
         }
 
-        fun sendTestNotification(context: android.content.Context) {
-            val service = ReminderService()
-            service.showReminderNotification(context.applicationContext)
-        }
     }
 
     override fun onReceive(context: android.content.Context, intent: android.content.Intent) {

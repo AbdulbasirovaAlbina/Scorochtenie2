@@ -90,8 +90,6 @@ object HighlightColorConfig {
         )
     )
 
-    val colorLabels = colors.map { it.name }
-
     fun getBackgroundColor(colorIndex: Int, isDarkTheme: Boolean): Int {
         if (colorIndex < 0 || colorIndex >= colors.size) return colors[0].lightBackgroundColor
         return if (isDarkTheme) colors[colorIndex].darkBackgroundColor else colors[colorIndex].lightBackgroundColor
@@ -100,10 +98,6 @@ object HighlightColorConfig {
     fun getTextColor(colorIndex: Int): Int {
         if (colorIndex < 0 || colorIndex >= colors.size) return colors[0].textColor
         return colors[colorIndex].textColor
-    }
-
-    fun getColorIndex(colorName: String): Int {
-        return colors.indexOfFirst { it.name == colorName }.takeIf { it != -1 } ?: 0
     }
 
     fun getHighlightBackgroundColor(context: Context): Int {
